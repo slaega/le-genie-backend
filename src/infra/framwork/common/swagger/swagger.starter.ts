@@ -1,5 +1,5 @@
-import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { NestApplication } from "@nestjs/core";
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { NestApplication } from '@nestjs/core';
 
 export class SwaggerStarter {
   constructor() {}

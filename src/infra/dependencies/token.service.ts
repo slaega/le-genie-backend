@@ -11,7 +11,7 @@ export class TokenService {
   private generateAccessToken(userId: string, email: string): string {
     const payload = { sub: userId, email };
     return this.jwtService.sign(payload, {
-      expiresIn: '1h',            // or your chosen expiry
+      expiresIn: '1h', // or your chosen expiry
     });
   }
 
@@ -19,12 +19,18 @@ export class TokenService {
    * (Optional) If you want to issue a refresh token too:
    */
   private generateRefreshToken(userId: string): string {
-    return this.jwtService.sign({ sub: userId }, {
-      expiresIn: '7d',
-    });
+    return this.jwtService.sign(
+      { sub: userId },
+      {
+        expiresIn: '7d',
+      },
+    );
   }
 
-  generateTokens(userId: string, email: string): { accessToken: string; refreshToken: string } {
+  generateTokens(
+    userId: string,
+    email: string,
+  ): { accessToken: string; refreshToken: string } {
     const accessToken = this.generateAccessToken(userId, email);
     const refreshToken = this.generateRefreshToken(userId);
     return { accessToken, refreshToken };

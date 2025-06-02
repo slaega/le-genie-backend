@@ -1,6 +1,3 @@
 export class CancelInvitationCommand {
-    constructor(
-        public readonly invitationId: string,
-    ) {}
+  constructor(public readonly invitationId: string) {}
 }
-    

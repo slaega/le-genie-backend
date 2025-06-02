@@ -1,5 +1,13 @@
 export interface StorageProvider {
-  uploadFile(file: File, path: string): Promise<string>;
-  removeFile(filePath: string): Promise<void>;
-  getFileUrl(filePath: string): string;
+  upload(params: {
+    path: string;
+    file: Buffer | Blob;
+    contentType?: string;
+  }): Promise<string>;
+
+  download(path: string): Promise<Buffer | Blob>;
+
+  delete(path: string): Promise<void>;
+
+  getPublicUrl(path: string): string;
 }

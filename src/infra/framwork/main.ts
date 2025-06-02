@@ -27,14 +27,14 @@ import validationOptions from '#shared/utils/validation-options';
 import { ResolvePromisesInterceptor } from '#shared/utils/serializer.interceptor';
 
 async function bootstrap() {
-//   appStart();
+  //   appStart();
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService<AllConfigType>);
-//   const origin = configService.get('app.corsOrigins', { infer: true });
-//   app.enableCors({
-//     origin,
-//     credentials: true,
-//   });
+  //   const origin = configService.get('app.corsOrigins', { infer: true });
+  //   app.enableCors({
+  //     origin,
+  //     credentials: true,
+  //   });
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 

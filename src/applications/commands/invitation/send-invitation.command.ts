@@ -1,7 +1,6 @@
 export class SendInvitationCommand {
-    constructor(
-        public readonly postId: string,
-        public readonly email: string,
-    ) {}
+  constructor(
+    public readonly postId: string,
+    public readonly email: string,
+  ) {}
 }
-    

@@ -11,7 +11,10 @@ import { TokenService } from '../../dependencies/token.service';
 import { GithubStrategy } from './strategies/github.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { AuthenticateWithProviderHandler } from '#applications/handlers/auth/authenticate-with-provider.handler';
-import { AUTH_PROVIDER_REPOSITORY, USER_REPOSITORY } from '#shared/constantes/inject-token';
+import {
+  AUTH_PROVIDER_REPOSITORY,
+  USER_REPOSITORY,
+} from '#shared/constantes/inject-token';
 import { UserPrismaRepository } from '#infra/percistences/prisma/user.repository';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { AuthProviderPrismaRepository } from '#infra/percistences/prisma/auth-provider.repository';
@@ -32,14 +35,15 @@ import { AuthProviderPrismaRepository } from '#infra/percistences/prisma/auth-pr
     TokenService,
     // Repository & Prisma
     {
-        provide: USER_REPOSITORY,
-        inject: [PrismaService],
-        useFactory: (prisma: PrismaService) => new UserPrismaRepository(prisma),
+      provide: USER_REPOSITORY,
+      inject: [PrismaService],
+      useFactory: (prisma: PrismaService) => new UserPrismaRepository(prisma),
     },
     {
-        provide: AUTH_PROVIDER_REPOSITORY,
-        inject: [PrismaService],
-        useFactory: (prisma: PrismaService) => new AuthProviderPrismaRepository(prisma),
+      provide: AUTH_PROVIDER_REPOSITORY,
+      inject: [PrismaService],
+      useFactory: (prisma: PrismaService) =>
+        new AuthProviderPrismaRepository(prisma),
     },
     PrismaService,
     GithubStrategy,
