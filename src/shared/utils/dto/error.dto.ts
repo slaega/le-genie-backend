@@ -1,5 +1,5 @@
 export interface ErrorDto {
-    code: string;
-    field: string;
-    message: string;
+  code: string;
+  field: string;
+  message: string;
 }

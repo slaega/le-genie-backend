@@ -1,20 +1,21 @@
 export type AppConfig = {
-    nodeEnv: string;
-    name: string;
-    workingDirectory: string;
-    frontendDomain?: string;
-    backendDomain: string;
+  nodeEnv: string;
+  name: string;
+  workingDirectory: string;
+  frontendDomain?: string;
+  backendDomain: string;
+  port: number;
+  apiPrefix: string;
+  fallbackLanguage: string;
+  headerLanguage: string;
+  throttlerTtl: string | number;
+  throttlerLimit: string | number;
+  cookieSecret: string;
+  emailValidationEnabled: boolean;
+  redis: {
+    host: string;
     port: number;
-    apiPrefix: string;
-    fallbackLanguage: string;
-    headerLanguage: string;
-    throttlerTtl: string | number;
-    throttlerLimit: string | number;
-    cookieSecret: string;
-    redis: {
-        host: string;
-        port: number;
-        username: string;
-        password: string;
-    };
+    username: string;
+    password: string;
+  };
 };

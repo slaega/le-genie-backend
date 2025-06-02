@@ -1,8 +1,8 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { ChangePostStatusCommand } from "#applications/commands/post/change-post-status.command";
-import { Inject } from "@nestjs/common";
-import { POST_REPOSITORY } from "#shared/constantes/inject-token";
-import { PostRepository } from "#domain/repository/post.repository";
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { ChangePostStatusCommand } from '#applications/commands/post/change-post-status.command';
+import { Inject } from '@nestjs/common';
+import { POST_REPOSITORY } from '#shared/constantes/inject-token';
+import { PostRepository } from '#domain/repository/post.repository';
 
 @CommandHandler(ChangePostStatusCommand)
 export class ChangePostStatusHandler
@@ -13,11 +13,13 @@ export class ChangePostStatusHandler
   ) {}
 
   async execute(command: ChangePostStatusCommand) {
-    let post = await this.postRepository.getPostById(command.postId);
+    const post = await this.postRepository.findOne({
+      id: command.postId,
+    });
     if (!post) {
       throw new Error('Post not found');
     }
     post.status = command.status;
-    return this.postRepository.updatePost(post);
+    return this.postRepository.updateOne(post.id, post);
   }
 }

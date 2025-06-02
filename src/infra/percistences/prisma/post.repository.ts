@@ -2,7 +2,7 @@ import { PrismaRepository } from '#infra/percistences/prisma/prisma-repository';
 import { PostRepository } from '#domain/repository/post.repository';
 import { Injectable } from '@nestjs/common';
 
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { Post } from '#domain/entities/post.entity';
 
 @Injectable()
@@ -13,11 +13,11 @@ export class PostPrismaRepository
   constructor(prisma: PrismaClient) {
     super(prisma.post);
   }
-  async createPost(post: Post): Promise<Post> {
+  async createOne(post: Post): Promise<Post> {
     return await this.create({
       data: {
         title: post.title,
-        content: post.content,
+        content: JSON.parse(post.content) as Prisma.JsonValue,
         status: post.status,
         postTags: {
           create: post.postTags.map((tag) => ({
@@ -31,15 +31,15 @@ export class PostPrismaRepository
       },
     });
   }
-  async updatePost(post: Post): Promise<Post> {
+  async updateOne(id: string, data: Partial<Post>): Promise<Post> {
     return await this.update({
-      where: { id: post.id },
+      where: { id },
       data: {
-        title: post.title,
-        content: post.content,
-        status: post.status,
+        title: data.title,
+        content: JSON.parse(data.content) as Prisma.JsonValue,
+        status: data.status,
         postTags: {
-          create: post.postTags.map((tag) => ({
+          create: data.postTags?.map((tag) => ({
             name: tag.name,
           })),
         },
@@ -50,28 +50,33 @@ export class PostPrismaRepository
       },
     });
   }
-  async deletePost(post: Post): Promise<void> {
+  async removeOne(id: string): Promise<void> {
     await this.delete({
-      where: { id: post.id },
-    });
-  }
-  async getPostById(id: string): Promise<Post | null> {
-    return await this.findUnique({
       where: { id },
+    });
+  }
+  async findOne(data: Partial<Post>): Promise<Post | null> {
+    return await this.findFirst({
+      where: {
+        title: data.title,
+        status: data.status,
+      },
       include: {
         contributors: true,
         postTags: true,
       },
     });
   }
-  async getPostsByUserId(userId: string): Promise<Post[]> {
+  async findAll(data: Partial<Post>): Promise<Post[]> {
     return await this.findMany({
-      where: { contributors:{ some: { userId } } },
+      where: {
+        title: data.title,
+        status: data.status,
+      },
       include: {
         contributors: true,
         postTags: true,
       },
     });
   }
- 
 }

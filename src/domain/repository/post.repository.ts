@@ -1,10 +1,4 @@
-import { Post } from "#domain/entities/post.entity";
+import { Post } from '#domain/entities/post.entity';
+import { Repository } from '#core/repository';
 
-export interface PostRepository {
-    createPost(post: Post): Promise<Post>;
-    updatePost(post: Post): Promise<Post>;
-    deletePost(post: Post): Promise<void>;
-    getPostById(id: string): Promise<Post | null>;
-    getPostsByUserId(userId: string): Promise<Post[]>;
-}
-    
+export type PostRepository = Repository<Post>;

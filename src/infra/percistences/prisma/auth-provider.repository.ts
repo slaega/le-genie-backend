@@ -2,51 +2,46 @@ import { PrismaRepository } from '#infra/percistences/prisma/prisma-repository';
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import { AuthProviderRepository } from '#domain/repository/auth-provider.repository';
-import { AuthProvider, SocialProvider } from '#domain/entities/auth-provider.entity';
+import { AuthProvider } from '#domain/entities/auth-provider.entity';
 
 @Injectable()
-export class AuthProviderPrismaRepository extends PrismaRepository<
-  PrismaClient['authProvider']
-> implements AuthProviderRepository { 
+export class AuthProviderPrismaRepository
+  extends PrismaRepository<PrismaClient['authProvider']>
+  implements AuthProviderRepository
+{
   constructor(prisma: PrismaClient) {
     super(prisma.authProvider);
   }
- 
-  async linkProvider(params: {
-    userId: string;
-    provider: SocialProvider;
-    providerUserId: string;
-  }): Promise<void> {
-    await this.create({
-      data: {
-        provider: params.provider,
-        providerUserId: params.providerUserId,
-        userId: params.userId,
-      },
+  async createOne(data: AuthProvider): Promise<AuthProvider> {
+    const created = await this.create({
+      data,
+    });
+    return created;
+  }
+  async updateOne(
+    id: string,
+    data: Partial<AuthProvider>,
+  ): Promise<AuthProvider> {
+    const updated = await this.update({
+      where: { id },
+      data,
+    });
+    return updated;
+  }
+  async findAll(filter?: Partial<AuthProvider>): Promise<AuthProvider[]> {
+    return this.findMany({
+      where: filter,
     });
   }
-
-  async unlinkProvider(params: {
-    userId: string;
-    provider: SocialProvider;
-  }): Promise<void> {
+  async findOne(filter: Partial<AuthProvider>): Promise<AuthProvider | null> {
+    const found = await this.findFirst({
+      where: filter,
+    });
+    return found;
+  }
+  async removeOne(id: string): Promise<void> {
     await this.delete({
-      where: {
-        userId_provider: {
-          userId: params.userId,
-          provider: params.provider,
-        },
-      },
+      where: { id },
     });
-  }
-
-  async findProvidersByUser(userId: string): Promise<AuthProvider[]> {
-    const providers = await this.findMany({
-      where: {
-        userId,
-      },
-    });
-    return providers as AuthProvider[];
   }
 }
-

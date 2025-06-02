@@ -13,7 +13,7 @@ export class ContributorPrismaRepository
   constructor(prisma: PrismaClient) {
     super(prisma.contributor);
   }
-  async createContributor(contributor: Contributor): Promise<Contributor> {
+  async createOne(contributor: Contributor): Promise<Contributor> {
     return this.create({
       data: {
         postId: contributor.postId,
@@ -22,30 +22,32 @@ export class ContributorPrismaRepository
       },
     });
   }
-  async getContributorById(id: string): Promise<Contributor | null> {
-    return this.findUnique({
-      where: { id },
+  async findOne(data: Partial<Contributor>): Promise<Contributor | null> {
+    return await this.findFirst({
+      where: data,
     });
   }
-  async getContributorsByPostId(postId: string): Promise<Contributor[]> {
-    return this.findMany({
-      where: { postId },
+  async findAll(data: Partial<Contributor>): Promise<Contributor[]> {
+    return await this.findMany({
+      where: data,
     });
   }
-  async updateContributor(contributor: Contributor): Promise<Contributor> {
+  async updateOne(
+    id: string,
+    data: Partial<Contributor>,
+  ): Promise<Contributor> {
     return this.update({
-      where: { id: contributor.id },
+      where: { id },
       data: {
-        postId: contributor.postId,
-        userId: contributor.userId,
-        owner: contributor.owner,
+        postId: data.postId,
+        userId: data.userId,
+        owner: data.owner,
       },
     });
   }
-  async deleteContributor(contributor: Contributor): Promise<void> {
+  async removeOne(id: string): Promise<void> {
     await this.delete({
-      where: { id: contributor.id },
+      where: { id },
     });
   }
- 
 }

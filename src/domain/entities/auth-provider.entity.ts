@@ -1,18 +1,18 @@
-import { Entity } from "#core/entity";
+import { Entity } from '#core/entity';
 
-export enum SocialProvider {
-    GITHUB='GITHUB',
-    GOOGLE='GOOGLE'
-}
+export const SocialProvider = {
+  GITHUB: 'GITHUB',
+  GOOGLE: 'GOOGLE',
+} as const;
+
+export type SocialProvider =
+  (typeof SocialProvider)[keyof typeof SocialProvider];
 
 export class AuthProvider extends Entity {
-  constructor(
-    public  provider: SocialProvider,
-    public  providerUserId: string,
-    public  userId: string,
-  ) {
+  public provider: SocialProvider;
+  public providerUserId: string;
+  public userId: string;
+  constructor() {
     super();
   }
 }
-
-

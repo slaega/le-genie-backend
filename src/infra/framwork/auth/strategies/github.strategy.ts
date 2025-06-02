@@ -7,12 +7,14 @@ import authConfig from '#config/auth/auth.config';
 @Injectable()
 export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
   constructor(private readonly configService: ConfigType<typeof authConfig>) {
+    const github = configService.github;
     super({
-      clientID: configService.google.clientID,
-      clientSecret: configService.google.clientSecret,
-      callbackURL: configService.google.callbackURL,
+      clientID: github.clientID,
+      clientSecret: github.clientSecret,
+      callbackURL: github.callbackURL,
       scope: ['user:email'],
     });
+    this.configService;
   }
 
   async validate(

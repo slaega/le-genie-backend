@@ -1,9 +1,9 @@
-import { Entity } from "./entity";
+import { Entity } from './entity';
 
-export abstract class Repository<TEntity extends Entity> {
-  abstract create(data: TEntity): Promise<TEntity>;
-  abstract findAll(filter?: Partial<TEntity>): Promise<TEntity[]>;
-  abstract findOne(filter: Partial<TEntity>): Promise<TEntity>;
-  abstract update(id: string, data: Partial<TEntity>): Promise<TEntity>;
-  abstract remove(id: string): Promise<void>;
+export interface Repository<TEntity extends Entity> {
+  createOne(data: TEntity): Promise<TEntity>;
+  findAll(filter?: Partial<TEntity>): Promise<TEntity[]>;
+  findOne(filter: Partial<TEntity>): Promise<TEntity | null>;
+  updateOne(id: string, data: Partial<TEntity>): Promise<TEntity>;
+  removeOne(id: string): Promise<void>;
 }

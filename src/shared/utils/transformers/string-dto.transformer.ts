@@ -6,20 +6,20 @@ import { Transform, plainToInstance } from 'class-transformer';
  * @returns A Transform decorator.
  */
 export function TransformToDto<T>(dtoClass: new (...args: any[]) => T) {
-    return Transform(({ value }) => {
-        if (typeof value !== 'string') {
-            // Si la valeur n'est pas une chaîne, on la retourne telle quelle
-            return value;
-        }
+  return Transform(({ value }) => {
+    if (typeof value !== 'string') {
+      // Si la valeur n'est pas une chaîne, on la retourne telle quelle
+      return value;
+    }
 
-        try {
-            // Si la valeur est une chaîne JSON valide, on la transforme en instance
-            return plainToInstance(dtoClass, JSON.parse(value));
-        } catch {
-            // Si ce n'est pas un JSON valide, on retourne la valeur brute
-            return value;
-        }
-    });
+    try {
+      // Si la valeur est une chaîne JSON valide, on la transforme en instance
+      return plainToInstance(dtoClass, JSON.parse(value));
+    } catch {
+      // Si ce n'est pas un JSON valide, on retourne la valeur brute
+      return value;
+    }
+  });
 }
 
 /**
@@ -28,22 +28,22 @@ export function TransformToDto<T>(dtoClass: new (...args: any[]) => T) {
  * @returns A Transform decorator.
  */
 export function TransformToDtoArray<T>(dtoClass: new (...args: any[]) => T) {
-    return Transform(({ value }) => {
-        if (!value) return undefined;
+  return Transform(({ value }) => {
+    if (!value) return undefined;
 
-        try {
-            const parsedValue = JSON.parse(value);
-            return Array.isArray(parsedValue)
-                ? plainToInstance(dtoClass, parsedValue)
-                : undefined;
-        } catch {
-            return undefined;
-        }
-    });
+    try {
+      const parsedValue = JSON.parse(value);
+      return Array.isArray(parsedValue)
+        ? plainToInstance(dtoClass, parsedValue)
+        : undefined;
+    } catch {
+      return undefined;
+    }
+  });
 }
 
 export function TransformToEnumDto<T>(dtoClass: new (...args: any[]) => T) {
-    return Transform(({ value }) =>
-        value ? plainToInstance(dtoClass, value) : undefined
-    );
+  return Transform(({ value }) =>
+    value ? plainToInstance(dtoClass, value) : undefined,
+  );
 }

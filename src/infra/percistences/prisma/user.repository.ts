@@ -13,14 +13,17 @@ export class UserPrismaRepository
   constructor(prisma: PrismaClient) {
     super(prisma.user);
   }
-  async findByEmail(email: string): Promise<User | null> {
-    return this.findUnique({
-      where: { email },
+  async findOne(filter: Partial<User>): Promise<User | null> {
+    return this.findFirst({
+      where: {
+        ...filter,
+        authProviders: {},
+      },
       include: { authProviders: true },
     });
   }
 
-  async createUser(params: {
+  async createOne(params: {
     email: string;
     name: string;
     avatarUrl?: string;
@@ -33,5 +36,29 @@ export class UserPrismaRepository
       },
     });
     return created;
+  }
+  async updateOne(id: string, data: Partial<User>): Promise<User> {
+    return this.update({
+      where: { id },
+      data: {
+        email: data.email,
+        name: data.name,
+        avatarPath: data.avatarUrl,
+      },
+    });
+  }
+  async removeOne(id: string): Promise<void> {
+    await this.delete({
+      where: { id },
+    });
+  }
+  async findAll(filter?: Partial<User>): Promise<User[]> {
+    return await this.findMany({
+      where: {
+        ...filter,
+        authProviders: {},
+      },
+      include: { authProviders: true },
+    });
   }
 }
