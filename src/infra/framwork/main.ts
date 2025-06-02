@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import 'dotenv/config';
 
 import {
@@ -54,6 +55,7 @@ async function bootstrap() {
   // Configuration globale de sécurité
   app.use(helmet());
   // Configuration permettant de récupérer l'adresse IP du
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   app.use(requestIp.mw());
 
   // Configuration globale de gestion des versions

@@ -27,7 +27,7 @@ export class CreatePostHandler
     contributor.postId = post.id;
     contributor.userId = command.userId;
     contributor.owner = true;
-    await this.contributorRepository.createOne(contributor);
-    return this.postRepository.createOne(post);
+    await this.contributorRepository.createContributor(contributor);
+    return this.postRepository.createPost(post);
   }
 }

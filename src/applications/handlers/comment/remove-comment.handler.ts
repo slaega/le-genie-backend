@@ -12,6 +12,6 @@ export class RemoveCommentHandler
     private readonly commentRepository: CommentRepository,
   ) {}
   async execute(command: RemoveCommentCommand) {
-    return this.commentRepository.removeOne(command.commentId);
+    return this.commentRepository.removeComment(command.commentId);
   }
 }

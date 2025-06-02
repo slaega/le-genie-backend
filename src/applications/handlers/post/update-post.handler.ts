@@ -12,9 +12,7 @@ export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
   ) {}
 
   async execute(command: UpdatePostCommand) {
-    const post = await this.postRepository.findOne({
-      id: command.id,
-    });
+    const post = await this.postRepository.getPostById(command.id);
     if (!post) {
       throw new Error('Post not found');
     }
@@ -27,6 +25,6 @@ export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
         postTag.postId = post.id;
         return postTag;
       }) ?? post.postTags;
-    return this.postRepository.updateOne(post.id, post);
+    return this.postRepository.updatePost(post.id, post);
   }
 }

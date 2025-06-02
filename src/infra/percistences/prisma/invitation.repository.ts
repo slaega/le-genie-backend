@@ -1,48 +1,47 @@
-import { PrismaRepository } from '#infra/percistences/prisma/prisma-repository';
 import { Injectable } from '@nestjs/common';
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaService } from '#infra/framwork/common/prisma/prisma.service';
 import { InvitationRepository } from '#domain/repository/invitation.repository';
 import { Invitation } from '#domain/entities/invitation.entity';
 
 @Injectable()
-export class InvitationPrismaRepository
-  extends PrismaRepository<PrismaClient['invitation']>
-  implements InvitationRepository
-{
-  constructor(prisma: PrismaClient) {
-    super(prisma.invitation);
-  }
-  async createOne(invitation: Invitation): Promise<Invitation> {
-    return await this.create({
-      data: {
-        postId: invitation.postId,
-        email: invitation.email,
-        token: invitation.token,
-        content: invitation.content,
-        expiredAt: invitation.expiredAt,
+export class InvitationPrismaRepository implements InvitationRepository {
+  constructor(private readonly prisma: PrismaService) {}
+  async getInvitationByPostId(postId: string): Promise<Invitation[]> {
+    return this.prisma.invitation.findMany({
+      where: {
+        postId,
       },
     });
   }
-  async updateOne(id: string, data: Partial<Invitation>): Promise<Invitation> {
-    return this.update({
-      where: { id },
-      data,
+  async getInvitationById(invitationId: string): Promise<Invitation | null> {
+    return this.prisma.invitation.findUnique({
+      where: {
+        id: invitationId,
+      },
     });
   }
-  async removeOne(id: string): Promise<void> {
-    await this.delete({
-      where: { id },
+  async createInvitation(invitation: Invitation): Promise<Invitation> {
+    return this.prisma.invitation.create({
+      data: invitation,
     });
   }
-  async findOne(data: Partial<Invitation>): Promise<Invitation | null> {
-    return await this.findFirst({
-      where: data,
+  async updateInvitation(
+    invitationId: string,
+    invitation: Invitation,
+  ): Promise<Invitation> {
+    return this.prisma.invitation.update({
+      where: {
+        id: invitationId,
+      },
+      data: invitation,
     });
   }
-  async findAll(data: Partial<Invitation>): Promise<Invitation[]> {
-    return await this.findMany({
-      where: data,
+  async removeInvitation(invitationId: string): Promise<void> {
+    await this.prisma.invitation.delete({
+      where: {
+        id: invitationId,
+      },
     });
   }
 }

@@ -11,12 +11,10 @@ export class DeletePostHandler implements ICommandHandler<DeletePostCommand> {
   ) {}
 
   async execute(command: DeletePostCommand) {
-    const post = await this.postRepository.findOne({
-      id: command.id,
-    });
+    const post = await this.postRepository.getPostById(command.id);
     if (!post) {
       throw new Error('Post not found');
     }
-    return this.postRepository.removeOne(post.id);
+    return this.postRepository.removePost(post.id);
   }
 }

@@ -14,12 +14,13 @@ import { MailModule } from './common/mail/mail.module';
 import { LoggerModule } from './common/logger/logger.module';
 import { ThrottlerBehindProxyGuard } from '#shared/utils/guards/throttler-behind-proxy.guard';
 import mailConfig from '#config/mail/mail.config';
+import storageConfig from '#config/storage/storage.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, authConfig, mailConfig],
+      load: [appConfig, authConfig, mailConfig, storageConfig],
       envFilePath: ['.env'],
     }),
     I18nModule.forRootAsync({
@@ -28,7 +29,7 @@ import mailConfig from '#config/mail/mail.config';
           infer: true,
         }),
         loaderOptions: {
-          path: path.join(__dirname, '/i18n/'),
+          path: path.join(process.cwd(), 'assets', 'i18n'),
           watch: true,
         },
       }),
@@ -67,16 +68,17 @@ import mailConfig from '#config/mail/mail.config';
     // NestjsFormDataModule.config({ isGlobal: true }),
     BullModule.forRootAsync({
       useFactory: async (
-        configService: ConfigType<typeof appConfig>,
-      ): Promise<Bull.QueueOptions> =>
-        Promise.resolve({
+        configService: ConfigService<AllConfigType>,
+      ): Promise<Bull.QueueOptions> => {
+        return Promise.resolve({
           connection: {
-            host: configService.redis.host,
-            port: configService.redis.port,
-            username: configService.redis.username,
-            password: configService.redis.password,
+            host: configService.get('app.redis.host', { infer: true }),
+            port: configService.get('app.redis.port', { infer: true }),
+            username: configService.get('app.redis.username', { infer: true }),
+            password: configService.get('app.redis.password', { infer: true }),
           },
-        }),
+        });
+      },
       inject: [ConfigService],
     }),
   ],

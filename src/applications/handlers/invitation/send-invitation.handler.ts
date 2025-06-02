@@ -20,6 +20,6 @@ export class SendInvitationHandler
     invitation.email = command.email;
     invitation.token = crypto.randomUUID();
     invitation.expiredAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    return this.invitationRepository.createOne(invitation);
+    return this.invitationRepository.createInvitation(invitation);
   }
 }

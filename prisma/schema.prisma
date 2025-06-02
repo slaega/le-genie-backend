@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -84,15 +84,15 @@ model Contributor {
 }
 
 model Comment {
-  id        String   @id @default(cuid())
-  content   String
+  id         String    @id @default(cuid())
+  content    String
   refactorAt DateTime?
-  postId    String
-  post      Post     @relation(fields: [postId], references: [id])
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  postId     String
+  post       Post      @relation(fields: [postId], references: [id])
+  userId     String
+  user       User      @relation(fields: [userId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@map("comments")
 }
@@ -149,8 +149,9 @@ model Tag {
 }
 
 model PostTag {
+  id     String @id @default(cuid())
   postId String
-  name  String
+  name   String
   post   Post   @relation(fields: [postId], references: [id])
   tag    Tag    @relation(fields: [name], references: [name])
 
@@ -170,4 +171,3 @@ enum PostStatus {
   PUBLISHED
   ARCHIVED
 }
-

@@ -21,9 +21,9 @@ export class AcceptedInvitationHandler
   ) {}
 
   async execute(command: AcceptedInvitationCommand) {
-    const invitation = await this.invitationRepository.findOne({
-      id: command.invitationId,
-    });
+    const invitation = await this.invitationRepository.getInvitationById(
+      command.invitationId,
+    );
     if (!invitation) {
       throw new Error('Invitation not found');
     }
@@ -31,7 +31,7 @@ export class AcceptedInvitationHandler
     contributor.postId = invitation.postId;
     contributor.userId = command.authId;
     contributor.owner = false;
-    await this.contributorRepository.createOne(contributor);
-    return this.invitationRepository.removeOne(invitation.id);
+    await this.contributorRepository.createContributor(contributor);
+    return this.invitationRepository.removeInvitation(invitation.id);
   }
 }

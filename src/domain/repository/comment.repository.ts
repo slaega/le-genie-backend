@@ -1,3 +1,9 @@
-import { Repository } from '#core/repository';
 import { Comment } from '#domain/entities/comment.entity';
-export type CommentRepository = Repository<Comment>;
+
+export interface CommentRepository {
+  getCommentsByPostId(postId: string): Promise<Comment[]>;
+  getCommentsById(commentId: string): Promise<Comment | null>;
+  createComment(comment: Comment): Promise<Comment>;
+  removeComment(commentId: string): Promise<void>;
+  updateComment(commentId: string, comment: Comment): Promise<Comment>;
+}

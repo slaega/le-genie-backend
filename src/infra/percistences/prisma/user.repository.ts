@@ -1,64 +1,52 @@
-import { PrismaRepository } from '#infra/percistences/prisma/prisma-repository';
 import { UserRepository } from '#domain/repository/user.repository';
 import { Injectable } from '@nestjs/common';
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaService } from '#infra/framwork/common/prisma/prisma.service';
 import { User } from '#domain/entities/user.entity';
 
 @Injectable()
-export class UserPrismaRepository
-  extends PrismaRepository<PrismaClient['user']>
-  implements UserRepository
-{
-  constructor(prisma: PrismaClient) {
-    super(prisma.user);
-  }
-  async findOne(filter: Partial<User>): Promise<User | null> {
-    return this.findFirst({
+export class UserPrismaRepository implements UserRepository {
+  constructor(private readonly prisma: PrismaService) {}
+  async getUserById(userId: string): Promise<User | null> {
+    return await this.prisma.user.findUnique({
       where: {
-        ...filter,
-        authProviders: {},
-      },
-      include: { authProviders: true },
-    });
-  }
-
-  async createOne(params: {
-    email: string;
-    name: string;
-    avatarUrl?: string;
-  }): Promise<User> {
-    const created = await this.create({
-      data: {
-        email: params.email,
-        name: params.name,
-        avatarPath: params.avatarUrl,
-      },
-    });
-    return created;
-  }
-  async updateOne(id: string, data: Partial<User>): Promise<User> {
-    return this.update({
-      where: { id },
-      data: {
-        email: data.email,
-        name: data.name,
-        avatarPath: data.avatarUrl,
+        id: userId,
       },
     });
   }
-  async removeOne(id: string): Promise<void> {
-    await this.delete({
-      where: { id },
-    });
-  }
-  async findAll(filter?: Partial<User>): Promise<User[]> {
-    return await this.findMany({
+  async getUserByEmail(email: string): Promise<User | null> {
+    return await this.prisma.user.findUnique({
       where: {
-        ...filter,
-        authProviders: {},
+        email,
       },
-      include: { authProviders: true },
+    });
+  }
+  async createUser(user: User): Promise<User> {
+    return await this.prisma.user.create({
+      data: {
+        email: user.email,
+        name: user.name,
+        avatarPath: user.avatarUrl,
+      },
+    });
+  }
+  async updateUser(userId: string, user: User): Promise<User> {
+    return await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        email: user.email,
+        name: user.name,
+        avatarPath: user.avatarUrl,
+      },
+    });
+  }
+  async removeUser(userId: string): Promise<void> {
+    await this.prisma.user.delete({
+      where: {
+        id: userId,
+      },
     });
   }
 }

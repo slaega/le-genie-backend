@@ -1,81 +1,62 @@
-import { PrismaRepository } from '#infra/percistences/prisma/prisma-repository';
 import { PostRepository } from '#domain/repository/post.repository';
 import { Injectable } from '@nestjs/common';
 
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaService } from '#infra/framwork/common/prisma/prisma.service';
 import { Post } from '#domain/entities/post.entity';
-
+import { PostMapper } from '#domain/mappers/post/post.mapper';
+const INCLUDE = {
+  contributors: {
+    include: {
+      user: true,
+    },
+  },
+  postTags: true,
+};
 @Injectable()
-export class PostPrismaRepository
-  extends PrismaRepository<PrismaClient['post']>
-  implements PostRepository
-{
-  constructor(prisma: PrismaClient) {
-    super(prisma.post);
+export class PostPrismaRepository implements PostRepository {
+  constructor(private readonly prisma: PrismaService) {}
+  async getPostById(postId: string): Promise<Post | null> {
+    const postEntity = await this.prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+      include: INCLUDE,
+    });
+    if (!postEntity) {
+      return null;
+    }
+
+    return PostMapper.toDomain(postEntity);
   }
-  async createOne(post: Post): Promise<Post> {
-    return await this.create({
+  async createPost(post: Post): Promise<Post> {
+    const createdPost = await this.prisma.post.create({
       data: {
         title: post.title,
-        content: JSON.parse(post.content) as Prisma.JsonValue,
+        content: post.content,
         status: post.status,
-        postTags: {
-          create: post.postTags.map((tag) => ({
-            name: tag.name,
-          })),
-        },
       },
-      include: {
-        contributors: true,
-        postTags: true,
-      },
+      include: INCLUDE,
     });
+    return PostMapper.toDomain(createdPost);
   }
-  async updateOne(id: string, data: Partial<Post>): Promise<Post> {
-    return await this.update({
-      where: { id },
+  async updatePost(postId: string, post: Post): Promise<Post> {
+    const updatedPost = await this.prisma.post.update({
+      where: {
+        id: postId,
+      },
       data: {
-        title: data.title,
-        content: JSON.parse(data.content) as Prisma.JsonValue,
-        status: data.status,
-        postTags: {
-          create: data.postTags?.map((tag) => ({
-            name: tag.name,
-          })),
-        },
+        title: post.title,
+        content: post.content,
+        status: post.status,
       },
-      include: {
-        contributors: true,
-        postTags: true,
-      },
+      include: INCLUDE,
     });
+    return PostMapper.toDomain(updatedPost);
   }
-  async removeOne(id: string): Promise<void> {
-    await this.delete({
-      where: { id },
-    });
-  }
-  async findOne(data: Partial<Post>): Promise<Post | null> {
-    return await this.findFirst({
+  async removePost(postId: string): Promise<void> {
+    await this.prisma.post.delete({
       where: {
-        title: data.title,
-        status: data.status,
-      },
-      include: {
-        contributors: true,
-        postTags: true,
-      },
-    });
-  }
-  async findAll(data: Partial<Post>): Promise<Post[]> {
-    return await this.findMany({
-      where: {
-        title: data.title,
-        status: data.status,
-      },
-      include: {
-        contributors: true,
-        postTags: true,
+        id: postId,
       },
     });
   }

@@ -13,13 +13,11 @@ export class ChangePostStatusHandler
   ) {}
 
   async execute(command: ChangePostStatusCommand) {
-    const post = await this.postRepository.findOne({
-      id: command.postId,
-    });
+    const post = await this.postRepository.getPostById(command.postId);
     if (!post) {
       throw new Error('Post not found');
     }
     post.status = command.status;
-    return this.postRepository.updateOne(post.id, post);
+    return this.postRepository.updatePost(post.id, post);
   }
 }

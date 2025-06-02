@@ -24,7 +24,7 @@
     "pretty": true,
     "esModuleInterop": true,
     "outDir": "./dist",
-    "baseUrl": ".", 
+    "baseUrl": ".",
     "paths": {
       "#dto/*": ["src/shared/dto/*"],
       "#config/*": ["src/shared/config/*"],

@@ -16,6 +16,6 @@ export class MakeCommentHandler implements ICommandHandler<MakeCommentCommand> {
     comment.postId = command.postId;
     comment.content = command.content;
     comment.userId = command.authId;
-    return this.commentRepository.createOne(comment);
+    return this.commentRepository.createComment(comment);
   }
 }

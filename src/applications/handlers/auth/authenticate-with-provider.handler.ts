@@ -30,13 +30,13 @@ export class AuthenticateWithProviderHandler
   ) {}
 
   async execute(command: AuthenticateWithProviderCommand) {
-    let user = await this.userRepository.findOne({ email: command.email });
+    let user = await this.userRepository.getUserByEmail(command.email);
     if (!user) {
       const newUser = new User();
       newUser.email = command.email;
       newUser.name = command.name;
       newUser.avatarUrl = command.avatarUrl;
-      const created = await this.userRepository.createOne(newUser);
+      const created = await this.userRepository.createUser(newUser);
       user = created;
     }
     if (
@@ -48,7 +48,7 @@ export class AuthenticateWithProviderHandler
       authProvider.userId = user.id;
       authProvider.provider = command.provider;
       authProvider.providerUserId = command.providerUserId;
-      await this.authProviderRepository.createOne(authProvider);
+      await this.authProviderRepository.linkAuthProviderToUser(authProvider);
     }
     const { accessToken, refreshToken } = this.tokenService.generateTokens(
       user.id,

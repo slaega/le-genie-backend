@@ -14,9 +14,8 @@ export class LeaveContributorHandler
   ) {}
 
   async execute(command: LeaveContributorCommand) {
-    const contributors = await this.contributorRepository.findAll({
-      postId: command.postId,
-    });
+    const contributors =
+      await this.contributorRepository.getContributorsByPostId(command.postId);
     if (!contributors) {
       throw new Error('Contributor not found');
     }
@@ -26,6 +25,6 @@ export class LeaveContributorHandler
     if (!contributor) {
       throw new Error('Contributor not found');
     }
-    return this.contributorRepository.removeOne(contributor.id);
+    await this.contributorRepository.removeContributor(contributor.id);
   }
 }

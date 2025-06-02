@@ -1,4 +1,7 @@
-import { Repository } from '#core/repository';
 import { Contributor } from '#domain/entities/contributor.entity';
 
-export type ContributorRepository = Repository<Contributor>;
+export interface ContributorRepository {
+  getContributorsByPostId(postId: string): Promise<Contributor[]>;
+  createContributor(contributor: Contributor): Promise<Contributor>;
+  removeContributor(contributorId: string): Promise<void>;
+}

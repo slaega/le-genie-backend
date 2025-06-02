@@ -12,14 +12,14 @@ export class RefactorCommentHandler
     private readonly commentRepository: CommentRepository,
   ) {}
   async execute(command: RefactorCommentCommand) {
-    const comment = await this.commentRepository.findOne({
-      id: command.commentId,
-    });
+    const comment = await this.commentRepository.getCommentsById(
+      command.commentId,
+    );
     if (!comment) {
       throw new Error('Comment not found');
     }
     comment.content = command.content;
     comment.refactorAt = new Date();
-    return this.commentRepository.updateOne(comment.id, comment);
+    return this.commentRepository.updateComment(comment.id, comment);
   }
 }

@@ -15,9 +15,8 @@ export class LeaveContributorHandler
   ) {}
 
   async execute(command: RemoveContributorCommand) {
-    const contributors = await this.contributorRepository.findAll({
-      postId: command.postId,
-    });
+    const contributors =
+      await this.contributorRepository.getContributorsByPostId(command.postId);
     if (!contributors) {
       throw new Error('Contributor not found');
     }
@@ -30,6 +29,6 @@ export class LeaveContributorHandler
     if (contributor.owner && command.currentUserId !== contributor.userId) {
       throw new Error('You are not the owner of this post');
     }
-    return this.contributorRepository.removeOne(contributor.id);
+    await this.contributorRepository.removeContributor(contributor.id);
   }
 }

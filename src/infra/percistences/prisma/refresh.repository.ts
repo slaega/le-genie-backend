@@ -1,13 +1,16 @@
-import { PrismaRepository } from '#infra/percistences/prisma/prisma-repository';
 import { Injectable } from '@nestjs/common';
-
-import { PrismaClient } from '@prisma/client';
+import { PrismaService } from '#infra/framwork/common/prisma/prisma.service';
 
 @Injectable()
-export class RefreshTokenRepository extends PrismaRepository<
-  PrismaClient['refreshToken']
-> {
-  constructor(prisma: PrismaClient) {
-    super(prisma.refreshToken);
+export class RefreshTokenPrismaRepository {
+  constructor(private readonly prisma: PrismaService) {}
+
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  async getRefreshTokenByUserId(userId: string): Promise<any | null> {
+    return this.prisma.refreshToken.findFirst({
+      where: {
+        userId,
+      },
+    });
   }
 }

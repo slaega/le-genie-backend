@@ -14,12 +14,12 @@ export class RefusedInvitationHandler
   ) {}
 
   async execute(command: RefusedInvitationCommand) {
-    const invitation = await this.invitationRepository.findOne({
-      id: command.invitationId,
-    });
+    const invitation = await this.invitationRepository.getInvitationById(
+      command.invitationId,
+    );
     if (!invitation) {
       throw new Error('Invitation not found');
     }
-    return this.invitationRepository.removeOne(invitation.id);
+    return this.invitationRepository.removeInvitation(invitation.id);
   }
 }
