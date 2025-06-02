@@ -1,0 +1,11 @@
+{
+  "email_title": "Log in to your account !",
+  "salutation": "Log in to your account !",
+  "hi": "Hi {firstName}",
+  "instruction": "We have received your request to connect to your Focus account. You can use the verification code below to finalize your authentication :",
+  "code_expiration": "This code is valid for the next 60 minutes. After this time, it will expire and you will have to request a new code if you were unable to log in.",
+  "alternative_title": "The code doesn't work?",
+  "alternative_text": "You can also use the login link below :",
+  "login_to_your_account": "Log in to your account",
+  "footer_warning": "If you did not request this account creation, you may ignore this email or contact us for more information."
+}

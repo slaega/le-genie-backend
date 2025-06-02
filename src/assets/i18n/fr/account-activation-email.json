@@ -1,0 +1,13 @@
+{
+  "email_title": "Activez votre compte !",
+  "salutation": "Activez votre compte !",
+  "hi": "Bonjour {firstName}",
+  "instruction": "Nous avons bien reçu votre demande d'activation de votre compte Focus. Vous pouvez utiliser le code de vérification ci-dessous pour activer votre compte :",
+  "code_expiration": "Ce code est valide pour les 60 prochaines minutes. Passé ce délai, il expirera et vous devrez demander un nouveau code si vous n'avez pas activé votre compte.",
+  "alternative_title": "Le code ne fonctionne pas ?",
+  "alternative_text": "Vous pouvez également utiliser le lien d'activation ci-dessous :",
+  "activate_account": "Activer votre compte",
+  "support_message_part1": "Nous sommes impatients de vous voir tirer le maximum de Focus. Si vous avez des questions, n'hésitez pas à contacter notre support client à",
+  "support_message_part2": "Nous sommes là pour aider !",
+  "footer_warning": "Si vous n'avez pas demandé la création de ce compte, vous pouvez ignorer cet email ou nous contacter pour plus de renseignements."
+}

@@ -1,0 +1,173 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String         @id @default(cuid())
+  email            String         @unique
+  name             String
+  avatarPath       String?
+  coverPath        String?
+  professionalRole String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  contributors     Contributor[]
+  comments         Comment[]
+  refreshTokens    RefreshToken[]
+  authProviders    AuthProvider[]
+  PostReader       PostReader[]
+  invitations      Invitation[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Post {
+  id           String        @id @default(cuid())
+  title        String
+  content      Json
+  status       PostStatus    @default(EMPTY)
+  contributors Contributor[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  comments     Comment[]
+  invitations  Invitation[]
+  postReaders  PostReader[]
+  postTags     PostTag[]
+
+  @@map("posts")
+}
+
+model PostReader {
+  id        String   @id @default(cuid())
+  postId    String
+  readerId  String
+  ip        String?
+  userAgent String?
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  viewedAt  DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id])
+
+  @@unique([postId, readerId])
+  @@unique([readerId, postId])
+  @@index([postId, readerId])
+  @@index([userId, postId])
+  @@map("post_readers")
+}
+
+model Contributor {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  owner     Boolean  @default(false)
+
+  @@unique([postId, userId])
+  @@index([id])
+  @@index([postId, userId])
+  @@map("contributors")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  refactorAt DateTime?
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("comments")
+}
+
+model AuthProvider {
+  id             String    @id @default(cuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id])
+  provider       Provider
+  providerUserId String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  activatedAt    DateTime?
+
+  @@unique([userId, provider])
+  @@index([userId, provider])
+  @@map("auth_providers")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("refresh_tokens")
+}
+
+model Invitation {
+  id        String   @id @default(cuid())
+  content   String?
+  email     String
+  user      User?    @relation(fields: [email], references: [email])
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expiredAt DateTime
+
+  @@unique([postId, email])
+  @@index([postId, email])
+  @@map("invitations")
+}
+
+model Tag {
+  id    String    @id @default(cuid())
+  name  String    @unique
+  posts PostTag[]
+
+  @@map("tags")
+}
+
+model PostTag {
+  postId String
+  name  String
+  post   Post   @relation(fields: [postId], references: [id])
+  tag    Tag    @relation(fields: [name], references: [name])
+
+  @@unique([postId, name])
+  @@index([postId, name])
+  @@map("post_tags")
+}
+
+enum Provider {
+  GOOGLE
+  GITHUB
+}
+
+enum PostStatus {
+  EMPTY
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+

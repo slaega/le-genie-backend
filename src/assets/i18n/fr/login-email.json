@@ -1,0 +1,11 @@
+{
+  "email_title": "Connectez-vous à votre compte !",
+  "salutation": "Connectez-vous à votre compte !",
+  "hi": "Bonjour {firstName}",
+  "instruction": "Nous avons bien reçu votre demande de connexion à votre compte Focus. Vous pouvez utiliser le code de vérification ci-dessous pour finaliser votre authentification :",
+  "code_expiration": "Ce code est valide pour les 60 prochaines minutes. Passé ce délai, il expirera et vous devrez demander un nouveau code si vous n'avez pas pu vous connecter.",
+  "alternative_title": "Le code ne fonctionne pas ?",
+  "alternative_text": "Vous pouvez également utiliser le lien de connexion ci-dessous :",
+  "login_to_your_account": "Se connecter à votre compte",
+  "footer_warning": "Si vous n'avez tenté de vous connecter à votre compte, vous pouvez ignorer cet email ou nous contacter pour plus de renseignements."
+}
