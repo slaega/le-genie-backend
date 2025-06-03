@@ -21,16 +21,14 @@ interface GithubEmail {
     verified: boolean;
 }
 export class GithubExchangeProvider implements ExchangeProvider<GithubUser> {
-    constructor(private readonly configService: ConfigService<AllConfigType>) { }
+    constructor(private readonly configService: ConfigService<AllConfigType>) {}
     async getUser(accessToken: string) {
-        console.log('accessToken +++', accessToken);
         const response = await fetch('https://api.github.com/user', {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 Accept: 'application/vnd.github.v3+json',
             },
         });
-        console.log('response.ok', response.ok);
         if (!response.ok) {
             throw new UnauthorizedException({
                 error: `GitHub API error: ${response.status} ${response.statusText}`,
@@ -83,13 +81,6 @@ export class GithubExchangeProvider implements ExchangeProvider<GithubUser> {
         );
 
         const tokenUrl = 'https://github.com/login/oauth/access_token';
-        console.log('######', code, redirectUri, clientId, clientSecret);
-        // const params = new URLSearchParams({
-        //     client_id: clientId,
-        //     client_secret: clientSecret,
-        //     code,
-        //     redirect_uri: redirectUri,
-        // });
 
         const res = await fetch(tokenUrl, {
             method: 'POST',
@@ -106,7 +97,6 @@ export class GithubExchangeProvider implements ExchangeProvider<GithubUser> {
         });
 
         if (!res.ok) {
-            console.log('######', res);
             throw new UnauthorizedException({
                 error: 'Failed to exchange GitHub code',
             });

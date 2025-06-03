@@ -13,6 +13,6 @@ export class CreateTokenDto {
 
     @ApiProperty()
     @IsNotEmpty()
-    @IsUrl()
+    @IsUrl({ protocols: ['http', 'https'], require_tld: false })
     callbackURL: string;
 }

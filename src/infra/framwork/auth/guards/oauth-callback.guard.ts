@@ -44,7 +44,6 @@ export class OAuthCallbackGuard implements CanActivate {
 
         try {
             const user = await exchangeProvider.exchangeCode(code, callbackURL);
-            console.log(user);
             // Attach user to request for downstream use
             request.oauth = {
                 user,
@@ -52,7 +51,6 @@ export class OAuthCallbackGuard implements CanActivate {
             };
             return true;
         } catch (err) {
-            console.log('######', err);
             let message = 'Failed to exchange code';
             if (err instanceof Error) {
                 message += ': ' + err.message;

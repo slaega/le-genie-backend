@@ -27,7 +27,6 @@ export class AuthController {
         @Oauth2User() oauthUser: ExchangeType,
         @Body() _body: CreateTokenDto
     ): Promise<AuthResponseDto> {
-        console.log(_body);
         const { provider, user } = oauthUser;
 
         let providerUserId: string;
