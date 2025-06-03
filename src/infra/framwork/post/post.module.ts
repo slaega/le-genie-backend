@@ -10,6 +10,8 @@ import { UpdatePostHandler } from '#applications/handlers/post/update-post.handl
 import { CreateEmptyPostHandler } from '#applications/handlers/post/create-empty-post.handler';
 import { PostController } from './post.controller';
 import { ContributorModule } from '../contributor/contributor.module';
+import { GetPostQueryHandler } from '#applications/query-handler/post/get-post.query-handler';
+import { GetPostsQueryHandler } from '#applications/query-handler/post/get-posts.query-handler';
 
 @Module({
     imports: [CqrsModule, PrismaModule, ContributorModule],
@@ -18,11 +20,14 @@ import { ContributorModule } from '../contributor/contributor.module';
             provide: POST_REPOSITORY,
             useFactory: (prisma: PrismaService) =>
                 new PostPrismaRepository(prisma),
+            inject: [PrismaService],
         },
         ChangePostStatusHandler,
         CreateEmptyPostHandler,
         DeletePostHandler,
         UpdatePostHandler,
+        GetPostQueryHandler,
+        GetPostsQueryHandler,
     ],
     exports: [],
     controllers: [PostController],

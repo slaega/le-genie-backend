@@ -13,11 +13,17 @@ export class CommentPrismaRepository
     constructor(prisma: PrismaClient) {
         super(prisma.comment);
     }
-    getCommentsByPostId(postId: string): Promise<Comment[]> {
+    getCommentsByPostId(
+        postId: string,
+        page: number,
+        limit: number
+    ): Promise<Comment[]> {
         return this.findMany({
             where: {
                 postId,
             },
+            skip: (page - 1) * limit,
+            take: limit,
         });
     }
     getCommentsById(commentId: string): Promise<Comment | null> {
