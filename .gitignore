@@ -3,6 +3,16 @@
 /node_modules
 /build
 
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
 # Logs
 logs
 *.log
@@ -11,7 +21,6 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-
 # OS
 .DS_Store
 
