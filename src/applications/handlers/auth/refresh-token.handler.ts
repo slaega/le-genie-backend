@@ -7,8 +7,8 @@ import { USER_REPOSITORY } from '#shared/constantes/inject-token';
 import { UserPrismaRepository } from '#infra/percistences/prisma/user.repository';
 import { TokenService } from '#infra/dependencies/token.service';
 import { nanoid } from 'nanoid';
-import { AuthenticationResult } from './authenticate-with-provider.handler';
 import { RefreshToken } from '#domain/entities/refresh-token.entity';
+import { AuthResponseDto } from '#dto/auth/auth-response.dto';
 
 export class RefreshTokenHandler
     implements ICommandHandler<RefreshTokenCommand>
@@ -39,6 +39,9 @@ export class RefreshTokenHandler
         newRefresh.userId = user.id;
         newRefresh.token = refreshToken;
         await this.refreshTokenRepository.createRefreshToken(newRefresh);
-        return new AuthenticationResult(accessToken, refreshToken);
+        const authResponse = new AuthResponseDto();
+        authResponse.accessToken = accessToken;
+        authResponse.refreshToken = refreshToken;
+        return authResponse;
     }
 }

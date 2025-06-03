@@ -31,19 +31,11 @@ class EnvironmentVariablesValidator {
 
     @IsString()
     @IsNotEmpty()
-    AUTH_GOOGLE_CLIENT_CALL_BACK_URL: string;
-
-    @IsString()
-    @IsNotEmpty()
     AUTH_GITHUB_CLIENT_ID: string;
 
     @IsString()
     @IsNotEmpty()
     AUTH_GITHUB_CLIENT_SECRET: string;
-
-    @IsString()
-    @IsNotEmpty()
-    AUTH_GITHUB_CLIENT_CALL_BACK_URL: string;
 }
 
 export default registerAs<AuthConfig>('auth', () => {
@@ -62,12 +54,10 @@ export default registerAs<AuthConfig>('auth', () => {
         google: {
             clientID: validatedConfig.AUTH_GOOGLE_CLIENT_ID,
             clientSecret: validatedConfig.AUTH_GOOGLE_CLIENT_SECRET,
-            callbackURL: validatedConfig.AUTH_GOOGLE_CLIENT_CALL_BACK_URL,
         },
         github: {
             clientID: validatedConfig.AUTH_GITHUB_CLIENT_ID,
             clientSecret: validatedConfig.AUTH_GITHUB_CLIENT_SECRET,
-            callbackURL: validatedConfig.AUTH_GITHUB_CLIENT_CALL_BACK_URL,
         },
     };
 });

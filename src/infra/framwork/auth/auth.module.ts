@@ -20,6 +20,11 @@ import { AuthProviderPrismaRepository } from '#infra/percistences/prisma/auth-pr
 import { JwtStrategy } from './strategies/jwt-access.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { RefreshTokenPrismaRepository } from '#infra/percistences/prisma/refresh.repository';
+import { ExchangeProviderRegistry } from './auth-providers/exchange.provider';
+import { GithubExchangeProvider } from './auth-providers/github-exchange.provider';
+import { GoogleExchangeProvider } from './auth-providers/google-exchange.provider';
+import { ConfigService } from '@nestjs/config';
+import { RefreshTokenHandler } from '#applications/handlers/auth/refresh-token.handler';
 @Module({
     imports: [
         CqrsModule,
@@ -31,11 +36,27 @@ import { RefreshTokenPrismaRepository } from '#infra/percistences/prisma/refresh
     ],
     controllers: [AuthController],
     providers: [
-        // Command handler
         AuthenticateWithProviderHandler,
-        // Services
+        RefreshTokenHandler,
+
         TokenService,
-        // Repository & Prisma
+
+        {
+            provide: ExchangeProviderRegistry,
+            useFactory: (configService: ConfigService) => {
+                const registry = new ExchangeProviderRegistry();
+                registry.register(
+                    new GithubExchangeProvider(configService),
+                    'GITHUB'
+                );
+                registry.register(
+                    new GoogleExchangeProvider(configService),
+                    'GOOGLE'
+                );
+                return registry;
+            },
+            inject: [ConfigService],
+        },
         {
             provide: USER_REPOSITORY,
             inject: [PrismaService],
@@ -54,7 +75,6 @@ import { RefreshTokenPrismaRepository } from '#infra/percistences/prisma/refresh
             useFactory: (prisma: PrismaService) =>
                 new RefreshTokenPrismaRepository(prisma),
         },
-        AuthenticateWithProviderHandler,
         PrismaService,
         JwtStrategy,
         JwtRefreshStrategy,

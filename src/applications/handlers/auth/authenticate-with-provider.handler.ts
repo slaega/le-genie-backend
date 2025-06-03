@@ -14,6 +14,7 @@ import { AuthProvider } from '#domain/entities/auth-provider.entity';
 import { nanoid } from 'nanoid';
 import { RefreshTokenRepository } from '#domain/repository/refresh-token.repository';
 import { RefreshToken } from '#domain/entities/refresh-token.entity';
+import { AuthResponseDto } from '#dto/auth/auth-response.dto';
 
 export class AuthenticationResult {
     constructor(
@@ -36,7 +37,9 @@ export class AuthenticateWithProviderHandler
         private readonly tokenService: TokenService
     ) {}
 
-    async execute(command: AuthenticateWithProviderCommand) {
+    async execute(
+        command: AuthenticateWithProviderCommand
+    ): Promise<AuthResponseDto> {
         let user = await this.userRepository.getUserByEmail(command.email);
         if (!user) {
             const newUser = new User();
@@ -68,6 +71,10 @@ export class AuthenticateWithProviderHandler
         newRefresh.userId = user.id;
         newRefresh.token = refreshToken;
         await this.refreshTokenRepository.createRefreshToken(newRefresh);
-        return new AuthenticationResult(accessToken, refreshToken);
+
+        const authResponse = new AuthResponseDto();
+        authResponse.accessToken = accessToken;
+        authResponse.refreshToken = refreshToken;
+        return authResponse;
     }
 }

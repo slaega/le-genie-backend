@@ -6,11 +6,9 @@ export type AuthConfig = {
     google: {
         clientID: string;
         clientSecret: string;
-        callbackURL: string;
     };
     github: {
         clientID: string;
         clientSecret: string;
-        callbackURL: string;
     };
 };
