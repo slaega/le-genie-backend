@@ -11,7 +11,7 @@ import { Contributor } from '#domain/entities/contributor.entity';
 import { ContributorRepository } from '#domain/repository/contributor.repository';
 
 @CommandHandler(CreateEmptyPostCommand)
-export class CreatePostHandler
+export class CreateEmptyPostHandler
   implements ICommandHandler<CreateEmptyPostCommand>
 {
   constructor(

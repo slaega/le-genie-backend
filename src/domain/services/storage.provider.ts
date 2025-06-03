@@ -9,5 +9,5 @@ export interface StorageProvider {
 
   delete(path: string): Promise<void>;
 
-  getPublicUrl(path: string): string;
+  getPublicUrl(path: string): Promise<string>;
 }

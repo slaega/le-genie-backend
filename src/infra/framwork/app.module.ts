@@ -15,9 +15,20 @@ import { LoggerModule } from './common/logger/logger.module';
 import { ThrottlerBehindProxyGuard } from '#shared/utils/guards/throttler-behind-proxy.guard';
 import mailConfig from '#config/mail/mail.config';
 import storageConfig from '#config/storage/storage.config';
+import { AuthModule } from './auth/auth.module';
+import { CommentModule } from './comment/comment.module';
+import { PostModule } from './post/post.module';
+import { ContributorModule } from './contributor/contributor.module';
+import { InvitationModule } from './invitation/invitation.module';
 
 @Module({
   imports: [
+    AuthModule,
+    CommentModule,
+    PostModule,
+    ContributorModule,
+    InvitationModule,
+
     ConfigModule.forRoot({
       isGlobal: true,
       load: [appConfig, authConfig, mailConfig, storageConfig],

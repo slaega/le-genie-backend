@@ -5,7 +5,6 @@ export class PostTagMapper {
   static toDomain(postTagEntity: PostTagPrisma): PostTag {
     const postTag = new PostTag();
     postTag.postId = postTagEntity.postId;
-    postTag.id = postTagEntity.id;
     postTag.name = postTagEntity.name;
 
     return postTag;
@@ -13,7 +12,6 @@ export class PostTagMapper {
 
   static toPersistence(postTag: PostTag): Partial<PostTagPrisma> {
     return {
-      id: postTag.id,
       postId: postTag.postId,
       name: postTag.name,
     };

@@ -4,12 +4,16 @@ import { UserRepository } from '#domain/repository/user.repository';
 import { TokenService } from '#infra/dependencies/token.service';
 import {
   AUTH_PROVIDER_REPOSITORY,
+  REFRESH_TOKEN_REPOSITORY,
   USER_REPOSITORY,
 } from '#shared/constantes/inject-token';
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { User } from '#domain/entities/user.entity';
 import { AuthProvider } from '#domain/entities/auth-provider.entity';
+import { nanoid } from 'nanoid';
+import { RefreshTokenRepository } from '#domain/repository/refresh-token.repository';
+import { RefreshToken } from '#domain/entities/refresh-token.entity';
 
 export class AuthenticationResult {
   constructor(
@@ -26,6 +30,8 @@ export class AuthenticateWithProviderHandler
     @Inject(USER_REPOSITORY) private readonly userRepository: UserRepository,
     @Inject(AUTH_PROVIDER_REPOSITORY)
     private readonly authProviderRepository: AuthProviderRepository,
+    @Inject(REFRESH_TOKEN_REPOSITORY)
+    private readonly refreshTokenRepository: RefreshTokenRepository,
     private readonly tokenService: TokenService,
   ) {}
 
@@ -53,7 +59,12 @@ export class AuthenticateWithProviderHandler
     const { accessToken, refreshToken } = this.tokenService.generateTokens(
       user.id,
       user.email,
+      nanoid(50),
     );
+    const newRefresh = new RefreshToken();
+    newRefresh.userId = user.id;
+    newRefresh.token = refreshToken;
+    await this.refreshTokenRepository.createRefreshToken(newRefresh);
     return new AuthenticationResult(accessToken, refreshToken);
   }
 }

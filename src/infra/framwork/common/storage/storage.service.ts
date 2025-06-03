@@ -55,7 +55,7 @@ export class StorageService implements StorageProvider {
     const bucket = this.configService.getOrThrow('storage.bucket', {
       infer: true,
     });
-
+    this.logger.info(`Uploading file to S3: ${path}`);
     const command = new PutObjectCommand({
       Bucket: bucket,
       Key: path,
@@ -108,11 +108,11 @@ export class StorageService implements StorageProvider {
     await this.s3.send(command);
   }
 
-  getPublicUrl(path: string): string {
+  async getPublicUrl(path: string): Promise<string> {
     const bucket = this.configService.getOrThrow('storage.bucket', {
       infer: true,
     });
 
-    return `https://${bucket}.s3.amazonaws.com/${path}`;
+    return Promise.resolve(`https://${bucket}.s3.amazonaws.com/${path}`);
   }
 }

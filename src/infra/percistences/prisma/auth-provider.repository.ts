@@ -2,14 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { AuthProviderRepository } from '#domain/repository/auth-provider.repository';
 import { AuthProvider } from '#domain/entities/auth-provider.entity';
 import { PrismaProxyRepository } from '#infra/percistences/prisma/prisma';
-import { PrismaClient } from '@prisma/client';
+import { PrismaService } from '#infra/framwork/common/prisma/prisma.service';
 
 @Injectable()
 export class AuthProviderPrismaRepository
   extends PrismaProxyRepository<'authProvider'>()
   implements AuthProviderRepository
 {
-  constructor(prisma: PrismaClient) {
+  constructor(prisma: PrismaService) {
     super(prisma.authProvider);
   }
 

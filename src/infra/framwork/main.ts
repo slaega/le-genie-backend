@@ -4,7 +4,6 @@ import 'dotenv/config';
 import {
   ClassSerializerInterceptor,
   ValidationPipe,
-  // ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -31,10 +30,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService<AllConfigType>);
   //   const origin = configService.get('app.corsOrigins', { infer: true });
-  //   app.enableCors({
-  //     origin,
-  //     credentials: true,
-  //   });
+  app.enableCors({
+    origin: ['*'],
+    credentials: true,
+  });
 
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
@@ -66,12 +65,10 @@ async function bootstrap() {
   });
 
   // Configuration du préfixe global pour les routes de l'API
-  app.setGlobalPrefix(
-    configService.getOrThrow('app.apiPrefix', { infer: true }),
-    {
-      exclude: ['healthcheck', 'metrics'],
-    },
-  );
+  const apiPrefix = configService.getOrThrow('app.apiPrefix', { infer: true });
+  app.setGlobalPrefix(apiPrefix, {
+    exclude: ['healthcheck', 'metrics'],
+  });
 
   // Configuration du logger global
   const logger = app.get(LoggerService);

@@ -1,4 +1,4 @@
-import { Global, Module } from '@nestjs/common';
+import { Global, Module, RequestMethod } from '@nestjs/common';
 import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
 import { stdTimeFunctions } from 'pino';
 import * as uuid from 'uuid';
@@ -17,7 +17,7 @@ declare module 'http' {
   imports: [
     PinoLoggerModule.forRoot({
       pinoHttp: {
-        name: 'Focus User Service Logger',
+        name: 'Legenie Logger',
         level:
           process.env.NODE_ENV !== Environment.Production ? 'debug' : 'info',
         genReqId: (req) => req.requestId || uuid.v4(),
@@ -49,7 +49,7 @@ declare module 'http' {
           }),
         },
       },
-      exclude: ['/healthcheck'],
+      exclude: [{ path: 'healthcheck', method: RequestMethod.ALL }],
     }),
   ],
   providers: [LoggerService],

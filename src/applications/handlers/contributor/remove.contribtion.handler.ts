@@ -1,13 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { LeaveContributorCommand } from '#applications/commands/contributor/leave.contribution.command';
 import { Inject } from '@nestjs/common';
 import { CONTRIBUTOR_REPOSITORY } from '#shared/constantes/inject-token';
 import { ContributorRepository } from '#domain/repository/contributor.repository';
 import { RemoveContributorCommand } from '#applications/commands/contributor/remove.contributor.command';
 
-@CommandHandler(LeaveContributorCommand)
-export class LeaveContributorHandler
-  implements ICommandHandler<LeaveContributorCommand>
+@CommandHandler(RemoveContributorCommand)
+export class RemoveContributorHandler
+  implements ICommandHandler<RemoveContributorCommand>
 {
   constructor(
     @Inject(CONTRIBUTOR_REPOSITORY)
