@@ -117,7 +117,12 @@ export class StorageService implements StorageProvider {
         const bucket = this.configService.getOrThrow('storage.bucket', {
             infer: true,
         });
+        const endpoint = this.configService.getOrThrow('storage.endpoint', {
+            infer: true,
+        });
 
-        return Promise.resolve(`https://${bucket}.s3.amazonaws.com/${path}`);
+        // Remove any trailing slash from the endpoint
+        const cleanEndpoint = endpoint.replace(/\/$/, '');
+        return Promise.resolve(`${cleanEndpoint}/${bucket}/${path}`);
     }
 }
