@@ -7,13 +7,13 @@ import { JwtAuthGuard } from '../auth/guards/auth.guard';
 
 @Controller('post/:postId/contributors/')
 export class ContributorController {
-  constructor(private readonly commandBus: CommandBus) {}
+    constructor(private readonly commandBus: CommandBus) {}
 
-  @UseGuards(JwtAuthGuard)
-  @Delete(':contributorId')
-  delete(@Param() postId: string, @Auth() user: AuthUser) {
-    return this.commandBus.execute(
-      new LeaveContributorCommand(postId, user.id),
-    );
-  }
+    @UseGuards(JwtAuthGuard)
+    @Delete(':contributorId')
+    delete(@Param() postId: string, @Auth() user: AuthUser) {
+        return this.commandBus.execute(
+            new LeaveContributorCommand(postId, user.id)
+        );
+    }
 }

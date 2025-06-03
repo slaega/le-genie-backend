@@ -1,3 +1,3 @@
 export class ResendInvitationCommand {
-  constructor(public readonly invitationId: string) {}
+    constructor(public readonly invitationId: string) {}
 }

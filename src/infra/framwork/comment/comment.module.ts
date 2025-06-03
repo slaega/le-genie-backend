@@ -10,19 +10,19 @@ import { RefactorCommentHandler } from '#applications/handlers/comment/refactor-
 import { RemoveCommentHandler } from '#applications/handlers/comment/remove-comment.handler';
 
 @Module({
-  imports: [CqrsModule, PrismaModule],
-  providers: [
-    {
-      provide: COMMENT_REPOSITORY,
-      useFactory: (prisma: PrismaService) =>
-        new CommentPrismaRepository(prisma),
-      inject: [PrismaService],
-    },
-    MakeCommentHandler,
-    RefactorCommentHandler,
-    RemoveCommentHandler,
-  ],
-  exports: [COMMENT_REPOSITORY],
-  controllers: [CommentController],
+    imports: [CqrsModule, PrismaModule],
+    providers: [
+        {
+            provide: COMMENT_REPOSITORY,
+            useFactory: (prisma: PrismaService) =>
+                new CommentPrismaRepository(prisma),
+            inject: [PrismaService],
+        },
+        MakeCommentHandler,
+        RefactorCommentHandler,
+        RemoveCommentHandler,
+    ],
+    exports: [COMMENT_REPOSITORY],
+    controllers: [CommentController],
 })
 export class CommentModule {}

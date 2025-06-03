@@ -7,44 +7,44 @@ import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class CommentPrismaRepository
-  extends PrismaProxyRepository<'comment'>()
-  implements CommentRepository
+    extends PrismaProxyRepository<'comment'>()
+    implements CommentRepository
 {
-  constructor(prisma: PrismaClient) {
-    super(prisma.comment);
-  }
-  getCommentsByPostId(postId: string): Promise<Comment[]> {
-    return this.findMany({
-      where: {
-        postId,
-      },
-    });
-  }
-  getCommentsById(commentId: string): Promise<Comment | null> {
-    return this.findUnique({
-      where: {
-        id: commentId,
-      },
-    });
-  }
-  createComment(comment: Comment): Promise<Comment> {
-    return this.create({
-      data: comment,
-    });
-  }
-  async removeComment(commentId: string): Promise<void> {
-    await this.delete({
-      where: {
-        id: commentId,
-      },
-    });
-  }
-  updateComment(commentId: string, comment: Comment): Promise<Comment> {
-    return this.update({
-      where: {
-        id: commentId,
-      },
-      data: comment,
-    });
-  }
+    constructor(prisma: PrismaClient) {
+        super(prisma.comment);
+    }
+    getCommentsByPostId(postId: string): Promise<Comment[]> {
+        return this.findMany({
+            where: {
+                postId,
+            },
+        });
+    }
+    getCommentsById(commentId: string): Promise<Comment | null> {
+        return this.findUnique({
+            where: {
+                id: commentId,
+            },
+        });
+    }
+    createComment(comment: Comment): Promise<Comment> {
+        return this.create({
+            data: comment,
+        });
+    }
+    async removeComment(commentId: string): Promise<void> {
+        await this.delete({
+            where: {
+                id: commentId,
+            },
+        });
+    }
+    updateComment(commentId: string, comment: Comment): Promise<Comment> {
+        return this.update({
+            where: {
+                id: commentId,
+            },
+            data: comment,
+        });
+    }
 }

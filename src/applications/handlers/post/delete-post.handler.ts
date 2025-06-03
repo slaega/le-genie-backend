@@ -6,15 +6,15 @@ import { Inject } from '@nestjs/common';
 
 @CommandHandler(DeletePostCommand)
 export class DeletePostHandler implements ICommandHandler<DeletePostCommand> {
-  constructor(
-    @Inject(POST_REPOSITORY) private readonly postRepository: PostRepository,
-  ) {}
+    constructor(
+        @Inject(POST_REPOSITORY) private readonly postRepository: PostRepository
+    ) {}
 
-  async execute(command: DeletePostCommand) {
-    const post = await this.postRepository.getPostById(command.id);
-    if (!post) {
-      throw new Error('Post not found');
+    async execute(command: DeletePostCommand) {
+        const post = await this.postRepository.getPostById(command.id);
+        if (!post) {
+            throw new Error('Post not found');
+        }
+        return this.postRepository.removePost(post.id);
     }
-    return this.postRepository.removePost(post.id);
-  }
 }

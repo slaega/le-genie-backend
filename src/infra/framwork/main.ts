@@ -2,9 +2,9 @@
 import 'dotenv/config';
 
 import {
-  ClassSerializerInterceptor,
-  ValidationPipe,
-  VersioningType,
+    ClassSerializerInterceptor,
+    ValidationPipe,
+    VersioningType,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
@@ -26,67 +26,71 @@ import validationOptions from '#shared/utils/validation-options';
 import { ResolvePromisesInterceptor } from '#shared/utils/serializer.interceptor';
 
 async function bootstrap() {
-  //   appStart();
-  const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService<AllConfigType>);
-  //   const origin = configService.get('app.corsOrigins', { infer: true });
-  app.enableCors({
-    origin: ['*'],
-    credentials: true,
-  });
+    //   appStart();
+    const app = await NestFactory.create(AppModule);
+    const configService = app.get(ConfigService<AllConfigType>);
+    //   const origin = configService.get('app.corsOrigins', { infer: true });
+    app.enableCors({
+        origin: ['*'],
+        credentials: true,
+    });
 
-  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+    useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
-  // Configuration globale de la validation des classes
-  app.useGlobalPipes(new ValidationPipe(validationOptions));
+    // Configuration globale de la validation des classes
+    app.useGlobalPipes(new ValidationPipe(validationOptions));
 
-  // Configuration globale des intercepteurs et filtres
-  app.useGlobalInterceptors(
-    new ResolvePromisesInterceptor(),
-    new ClassSerializerInterceptor(app.get(Reflector)),
-    new LoggerErrorInterceptor(),
-  );
-  app.useGlobalFilters(
-    new AllExceptionsFilter(app.get(LoggerService)),
-    new PrismaExceptionFilter(),
-  );
+    // Configuration globale des intercepteurs et filtres
+    app.useGlobalInterceptors(
+        new ResolvePromisesInterceptor(),
+        new ClassSerializerInterceptor(app.get(Reflector)),
+        new LoggerErrorInterceptor()
+    );
+    app.useGlobalFilters(
+        new AllExceptionsFilter(app.get(LoggerService)),
+        new PrismaExceptionFilter()
+    );
 
-  // Configuration globale de sécurité
-  app.use(helmet());
-  // Configuration permettant de récupérer l'adresse IP du
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  app.use(requestIp.mw());
+    // Configuration globale de sécurité
+    app.use(helmet());
+    // Configuration permettant de récupérer l'adresse IP du
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    app.use(requestIp.mw());
 
-  // Configuration globale de gestion des versions
-  app.enableVersioning({
-    type: VersioningType.URI,
-    prefix: 'v',
-    defaultVersion: '1.0',
-  });
+    // Configuration globale de gestion des versions
+    app.enableVersioning({
+        type: VersioningType.URI,
+        prefix: 'v',
+        defaultVersion: '1.0',
+    });
 
-  // Configuration du préfixe global pour les routes de l'API
-  const apiPrefix = configService.getOrThrow('app.apiPrefix', { infer: true });
-  app.setGlobalPrefix(apiPrefix, {
-    exclude: ['healthcheck', 'metrics'],
-  });
+    // Configuration du préfixe global pour les routes de l'API
+    const apiPrefix = configService.getOrThrow('app.apiPrefix', {
+        infer: true,
+    });
+    app.setGlobalPrefix(apiPrefix, {
+        exclude: ['healthcheck', 'metrics'],
+    });
 
-  // Configuration du logger global
-  const logger = app.get(LoggerService);
-  logger.setContext(configService.getOrThrow('app.name', { infer: true }));
-  app.useLogger(logger);
+    // Configuration du logger global
+    const logger = app.get(LoggerService);
+    logger.setContext(configService.getOrThrow('app.name', { infer: true }));
+    app.useLogger(logger);
 
-  // Configuration de Swagger en dehors de l'environnement de production
-  SwaggerConfig(app);
+    // Configuration de Swagger en dehors de l'environnement de production
+    SwaggerConfig(app);
 
-  // Configuration des cookies
-  app.use(
-    cookieParser(configService.getOrThrow('app.cookieSecret', { infer: true })),
-  );
+    // Configuration des cookies
+    app.use(
+        cookieParser(
+            configService.getOrThrow('app.cookieSecret', { infer: true })
+        )
+    );
 
-  // Démarrage du serveur
-  const port = configService.getOrThrow('app.port', { infer: true });
-  console.log('App Listing in ', port);
-  await app.listen(port);
+    // Démarrage du serveur
+    const port = configService.getOrThrow('app.port', { infer: true });
+    console.log('App Listing in ', port);
+    await app.listen(port);
 }
 
 void bootstrap();

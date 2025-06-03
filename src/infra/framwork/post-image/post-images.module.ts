@@ -1,4 +1,7 @@
-import { INVITATION_REPOSITORY, STORAGE_PROVIDER } from '#shared/constantes/inject-token';
+import {
+    INVITATION_REPOSITORY,
+    STORAGE_PROVIDER,
+} from '#shared/constantes/inject-token';
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PrismaModule } from '../common/prisma/prisma.module';
@@ -11,18 +14,18 @@ import { RemoveContributorHandler } from '#applications/handlers/contributor/rem
 import { UploadImageHandler } from '#applications/handlers/post-images/upload-image.handler';
 
 @Module({
-  imports: [CqrsModule, PrismaModule, PostModule],
-  providers: [
-    {
-      provide: STORAGE_PROVIDER,
-      useFactory: (config: ConfigService,logger:LoggerService) =>
-        new StorageService(config,logger),
-      inject:[ConfigService,LoggerService]
-    },
-    RemoveContributorHandler,
-    UploadImageHandler,
-  ],
-  exports: [INVITATION_REPOSITORY],
-  controllers: [PostImagesController],
+    imports: [CqrsModule, PrismaModule, PostModule],
+    providers: [
+        {
+            provide: STORAGE_PROVIDER,
+            useFactory: (config: ConfigService, logger: LoggerService) =>
+                new StorageService(config, logger),
+            inject: [ConfigService, LoggerService],
+        },
+        RemoveContributorHandler,
+        UploadImageHandler,
+    ],
+    exports: [INVITATION_REPOSITORY],
+    controllers: [PostImagesController],
 })
 export class PostImageModule {}

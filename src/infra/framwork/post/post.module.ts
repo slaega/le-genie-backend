@@ -12,18 +12,19 @@ import { PostController } from './post.controller';
 import { ContributorModule } from '../contributor/contributor.module';
 
 @Module({
-  imports: [CqrsModule, PrismaModule, ContributorModule],
-  providers: [
-    {
-      provide: POST_REPOSITORY,
-      useFactory: (prisma: PrismaService) => new PostPrismaRepository(prisma),
-    },
-    ChangePostStatusHandler,
-    CreateEmptyPostHandler,
-    DeletePostHandler,
-    UpdatePostHandler,
-  ],
-  exports: [],
-  controllers: [PostController],
+    imports: [CqrsModule, PrismaModule, ContributorModule],
+    providers: [
+        {
+            provide: POST_REPOSITORY,
+            useFactory: (prisma: PrismaService) =>
+                new PostPrismaRepository(prisma),
+        },
+        ChangePostStatusHandler,
+        CreateEmptyPostHandler,
+        DeletePostHandler,
+        UpdatePostHandler,
+    ],
+    exports: [],
+    controllers: [PostController],
 })
 export class PostModule {}

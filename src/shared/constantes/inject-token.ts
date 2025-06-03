@@ -6,3 +6,4 @@ export const CONTRIBUTOR_REPOSITORY = Symbol.for('ContributorRepository');
 export const COMMENT_REPOSITORY = Symbol.for('CommentRepository');
 export const STORAGE_PROVIDER = Symbol.for('StorageProvider');
 export const REFRESH_TOKEN_REPOSITORY = Symbol.for('RefreshTokenRepository');
+export const POST_TAGS_REPOSITORY = Symbol.for('PostTagsRepository');

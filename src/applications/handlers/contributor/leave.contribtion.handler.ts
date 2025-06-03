@@ -6,25 +6,27 @@ import { ContributorRepository } from '#domain/repository/contributor.repository
 
 @CommandHandler(LeaveContributorCommand)
 export class LeaveContributorHandler
-  implements ICommandHandler<LeaveContributorCommand>
+    implements ICommandHandler<LeaveContributorCommand>
 {
-  constructor(
-    @Inject(CONTRIBUTOR_REPOSITORY)
-    private readonly contributorRepository: ContributorRepository,
-  ) {}
+    constructor(
+        @Inject(CONTRIBUTOR_REPOSITORY)
+        private readonly contributorRepository: ContributorRepository
+    ) {}
 
-  async execute(command: LeaveContributorCommand) {
-    const contributors =
-      await this.contributorRepository.getContributorsByPostId(command.postId);
-    if (!contributors) {
-      throw new Error('Contributor not found');
+    async execute(command: LeaveContributorCommand) {
+        const contributors =
+            await this.contributorRepository.getContributorsByPostId(
+                command.postId
+            );
+        if (!contributors) {
+            throw new Error('Contributor not found');
+        }
+        const contributor = contributors.find(
+            (contributor) => contributor.userId === command.userId
+        );
+        if (!contributor) {
+            throw new Error('Contributor not found');
+        }
+        await this.contributorRepository.removeContributor(contributor.id);
     }
-    const contributor = contributors.find(
-      (contributor) => contributor.userId === command.userId,
-    );
-    if (!contributor) {
-      throw new Error('Contributor not found');
-    }
-    await this.contributorRepository.removeContributor(contributor.id);
-  }
 }

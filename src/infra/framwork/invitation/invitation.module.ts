@@ -12,19 +12,19 @@ import { CancelInvitationHandler } from '#applications/handlers/invitation/cance
 import { SendInvitationHandler } from '#applications/handlers/invitation/send-invitation.handler';
 
 @Module({
-  imports: [CqrsModule, PrismaModule, ContributorModule],
-  providers: [
-    {
-      provide: INVITATION_REPOSITORY,
-      useFactory: (prisma: PrismaService) =>
-        new InvitationPrismaRepository(prisma),
-    },
-    AcceptedInvitationHandler,
-    RefusedInvitationHandler,
-    CancelInvitationHandler,
-    SendInvitationHandler,
-  ],
-  exports: [INVITATION_REPOSITORY],
-  controllers: [InvitationController],
+    imports: [CqrsModule, PrismaModule, ContributorModule],
+    providers: [
+        {
+            provide: INVITATION_REPOSITORY,
+            useFactory: (prisma: PrismaService) =>
+                new InvitationPrismaRepository(prisma),
+        },
+        AcceptedInvitationHandler,
+        RefusedInvitationHandler,
+        CancelInvitationHandler,
+        SendInvitationHandler,
+    ],
+    exports: [INVITATION_REPOSITORY],
+    controllers: [InvitationController],
 })
 export class InvitationModule {}

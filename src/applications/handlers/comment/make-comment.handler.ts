@@ -7,15 +7,15 @@ import { Comment } from '#domain/entities/comment.entity';
 
 @CommandHandler(MakeCommentCommand)
 export class MakeCommentHandler implements ICommandHandler<MakeCommentCommand> {
-  constructor(
-    @Inject(COMMENT_REPOSITORY)
-    private readonly commentRepository: CommentRepository,
-  ) {}
-  async execute(command: MakeCommentCommand) {
-    const comment = new Comment();
-    comment.postId = command.postId;
-    comment.content = command.content;
-    comment.userId = command.authId;
-    return this.commentRepository.createComment(comment);
-  }
+    constructor(
+        @Inject(COMMENT_REPOSITORY)
+        private readonly commentRepository: CommentRepository
+    ) {}
+    async execute(command: MakeCommentCommand) {
+        const comment = new Comment();
+        comment.postId = command.postId;
+        comment.content = command.content;
+        comment.userId = command.authId;
+        return this.commentRepository.createComment(comment);
+    }
 }

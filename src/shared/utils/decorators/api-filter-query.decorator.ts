@@ -1,9 +1,9 @@
 import { applyDecorators } from '@nestjs/common';
 import {
-  ApiExtraModels,
-  ApiQuery,
-  ApiQueryOptions,
-  getSchemaPath,
+    ApiExtraModels,
+    ApiQuery,
+    ApiQueryOptions,
+    getSchemaPath,
 } from '@nestjs/swagger';
 
 /**
@@ -13,21 +13,21 @@ import {
  * @returns
  */
 export function ApiFilterQuery(
-  filterQuery: new () => object,
-  options?: ApiQueryOptions,
+    filterQuery: new () => object,
+    options?: ApiQueryOptions
 ) {
-  return applyDecorators(
-    ApiExtraModels(filterQuery),
-    ApiQuery({
-      name: 'filters',
-      description:
-        "Can be used to filter for the resource's properties. Filter syntax follows the JSON:API specification: https://jsonapi.org/recommendations/#filtering",
-      required: false,
-      style: 'deepObject',
-      schema: {
-        $ref: getSchemaPath(filterQuery),
-      },
-      ...options,
-    }),
-  );
+    return applyDecorators(
+        ApiExtraModels(filterQuery),
+        ApiQuery({
+            name: 'filters',
+            description:
+                "Can be used to filter for the resource's properties. Filter syntax follows the JSON:API specification: https://jsonapi.org/recommendations/#filtering",
+            required: false,
+            style: 'deepObject',
+            schema: {
+                $ref: getSchemaPath(filterQuery),
+            },
+            ...options,
+        })
+    );
 }

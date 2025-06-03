@@ -7,24 +7,24 @@ import { PostTag } from '#domain/entities/post-tag.entity';
 
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
-  constructor(
-    @Inject(POST_REPOSITORY) private readonly postRepository: PostRepository,
-  ) {}
+    constructor(
+        @Inject(POST_REPOSITORY) private readonly postRepository: PostRepository
+    ) {}
 
-  async execute(command: UpdatePostCommand) {
-    const post = await this.postRepository.getPostById(command.id);
-    if (!post) {
-      throw new Error('Post not found');
+    async execute(command: UpdatePostCommand) {
+        const post = await this.postRepository.getPostById(command.id);
+        if (!post) {
+            throw new Error('Post not found');
+        }
+        post.title = command.title ?? post.title;
+        post.content = command.content ?? post.content;
+        post.postTags =
+            command.tags?.map((tag) => {
+                const postTag = new PostTag();
+                postTag.name = tag;
+                postTag.postId = post.id;
+                return postTag;
+            }) ?? post.postTags;
+        return this.postRepository.updatePost(post.id, post);
     }
-    post.title = command.title ?? post.title;
-    post.content = command.content ?? post.content;
-    post.postTags =
-      command.tags?.map((tag) => {
-        const postTag = new PostTag();
-        postTag.name = tag;
-        postTag.postId = post.id;
-        return postTag;
-      }) ?? post.postTags;
-    return this.postRepository.updatePost(post.id, post);
-  }
 }

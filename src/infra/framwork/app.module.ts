@@ -22,82 +22,98 @@ import { ContributorModule } from './contributor/contributor.module';
 import { InvitationModule } from './invitation/invitation.module';
 
 @Module({
-  imports: [
-    AuthModule,
-    CommentModule,
-    PostModule,
-    ContributorModule,
-    InvitationModule,
+    imports: [
+        AuthModule,
+        CommentModule,
+        PostModule,
+        ContributorModule,
+        InvitationModule,
 
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: [appConfig, authConfig, mailConfig, storageConfig],
-      envFilePath: ['.env'],
-    }),
-    I18nModule.forRootAsync({
-      useFactory: (configService: ConfigService<AllConfigType>) => ({
-        fallbackLanguage: configService.getOrThrow('app.fallbackLanguage', {
-          infer: true,
+        ConfigModule.forRoot({
+            isGlobal: true,
+            load: [appConfig, authConfig, mailConfig, storageConfig],
+            envFilePath: ['.env'],
         }),
-        loaderOptions: {
-          path: path.join(process.cwd(), 'assets', 'i18n'),
-          watch: true,
-        },
-      }),
-      resolvers: [
-        {
-          use: HeaderResolver,
-          useFactory: (configService: ConfigService<AllConfigType>) => {
-            const headerLanguage = configService.get('app.headerLanguage', {
-              infer: true,
-            });
-            return [headerLanguage];
-          },
-          inject: [ConfigService],
-        },
-      ],
-      imports: [ConfigModule],
-      inject: [ConfigService],
-    }),
-    ThrottlerModule.forRootAsync({
-      useFactory: async (
-        configService: ConfigType<typeof appConfig>,
-      ): Promise<ThrottlerModuleOptions> =>
-        Promise.resolve({
-          throttlers: [
-            {
-              ttl: Number(configService.throttlerTtl),
-              limit: Number(configService.throttlerLimit),
+        I18nModule.forRootAsync({
+            useFactory: (configService: ConfigService<AllConfigType>) => ({
+                fallbackLanguage: configService.getOrThrow(
+                    'app.fallbackLanguage',
+                    {
+                        infer: true,
+                    }
+                ),
+                loaderOptions: {
+                    path: path.join(process.cwd(), 'assets', 'i18n'),
+                    watch: true,
+                },
+            }),
+            resolvers: [
+                {
+                    use: HeaderResolver,
+                    useFactory: (
+                        configService: ConfigService<AllConfigType>
+                    ) => {
+                        const headerLanguage = configService.get(
+                            'app.headerLanguage',
+                            {
+                                infer: true,
+                            }
+                        );
+                        return [headerLanguage];
+                    },
+                    inject: [ConfigService],
+                },
+            ],
+            imports: [ConfigModule],
+            inject: [ConfigService],
+        }),
+        ThrottlerModule.forRootAsync({
+            useFactory: async (
+                configService: ConfigType<typeof appConfig>
+            ): Promise<ThrottlerModuleOptions> =>
+                Promise.resolve({
+                    throttlers: [
+                        {
+                            ttl: Number(configService.throttlerTtl),
+                            limit: Number(configService.throttlerLimit),
+                        },
+                    ],
+                }),
+            inject: [ConfigService],
+        }),
+        MailModule,
+        LoggerModule,
+        PrismaModule,
+        // NestjsFormDataModule.config({ isGlobal: true }),
+        BullModule.forRootAsync({
+            useFactory: async (
+                configService: ConfigService<AllConfigType>
+            ): Promise<Bull.QueueOptions> => {
+                return Promise.resolve({
+                    connection: {
+                        host: configService.get('app.redis.host', {
+                            infer: true,
+                        }),
+                        port: configService.get('app.redis.port', {
+                            infer: true,
+                        }),
+                        username: configService.get('app.redis.username', {
+                            infer: true,
+                        }),
+                        password: configService.get('app.redis.password', {
+                            infer: true,
+                        }),
+                    },
+                });
             },
-          ],
+            inject: [ConfigService],
         }),
-      inject: [ConfigService],
-    }),
-    MailModule,
-    LoggerModule,
-    PrismaModule,
-    // NestjsFormDataModule.config({ isGlobal: true }),
-    BullModule.forRootAsync({
-      useFactory: async (
-        configService: ConfigService<AllConfigType>,
-      ): Promise<Bull.QueueOptions> => {
-        return Promise.resolve({
-          connection: {
-            host: configService.get('app.redis.host', { infer: true }),
-            port: configService.get('app.redis.port', { infer: true }),
-            username: configService.get('app.redis.username', { infer: true }),
-            password: configService.get('app.redis.password', { infer: true }),
-          },
-        });
-      },
-      inject: [ConfigService],
-    }),
-  ],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerBehindProxyGuard,
-    },
-  ],
+    ],
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerBehindProxyGuard,
+        },
+    ],
 })
 export class AppModule {}

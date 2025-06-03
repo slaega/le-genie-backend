@@ -6,12 +6,12 @@ import { STORAGE_PROVIDER } from '#shared/constantes/inject-token';
 
 @CommandHandler(RemoveImageCommand)
 export class RemoveImageHandler implements ICommandHandler<RemoveImageCommand> {
-  constructor(
-    @Inject(STORAGE_PROVIDER)
-    private readonly storageProvider: StorageProvider,
-  ) {}
+    constructor(
+        @Inject(STORAGE_PROVIDER)
+        private readonly storageProvider: StorageProvider
+    ) {}
 
-  async execute(command: RemoveImageCommand): Promise<void> {
-    await this.storageProvider.delete(command.image);
-  }
+    async execute(command: RemoveImageCommand): Promise<void> {
+        await this.storageProvider.delete(command.image);
+    }
 }

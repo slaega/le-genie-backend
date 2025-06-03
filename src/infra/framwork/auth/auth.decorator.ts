@@ -9,10 +9,10 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
  * }
  */
 export const Auth = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
-    return request.user;
-  },
+    (data: unknown, ctx: ExecutionContext) => {
+        const request = ctx.switchToHttp().getRequest();
+        return request.user;
+    }
 );
 
 /**
@@ -24,10 +24,10 @@ export const Auth = createParamDecorator(
  * }
  */
 export const Refresh = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
-    return request.user;
-  },
+    (data: unknown, ctx: ExecutionContext) => {
+        const request = ctx.switchToHttp().getRequest();
+        return request.user;
+    }
 );
 
 /**
@@ -39,8 +39,8 @@ export const Refresh = createParamDecorator(
  * }
  */
 export const Oauth2User = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
-    return request.user;
-  },
+    (data: unknown, ctx: ExecutionContext) => {
+        const request = ctx.switchToHttp().getRequest();
+        return request.user;
+    }
 );

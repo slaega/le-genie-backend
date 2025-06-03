@@ -1,12 +1,12 @@
 import { CreateEmptyPostCommand } from '#applications/commands/post/create-empty-post.command';
 import {
-  Controller,
-  Post,
-  Body,
-  Delete,
-  Put,
-  Param,
-  UseGuards,
+    Controller,
+    Post,
+    Body,
+    Delete,
+    Put,
+    Param,
+    UseGuards,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { Auth } from '../auth/auth.decorator';
@@ -18,34 +18,34 @@ import { JwtAuthGuard } from '../auth/guards/auth.guard';
 
 @Controller('posts')
 export class PostController {
-  constructor(private readonly commandBus: CommandBus) {}
-  @UseGuards(JwtAuthGuard)
-  @Post()
-  create(@Auth() user: AuthUser) {
-    return this.commandBus.execute(new CreateEmptyPostCommand(user.id));
-  }
+    constructor(private readonly commandBus: CommandBus) {}
+    @UseGuards(JwtAuthGuard)
+    @Post()
+    create(@Auth() user: AuthUser) {
+        return this.commandBus.execute(new CreateEmptyPostCommand(user.id));
+    }
 
-  @UseGuards(JwtAuthGuard)
-  @Put(':postId')
-  update(
-    @Param('postId') postId: string,
-    @Body() updatePostDto: UpdatePostDto,
-    @Auth() user: AuthUser,
-  ) {
-    return this.commandBus.execute(
-      new UpdatePostCommand(
-        postId,
-        user.id,
-        updatePostDto.content,
-        updatePostDto.title,
-        updatePostDto.tags,
-      ),
-    );
-  }
+    @UseGuards(JwtAuthGuard)
+    @Put(':postId')
+    update(
+        @Param('postId') postId: string,
+        @Body() updatePostDto: UpdatePostDto,
+        @Auth() user: AuthUser
+    ) {
+        return this.commandBus.execute(
+            new UpdatePostCommand(
+                postId,
+                user.id,
+                updatePostDto.content,
+                updatePostDto.title,
+                updatePostDto.tags
+            )
+        );
+    }
 
-  @UseGuards(JwtAuthGuard)
-  @Delete(':postId')
-  delete(@Param('postId') postId: string, @Auth() user: AuthUser) {
-    return this.commandBus.execute(new DeletePostCommand(postId, user.id));
-  }
+    @UseGuards(JwtAuthGuard)
+    @Delete(':postId')
+    delete(@Param('postId') postId: string, @Auth() user: AuthUser) {
+        return this.commandBus.execute(new DeletePostCommand(postId, user.id));
+    }
 }

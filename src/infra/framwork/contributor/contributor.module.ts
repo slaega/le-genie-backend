@@ -9,17 +9,17 @@ import { LeaveContributorHandler } from '#applications/handlers/contributor/leav
 import { RemoveContributorHandler } from '#applications/handlers/contributor/remove.contribtion.handler';
 
 @Module({
-  imports: [CqrsModule, PrismaModule],
-  providers: [
-    {
-      provide: CONTRIBUTOR_REPOSITORY,
-      useFactory: (prisma: PrismaService) =>
-        new ContributorPrismaRepository(prisma),
-    },
-    LeaveContributorHandler,
-    RemoveContributorHandler,
-  ],
-  exports: [CONTRIBUTOR_REPOSITORY],
-  controllers: [ContributorController],
+    imports: [CqrsModule, PrismaModule],
+    providers: [
+        {
+            provide: CONTRIBUTOR_REPOSITORY,
+            useFactory: (prisma: PrismaService) =>
+                new ContributorPrismaRepository(prisma),
+        },
+        LeaveContributorHandler,
+        RemoveContributorHandler,
+    ],
+    exports: [CONTRIBUTOR_REPOSITORY],
+    controllers: [ContributorController],
 })
 export class ContributorModule {}

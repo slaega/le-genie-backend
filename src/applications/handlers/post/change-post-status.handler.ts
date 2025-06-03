@@ -6,18 +6,18 @@ import { PostRepository } from '#domain/repository/post.repository';
 
 @CommandHandler(ChangePostStatusCommand)
 export class ChangePostStatusHandler
-  implements ICommandHandler<ChangePostStatusCommand>
+    implements ICommandHandler<ChangePostStatusCommand>
 {
-  constructor(
-    @Inject(POST_REPOSITORY) private readonly postRepository: PostRepository,
-  ) {}
+    constructor(
+        @Inject(POST_REPOSITORY) private readonly postRepository: PostRepository
+    ) {}
 
-  async execute(command: ChangePostStatusCommand) {
-    const post = await this.postRepository.getPostById(command.postId);
-    if (!post) {
-      throw new Error('Post not found');
+    async execute(command: ChangePostStatusCommand) {
+        const post = await this.postRepository.getPostById(command.postId);
+        if (!post) {
+            throw new Error('Post not found');
+        }
+        post.status = command.status;
+        return this.postRepository.updatePost(post.id, post);
     }
-    post.status = command.status;
-    return this.postRepository.updatePost(post.id, post);
-  }
 }
