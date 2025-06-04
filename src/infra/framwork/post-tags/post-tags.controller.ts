@@ -25,7 +25,7 @@ export class PostTagsController {
         @Auth() user: AuthUser
     ) {
         return this.commandBus.execute(
-            new CreatePostTagsCommand(postId, body.name, user.id)
+            new CreatePostTagsCommand(postId, body.name, user.sub)
         );
     }
 
@@ -36,7 +36,7 @@ export class PostTagsController {
         @Auth() user: AuthUser
     ) {
         return this.commandBus.execute(
-            new RemovePostTagsCommand(postId, postName, user.id)
+            new RemovePostTagsCommand(postId, postName, user.sub)
         );
     }
 }

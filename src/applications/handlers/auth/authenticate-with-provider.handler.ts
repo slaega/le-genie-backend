@@ -45,7 +45,7 @@ export class AuthenticateWithProviderHandler
             const newUser = new User();
             newUser.email = command.email;
             newUser.name = command.name;
-            newUser.avatarUrl = command.avatarUrl;
+            newUser.avatarPath = command.avatarUrl;
             const created = await this.userRepository.createUser(newUser);
             user = created;
         }

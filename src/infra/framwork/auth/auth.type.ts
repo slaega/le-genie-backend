@@ -7,7 +7,7 @@
  * }
  */
 export type AuthUser = {
-    id: string;
+    sub: string;
     email: string;
 };
 
@@ -20,6 +20,6 @@ export type AuthUser = {
  * }
  */
 export type RefreshUser = {
-    userId: string;
+    sub: string;
     token: string;
 };

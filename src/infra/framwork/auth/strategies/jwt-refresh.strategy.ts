@@ -7,7 +7,7 @@ import { AuthErrors } from '../auth.errors';
 import { RefreshTokenRepository } from '#domain/repository/refresh-token.repository';
 import { REFRESH_TOKEN_REPOSITORY } from '#shared/constantes/inject-token';
 type JwtRefreshTokenPayloadType = {
-    userId: string;
+    sub: string;
     token: string;
 };
 @Injectable()
@@ -34,7 +34,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
         payload: JwtRefreshTokenPayloadType
     ): Promise<JwtRefreshTokenPayloadType> {
         const refreshToken = await this.refreshTokenRepository.findRefreshToken(
-            payload.userId,
+            payload.sub,
             payload.token
         );
         if (!refreshToken) {

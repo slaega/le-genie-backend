@@ -22,7 +22,7 @@ export class PostImagesController {
     uploadImage(
         @Param() postId: string,
         @Body() body: { file: File },
-        @Auth() user: AuthUser
+        @Auth() _user: AuthUser
     ) {
         return this.commandBus.execute(
             new UploadImageCommand(postId, body.file)
@@ -32,6 +32,8 @@ export class PostImagesController {
     @UseGuards(JwtAuthGuard)
     @Delete(':invitationId/refuse')
     refuse(@Param() postId: string, @Auth() user: AuthUser) {
-        return this.commandBus.execute(new RemoveImageCommand(postId, user.id));
+        return this.commandBus.execute(
+            new RemoveImageCommand(postId, user.sub)
+        );
     }
 }

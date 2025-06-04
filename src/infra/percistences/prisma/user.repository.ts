@@ -26,7 +26,7 @@ export class UserPrismaRepository implements UserRepository {
             data: {
                 email: user.email,
                 name: user.name,
-                avatarPath: user.avatarUrl,
+                avatarPath: user.avatarPath,
             },
         });
     }
@@ -38,7 +38,7 @@ export class UserPrismaRepository implements UserRepository {
             data: {
                 email: user.email,
                 name: user.name,
-                avatarPath: user.avatarUrl,
+                avatarPath: user.avatarPath,
             },
         });
     }

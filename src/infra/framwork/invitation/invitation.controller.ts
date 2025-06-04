@@ -28,7 +28,7 @@ export class InvitationController {
         @Auth() user: AuthUser
     ) {
         return this.commandBus.execute(
-            new SendInvitationCommand(postId, body.email, user.id)
+            new SendInvitationCommand(postId, body.email, user.sub)
         );
     }
 
@@ -36,7 +36,7 @@ export class InvitationController {
     @Put(':invitationId')
     accept(@Param() invitationId: string, @Auth() user: AuthUser) {
         return this.commandBus.execute(
-            new AcceptedInvitationCommand(invitationId, user.id)
+            new AcceptedInvitationCommand(invitationId, user.sub)
         );
     }
 
@@ -44,7 +44,7 @@ export class InvitationController {
     @Delete(':invitationId/refuse')
     refuse(@Param() invitationId: string, @Auth() user: AuthUser) {
         return this.commandBus.execute(
-            new RefusedInvitationCommand(invitationId, user.id)
+            new RefusedInvitationCommand(invitationId, user.sub)
         );
     }
 
@@ -52,7 +52,7 @@ export class InvitationController {
     @Delete(':invitationId/cancel')
     cancel(@Param() invitationId: string, @Auth() user: AuthUser) {
         return this.commandBus.execute(
-            new CancelInvitationCommand(invitationId, user.id)
+            new CancelInvitationCommand(invitationId, user.sub)
         );
     }
 }

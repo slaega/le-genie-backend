@@ -25,6 +25,7 @@ import { GithubExchangeProvider } from './auth-providers/github-exchange.provide
 import { GoogleExchangeProvider } from './auth-providers/google-exchange.provider';
 import { ConfigService } from '@nestjs/config';
 import { RefreshTokenHandler } from '#applications/handlers/auth/refresh-token.handler';
+import { GetMeQueryHandler } from '#applications/query-handler/auth/get-me.query-handler';
 @Module({
     imports: [
         CqrsModule,
@@ -38,6 +39,7 @@ import { RefreshTokenHandler } from '#applications/handlers/auth/refresh-token.h
     providers: [
         AuthenticateWithProviderHandler,
         RefreshTokenHandler,
+        GetMeQueryHandler,
 
         TokenService,
 

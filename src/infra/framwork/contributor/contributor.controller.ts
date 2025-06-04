@@ -13,7 +13,7 @@ export class ContributorController {
     @Delete(':contributorId')
     delete(@Param() postId: string, @Auth() user: AuthUser) {
         return this.commandBus.execute(
-            new LeaveContributorCommand(postId, user.id)
+            new LeaveContributorCommand(postId, user.sub)
         );
     }
 }

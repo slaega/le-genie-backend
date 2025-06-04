@@ -6,6 +6,8 @@ import { Post } from '#domain/entities/post.entity';
 import { PostMapper } from '#domain/mappers/post/post.mapper';
 import { PrismaProxyRepository } from './prisma';
 import { PostStatus } from '#shared/enums/post-status.enum';
+import { Prisma } from '@prisma/client';
+
 const INCLUDE = {
     contributors: {
         include: {
@@ -26,39 +28,54 @@ export class PostPrismaRepository
         page: number,
         limit: number,
         filter: { tags?: string[] },
-        sort: string,
-        order: string
-    ): Promise<Post[]> {
-        const postsEntity = await this.findMany({
-            skip: (page - 1) * limit,
-            take: limit,
-            where: {
-                postTags: {
-                    some: {
-                        tag: {
-                            name: {
-                                in: filter.tags,
-                            },
-                        },
+        sort: string
+    ): Promise<{ items: Post[]; total: number; page: number; limit: number }> {
+        const where: Prisma.PostWhereInput = {
+            // status: PostStatus.PUBLISHED,
+        };
+        const orderBy: Prisma.PostOrderByWithRelationInput =
+            sort === 'popular' ? { updatedAt: 'desc' } : { createdAt: 'desc' };
+        if (filter.tags?.length) {
+            where['postTags'] = {
+                some: {
+                    tag: {
+                        name: { in: filter.tags },
                     },
                 },
-            },
-            orderBy: {
-                [sort]: order,
-            },
-            include: INCLUDE,
-        });
-        return postsEntity.map((postEntity) => PostMapper.toDomain(postEntity));
+            };
+        }
+        const [postEntity, total] = await Promise.all([
+            this.findMany({
+                skip: (page - 1) * limit,
+                take: limit,
+                where,
+                orderBy,
+                include: INCLUDE,
+            }),
+            this.count({ where }),
+        ]);
+        const items = postEntity.map((postEntity) =>
+            PostMapper.toDomain(postEntity)
+        );
+        return {
+            items,
+            total,
+            page,
+            limit,
+        };
     }
     async getPostByIdAndStatus(
         postId: string,
-        status: PostStatus
+        status: PostStatus | 'ALL'
     ): Promise<Post | null> {
-        const postEntity = await this.findUnique({
-            where: {
-                id: postId,
-                status,
-            },
+        const where: Prisma.PostWhereInput = {
+            id: postId,
+        };
+        if (status !== 'ALL') {
+            where.status = status;
+        }
+        const postEntity = await this.findFirst({
+            where,
             include: INCLUDE,
         });
         return postEntity ? PostMapper.toDomain(postEntity) : null;
@@ -82,6 +99,12 @@ export class PostPrismaRepository
                 title: post.title,
                 content: post.content,
                 status: post.status,
+                contributors: {
+                    create: post.contributors.map((contributor) => ({
+                        userId: contributor.userId,
+                        owner: contributor.owner,
+                    })),
+                },
             },
             include: INCLUDE,
         });
@@ -94,7 +117,7 @@ export class PostPrismaRepository
             },
             data: {
                 title: post.title,
-                content: post.content,
+                content: JSON.parse(post.content),
                 status: post.status,
             },
             include: INCLUDE,

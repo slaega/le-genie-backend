@@ -32,7 +32,7 @@ export class CommentController {
             new MakeCommentCommand(
                 param.postId,
                 createCommentDto.content,
-                user.id
+                user.sub
             )
         );
     }
@@ -41,7 +41,7 @@ export class CommentController {
     @Delete(':commentId')
     delete(@Param() param: CommentParamDto, @Auth() user: AuthUser) {
         return this.commandBus.execute(
-            new RemoveCommentCommand(param.postId, param.commentId, user.id)
+            new RemoveCommentCommand(param.postId, param.commentId, user.sub)
         );
     }
 
@@ -57,7 +57,7 @@ export class CommentController {
                 param.postId,
                 param.commentId,
                 createCommentDto.content,
-                auth.id
+                auth.sub
             )
         );
     }

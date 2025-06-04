@@ -11,12 +11,12 @@ export class GetPostsQueryHandler implements IQueryHandler<GetPostsQuery> {
     ) {}
 
     async execute(query: GetPostsQuery) {
-        return this.postRepository.getPosts(
+        const data = await this.postRepository.getPosts(
             query.page,
             query.limit,
             query.filter,
-            query.sort,
-            query.order
+            query.sort
         );
+        return data;
     }
 }

@@ -6,13 +6,12 @@ export interface PostRepository {
         page: number,
         limit: number,
         filter: { tags?: string[] },
-        sort: string,
-        order: string
-    ): Promise<Post[]>;
+        sort: string
+    ): Promise<{ items: Post[]; total: number; page: number; limit: number }>;
     getPostById(postId: string): Promise<Post>;
     getPostByIdAndStatus(
         postId: string,
-        status: PostStatus
+        status: PostStatus | 'ALL'
     ): Promise<Post | null>;
     createPost(post: Post): Promise<Post>;
     updatePost(postId: string, post: Post): Promise<Post>;

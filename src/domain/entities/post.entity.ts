@@ -13,12 +13,13 @@ export class Post extends Entity {
         super();
     }
 
-    createEmptyPost(id: string) {
-        this.id = id;
+    createEmptyPost(userId: string) {
         this.title = '';
         this.content = '';
         this.status = PostStatus.EMPTY;
-        this.contributors = [];
-        this.postTags = [];
+        const contributor = new Contributor();
+        contributor.userId = userId;
+        contributor.owner = true;
+        this.contributors = [contributor];
     }
 }
