@@ -74,11 +74,21 @@ export class PostController {
 
     @Get()
     @UseGuards(OptionalJwtAuthGuard)
-    async getPosts(@Query() query: PostQueryDto) {
+    async getPosts(
+        @Query() query: PostQueryDto,
+        @Auth() user: AuthUser | null
+    ) {
         const page = parseInt(query.page ?? '1', 10);
         const limit = parseInt(query.limit ?? '10', 10);
+        const authId = query.me ? user?.sub : undefined;
         const posts = await this.queryBus.execute(
-            new GetPostsQuery(page, limit, { tags: query.tags }, query.sort)
+            new GetPostsQuery(
+                page,
+                limit,
+                { tags: query.tags },
+                query.sort,
+                authId
+            )
         );
         return {
             items: posts.items.map((post) => PostMapper.toDto(post)),

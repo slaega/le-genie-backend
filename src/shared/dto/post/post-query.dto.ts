@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsNumberString, IsOptional } from 'class-validator';
+import { IsBooleanString, IsNumberString, IsOptional } from 'class-validator';
 
 export class PostQueryDto {
     @IsNumberString()
@@ -16,4 +16,8 @@ export class PostQueryDto {
 
     @IsOptional()
     sort?: 'recent' | 'popular';
+
+    @IsOptional()
+    @IsBooleanString()
+    me?: string;
 }

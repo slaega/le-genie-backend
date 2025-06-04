@@ -11,7 +11,8 @@ export class GetPostsQuery extends Query<{
         public readonly page: number,
         public readonly limit: number,
         public readonly filter: { tags?: string[] },
-        public readonly sort: string
+        public readonly sort: string,
+        public readonly authId?: string
     ) {
         super();
     }

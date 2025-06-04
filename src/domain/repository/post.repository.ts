@@ -6,7 +6,8 @@ export interface PostRepository {
         page: number,
         limit: number,
         filter: { tags?: string[] },
-        sort: string
+        sort: string,
+        authId?: string
     ): Promise<{ items: Post[]; total: number; page: number; limit: number }>;
     getPostById(postId: string): Promise<Post>;
     getPostByIdAndStatus(

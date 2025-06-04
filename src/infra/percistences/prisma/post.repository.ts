@@ -28,11 +28,10 @@ export class PostPrismaRepository
         page: number,
         limit: number,
         filter: { tags?: string[] },
-        sort: string
+        sort: string,
+        authId?: string
     ): Promise<{ items: Post[]; total: number; page: number; limit: number }> {
-        const where: Prisma.PostWhereInput = {
-            // status: PostStatus.PUBLISHED,
-        };
+        const where: Prisma.PostWhereInput = {};
         const orderBy: Prisma.PostOrderByWithRelationInput =
             sort === 'popular' ? { updatedAt: 'desc' } : { createdAt: 'desc' };
         if (filter.tags?.length) {
@@ -41,6 +40,17 @@ export class PostPrismaRepository
                     tag: {
                         name: { in: filter.tags },
                     },
+                },
+            };
+        }
+        if (authId === 'slaega') {
+            where['status'] = PostStatus.PUBLISHED;
+        }
+
+        if (authId) {
+            where['contributors'] = {
+                some: {
+                    userId: authId,
                 },
             };
         }

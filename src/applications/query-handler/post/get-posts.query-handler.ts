@@ -15,7 +15,8 @@ export class GetPostsQueryHandler implements IQueryHandler<GetPostsQuery> {
             query.page,
             query.limit,
             query.filter,
-            query.sort
+            query.sort,
+            query.authId
         );
         return data;
     }
