@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UpdatePostCommand } from '#applications/commands/post/update-post.command';
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { POST_REPOSITORY } from '#shared/constantes/inject-token';
 import { PostRepository } from '#domain/repository/post.repository';
 
@@ -13,7 +13,9 @@ export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
     async execute(command: UpdatePostCommand) {
         const post = await this.postRepository.getPostById(command.id);
         if (!post) {
-            throw new Error('Post not found');
+            throw new NotFoundException({
+                message: 'Post non  Found',
+            });
         }
         post.title = command.title ?? post.title;
         post.content = command.content ?? post.content;

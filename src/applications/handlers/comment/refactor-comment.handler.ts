@@ -1,7 +1,7 @@
 import { RefactorCommentCommand } from '#applications/commands/comment/refactor-comment.command';
 import { CommentRepository } from '#domain/repository/comment.repository';
 import { ICommandHandler } from '@nestjs/cqrs';
-import { Inject } from '@nestjs/common';
+import { Inject, NotFoundException } from '@nestjs/common';
 import { COMMENT_REPOSITORY } from '#shared/constantes/inject-token';
 
 export class RefactorCommentHandler
@@ -16,7 +16,9 @@ export class RefactorCommentHandler
             command.commentId
         );
         if (!comment) {
-            throw new Error('Comment not found');
+            throw new NotFoundException({
+                message: 'Comment non  Found',
+            });
         }
         comment.content = command.content;
         comment.refactorAt = new Date();

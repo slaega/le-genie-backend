@@ -1,6 +1,6 @@
 import { ICommandHandler, CommandHandler } from '@nestjs/cqrs';
 import { CreatePostTagsCommand } from '#applications/commands/post-tags/create-post-tags.command';
-import { Inject } from '@nestjs/common';
+import { ForbiddenException, Inject, NotFoundException } from '@nestjs/common';
 import {
     CONTRIBUTOR_REPOSITORY,
     POST_REPOSITORY,
@@ -25,20 +25,18 @@ export class CreatePostTagsHandler
     async execute(command: CreatePostTagsCommand): Promise<void> {
         const post = await this.postRepository.getPostById(command.postId);
         if (!post) {
-            throw new Error('Post not found');
+            throw new NotFoundException({
+                message: 'Post  non  Found',
+            });
         }
-        const contributors =
-            await this.contributorRepository.getContributorsByPostId(
-                command.postId
-            );
-        if (!contributors.length) {
-            throw new Error('Contributor not found');
-        }
-        const contributor = contributors.find(
+
+        const contributor = post.contributors.find(
             (contributor) => contributor.userId === command.authId
         );
         if (!contributor) {
-            throw new Error('Contributor not found');
+            throw new ForbiddenException({
+                message: 'Forbidden your not authorized',
+            });
         }
         return this.postTagRepository.removePostTags(
             command.postId,

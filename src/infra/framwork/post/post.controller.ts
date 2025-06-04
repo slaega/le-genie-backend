@@ -9,6 +9,7 @@ import {
     UseGuards,
     Get,
     Query,
+    Patch,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Auth } from '../auth/auth.decorator';
@@ -23,6 +24,8 @@ import { GetPostsQuery } from '#applications/query/post/get-posts.query';
 import { PostQueryDto } from '#dto/post/post-query.dto';
 import { PostResponseDto } from '#dto/post/post-response.dto';
 import { PostMapper } from '#domain/mappers/post/post.mapper';
+import { ChangePostStatusCommand } from '#applications/commands/post/change-post-status.command';
+import { UpdatePostStatusDto } from '#dto/post/update-post-status.dto';
 
 @Controller('posts')
 export class PostController {
@@ -52,6 +55,22 @@ export class PostController {
                 user.sub,
                 updatePostDto.title,
                 updatePostDto.content
+            )
+        );
+        return PostMapper.toDto(post);
+    }
+    @UseGuards(JwtAuthGuard)
+    @Patch(':postId/status')
+    async updatePostStatus(
+        @Param('postId') postId: string,
+        @Body() updatePostStatusDto: UpdatePostStatusDto,
+        @Auth() user: AuthUser
+    ) {
+        const post = await this.commandBus.execute(
+            new ChangePostStatusCommand(
+                postId,
+                updatePostStatusDto.status,
+                user.sub
             )
         );
         return PostMapper.toDto(post);

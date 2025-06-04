@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { Inject } from '@nestjs/common';
+import { ForbiddenException, Inject, NotFoundException } from '@nestjs/common';
 import { CONTRIBUTOR_REPOSITORY } from '#shared/constantes/inject-token';
 import { ContributorRepository } from '#domain/repository/contributor.repository';
 import { RemoveContributorCommand } from '#applications/commands/contributor/remove.contributor.command';
@@ -19,16 +19,25 @@ export class RemoveContributorHandler
                 command.postId
             );
         if (!contributors) {
-            throw new Error('Contributor not found');
+            throw new NotFoundException({
+                message: 'Contributor not found',
+            });
         }
         const contributor = contributors.find(
             (contributor) => contributor.userId === command.userId
         );
+        const isCurrentContributor = contributors.find(
+            (contributor) => contributor.userId === command.currentUserId
+        );
         if (!contributor) {
-            throw new Error('Contributor not found');
+            throw new ForbiddenException({
+                message: 'Forbidden your not authorized',
+            });
         }
-        if (contributor.owner && command.currentUserId !== contributor.userId) {
-            throw new Error('You are not the owner of this post');
+        if (!isCurrentContributor || isCurrentContributor.owner) {
+            throw new ForbiddenException({
+                message: 'Forbidden your not authorized',
+            });
         }
         await this.contributorRepository.removeContributor(contributor.id);
     }
