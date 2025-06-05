@@ -7,6 +7,7 @@ import { PostMapper } from '#domain/mappers/post/post.mapper';
 import { PrismaProxyRepository } from './prisma';
 import { PostStatus } from '#shared/enums/post-status.enum';
 import { Prisma } from '@prisma/client';
+import { Pagination } from '#shared/Pagination';
 
 const INCLUDE = {
     contributors: {
@@ -30,7 +31,7 @@ export class PostPrismaRepository
         filter: { tags?: string[] },
         sort: string,
         authId?: string
-    ): Promise<{ items: Post[]; total: number; page: number; limit: number }> {
+    ): Promise<Pagination<Post>> {
         const where: Prisma.PostWhereInput = {};
         const orderBy: Prisma.PostOrderByWithRelationInput =
             sort === 'popular' ? { updatedAt: 'desc' } : { createdAt: 'desc' };
@@ -127,8 +128,9 @@ export class PostPrismaRepository
             },
             data: {
                 title: post.title,
-                content: JSON.parse(post.content),
+                content: post.content,
                 status: post.status,
+                imagePath: post.imagePath,
             },
             include: INCLUDE,
         });

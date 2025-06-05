@@ -1,5 +1,6 @@
 import { Post } from '#domain/entities/post.entity';
 import { PostStatus } from '#shared/enums/post-status.enum';
+import { Pagination } from '#shared/Pagination';
 
 export interface PostRepository {
     getPosts(
@@ -8,7 +9,7 @@ export interface PostRepository {
         filter: { tags?: string[] },
         sort: string,
         authId?: string
-    ): Promise<{ items: Post[]; total: number; page: number; limit: number }>;
+    ): Promise<Pagination<Post>>;
     getPostById(postId: string): Promise<Post>;
     getPostByIdAndStatus(
         postId: string,

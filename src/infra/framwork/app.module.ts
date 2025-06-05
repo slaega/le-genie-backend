@@ -20,7 +20,7 @@ import { CommentModule } from './comment/comment.module';
 import { PostModule } from './post/post.module';
 import { ContributorModule } from './contributor/contributor.module';
 import { InvitationModule } from './invitation/invitation.module';
-
+import { NestjsFormDataModule } from 'nestjs-form-data';
 @Module({
     imports: [
         AuthModule,
@@ -84,7 +84,7 @@ import { InvitationModule } from './invitation/invitation.module';
         MailModule,
         LoggerModule,
         PrismaModule,
-        // NestjsFormDataModule.config({ isGlobal: true }),
+        NestjsFormDataModule.config({ isGlobal: true }),
         BullModule.forRootAsync({
             useFactory: async (
                 configService: ConfigService<AllConfigType>

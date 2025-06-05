@@ -21,6 +21,7 @@ export class PostMapper {
         post.title = postEntity.title;
         post.content = JSON.stringify(postEntity.content);
         post.status = postEntity.status;
+        post.imagePath = postEntity.imagePath;
         post.contributors = postEntity.contributors.map((contributor) =>
             ContributorMapper.toDomain(contributor)
         );
@@ -35,6 +36,7 @@ export class PostMapper {
         const post = new PostResponseDto();
         post.id = postEntity.id;
         post.title = postEntity.title;
+        post.imagePath = postEntity.imagePath;
         post.content = postEntity.content;
         post.status = postEntity.status;
         post.contributors = postEntity.contributors.map((contributor) =>
@@ -43,7 +45,6 @@ export class PostMapper {
         post.postTags = postEntity.postTags.map((postTag) =>
             PostTagMapper.toDomain(postTag)
         );
-
         return post;
     }
 
@@ -53,6 +54,7 @@ export class PostMapper {
             title: post.title,
             content: post.content,
             status: post.status,
+            imagePath: post.imagePath,
         };
     }
 }

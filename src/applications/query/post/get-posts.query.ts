@@ -1,12 +1,8 @@
 import { Query } from '@nestjs/cqrs';
 import { Post } from '#domain/entities/post.entity';
+import { Pagination } from '#shared/Pagination';
 
-export class GetPostsQuery extends Query<{
-    items: Post[];
-    total: number;
-    page: number;
-    limit: number;
-}> {
+export class GetPostsQuery extends Query<Pagination<Post>> {
     constructor(
         public readonly page: number,
         public readonly limit: number,

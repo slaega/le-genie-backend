@@ -1,22 +1,22 @@
+import { UserResponseDto } from '#dto/auth/user-response.dto';
 import { ApiResponseProperty } from '@nestjs/swagger';
 
-export class PostResponseDto {
+export class CommentResponseDto {
     @ApiResponseProperty()
     id: string;
     @ApiResponseProperty()
-    title: string;
-    @ApiResponseProperty()
-    imagePath: string;
-    @ApiResponseProperty()
     content: string;
     @ApiResponseProperty()
-    status: string;
     @ApiResponseProperty()
-    contributors: any[];
+    refactorAt: Date;
     @ApiResponseProperty()
-    postTags: any[];
+    postId: string;
+    @ApiResponseProperty()
+    userId: string;
     @ApiResponseProperty()
     createdAt: Date;
     @ApiResponseProperty()
     updatedAt: Date;
+    @ApiResponseProperty()
+    user: UserResponseDto;
 }

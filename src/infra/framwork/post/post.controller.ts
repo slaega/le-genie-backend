@@ -4,7 +4,6 @@ import {
     Post,
     Body,
     Delete,
-    Put,
     Param,
     UseGuards,
     Get,
@@ -24,9 +23,7 @@ import { GetPostsQuery } from '#applications/query/post/get-posts.query';
 import { PostQueryDto } from '#dto/post/post-query.dto';
 import { PostResponseDto } from '#dto/post/post-response.dto';
 import { PostMapper } from '#domain/mappers/post/post.mapper';
-import { ChangePostStatusCommand } from '#applications/commands/post/change-post-status.command';
-import { UpdatePostStatusDto } from '#dto/post/update-post-status.dto';
-
+import { FormDataRequest } from 'nestjs-form-data';
 @Controller('posts')
 export class PostController {
     constructor(
@@ -43,36 +40,28 @@ export class PostController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Put(':postId')
+    @FormDataRequest()
+    @Patch(':postId')
     async update(
         @Param('postId') postId: string,
         @Body() updatePostDto: UpdatePostDto,
         @Auth() user: AuthUser
     ) {
-        const post = await this.commandBus.execute(
-            new UpdatePostCommand(
-                postId,
-                user.sub,
-                updatePostDto.title,
-                updatePostDto.content
-            )
-        );
-        return PostMapper.toDto(post);
-    }
-    @UseGuards(JwtAuthGuard)
-    @Patch(':postId/status')
-    async updatePostStatus(
-        @Param('postId') postId: string,
-        @Body() updatePostStatusDto: UpdatePostStatusDto,
-        @Auth() user: AuthUser
-    ) {
-        const post = await this.commandBus.execute(
-            new ChangePostStatusCommand(
-                postId,
-                updatePostStatusDto.status,
-                user.sub
-            )
-        );
+        const imageFile = updatePostDto.imageFile;
+        const command = new UpdatePostCommand();
+        command.id = postId;
+        command.currentUserId = user.sub;
+        command.title = updatePostDto.title;
+        command.content = updatePostDto.content;
+        command.status = updatePostDto.status;
+        command.imageFile = imageFile
+            ? {
+                  buffer: imageFile.buffer,
+                  name: imageFile.originalName,
+                  contentType: imageFile.mimetype,
+              }
+            : undefined;
+        const post = await this.commandBus.execute(command);
         return PostMapper.toDto(post);
     }
 

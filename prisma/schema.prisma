@@ -37,6 +37,7 @@ model Post {
   id           String        @id @default(cuid())
   title        String
   content      Json
+  imagePath    String?
   status       PostStatus    @default(EMPTY)
   contributors Contributor[]
   createdAt    DateTime      @default(now())

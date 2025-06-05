@@ -8,6 +8,7 @@ import { COMMENT_REPOSITORY } from '#shared/constantes/inject-token';
 import { MakeCommentHandler } from '#applications/handlers/comment/make-comment.handler';
 import { RefactorCommentHandler } from '#applications/handlers/comment/refactor-comment.handler';
 import { RemoveCommentHandler } from '#applications/handlers/comment/remove-comment.handler';
+import { GetCommentsQueryHandler } from '#applications/query-handler/comment/get-comments.query-handler';
 
 @Module({
     imports: [CqrsModule, PrismaModule],
@@ -21,6 +22,7 @@ import { RemoveCommentHandler } from '#applications/handlers/comment/remove-comm
         MakeCommentHandler,
         RefactorCommentHandler,
         RemoveCommentHandler,
+        GetCommentsQueryHandler,
     ],
     exports: [COMMENT_REPOSITORY],
     controllers: [CommentController],

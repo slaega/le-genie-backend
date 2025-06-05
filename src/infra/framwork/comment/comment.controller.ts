@@ -1,13 +1,15 @@
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Auth } from '../auth/auth.decorator';
 import { AuthUser } from '../auth/auth.type';
 import {
     Body,
     Controller,
     Delete,
+    Get,
     Param,
+    Patch,
     Post,
-    Put,
+    Query,
     UseGuards,
 } from '@nestjs/common';
 import { MakeCommentCommand } from '#applications/commands/comment/make-comment.command';
@@ -16,15 +18,21 @@ import { RemoveCommentCommand } from '#applications/commands/comment/remove-comm
 import { CommentParamDto } from '#dto/comment/comment-param.dto';
 import { CreateCommentDto } from '#dto/comment/create-comment.dto';
 import { JwtAuthGuard } from '../auth/guards/auth.guard';
+import { PostParamDto } from '#dto/post/post-param.dto';
+import { GetCommentsQuery } from '#applications/query/comment/get-comments.query';
+import { CommentQueryDto } from '#dto/comment/post-query.dto';
 
-@Controller('post/:postId/comments/')
+@Controller('posts/:postId/comments/')
 export class CommentController {
-    constructor(private readonly commandBus: CommandBus) {}
+    constructor(
+        private readonly commandBus: CommandBus,
+        private readonly queryBus: QueryBus
+    ) {}
 
     @UseGuards(JwtAuthGuard)
     @Post()
     create(
-        @Param() param: CommentParamDto,
+        @Param() param: PostParamDto,
         @Body() createCommentDto: CreateCommentDto,
         @Auth() user: AuthUser
     ) {
@@ -45,8 +53,17 @@ export class CommentController {
         );
     }
 
+    @Get()
+    getComment(@Param() param: PostParamDto, @Query() query: CommentQueryDto) {
+        const page = parseInt(query.page ?? '1', 10);
+        const limit = parseInt(query.limit ?? '10', 10);
+        return this.queryBus.execute(
+            new GetCommentsQuery(param.postId, page, limit)
+        );
+    }
+
     @UseGuards(JwtAuthGuard)
-    @Put(':commentId')
+    @Patch(':commentId')
     update(
         @Param() param: CommentParamDto,
         @Body() createCommentDto: CreateCommentDto,

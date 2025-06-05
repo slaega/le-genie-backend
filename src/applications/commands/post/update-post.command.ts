@@ -1,13 +1,16 @@
 import { Post } from '#domain/entities/post.entity';
 import { Command } from '@nestjs/cqrs';
+import { PostStatus } from '#shared/enums/post-status.enum';
 
 export class UpdatePostCommand extends Command<Post> {
-    constructor(
-        public readonly id: string,
-        public readonly currentUserId: string,
-        public readonly title?: string,
-        public readonly content?: string
-    ) {
-        super();
-    }
+    public id: string;
+    public currentUserId: string;
+    public title?: string;
+    public content?: string;
+    public status?: PostStatus;
+    public imageFile?: {
+        buffer: Buffer;
+        name: string;
+        contentType: string;
+    };
 }

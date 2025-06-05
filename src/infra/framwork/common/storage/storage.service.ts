@@ -9,6 +9,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { StorageProvider } from '#domain/services/storage.provider';
 import { LoggerService } from '../logger/logger.service';
+
 @Injectable()
 export class StorageService implements StorageProvider {
     private s3: S3;

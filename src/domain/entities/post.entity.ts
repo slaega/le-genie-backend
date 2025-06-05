@@ -7,6 +7,7 @@ export class Post extends Entity {
     public title: string;
     public content: string;
     public status: PostStatus;
+    public imagePath: string;
     public contributors: Contributor[];
     public postTags: PostTag[];
     constructor() {
@@ -16,6 +17,7 @@ export class Post extends Entity {
     createEmptyPost(userId: string) {
         this.title = '';
         this.content = '';
+        this.imagePath = '';
         this.status = PostStatus.EMPTY;
         const contributor = new Contributor();
         contributor.userId = userId;
