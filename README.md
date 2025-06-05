@@ -1,98 +1,99 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Legenei Blog Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+LeUn backend moderne et robuste pour le blog Legenei, construit avec NestJS et suivant les principes de Clean Architecture.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Technologies
 
-## Description
+- **Framework**: NestJS v11
+- **Base de données**: Prisma ORM
+- **Authentication**: JWT, Passport (Google & GitHub OAuth)
+- **File Storage**: AWS S3
+- **Queue Management**: BullMQ
+- **Logging**: Pino
+- **Documentation**: Swagger/OpenAPI
+- **Internationalisation**: nestjs-i18n
+- **Testing**: Jest
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🏗️ Architecture
 
-## Project setup
+Le projet suit une architecture hexagonale (Clean Architecture) avec les couches suivantes :
 
-```bash
-$ yarn install
-```
+- **applications**: Contient les cas d'utilisation de l'application
+- **domain**: Définit les entités et les interfaces du domaine
+- **infra**: Implémentations concrètes des interfaces (repositories, services externes)
+- **shared**: Utilitaires et composants partagés
+- **core**: Fonctionnalités fondamentales de l'application
 
-## Compile and run the project
+## 🔧 Installation
 
 ```bash
-# development
-$ yarn run start
+# Installation des dépendances
+yarn install
 
-# watch mode
-$ yarn run start:dev
+# Configuration des variables d'environnement
+cp .env.sample .env
+# Remplir les variables dans .env
 
-# production mode
-$ yarn run start:prod
+# Génération du client Prisma
+yarn prisma generate
+
+# Migration de la base de données
+yarn prisma migrate dev
 ```
 
-## Run tests
+## 🚀 Démarrage
 
 ```bash
-# unit tests
-$ yarn run test
+# Mode développement
+yarn start:dev
 
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+# Mode production
+yarn build
+yarn start:prod
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 🧪 Tests
 
 ```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+# Tests unitaires
+yarn test
+
+# Tests e2e
+yarn test:e2e
+
+# Couverture de tests
+yarn test:cov
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 📚 Documentation API
 
-## Resources
+La documentation Swagger est disponible à l'URL `/api` une fois l'application lancée.
 
-Check out a few resources that may come in handy when working with NestJS:
+## 🔐 Sécurité
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- Utilisation de Helmet pour la sécurité des en-têtes HTTP
+- Rate limiting avec @nestjs/throttler
+- Validation des données avec class-validator
+- Authentification sécurisée via JWT et OAuth
 
-## Support
+## 🌍 Internationalisation
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Le projet supporte plusieurs langues grâce à nestjs-i18n. Les traductions sont stockées dans le dossier `assets/i18n/`.
 
-## Stay in touch
+## 📨 File d'attente
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+BullMQ est utilisé pour gérer les tâches asynchrones comme l'envoi d'emails et le traitement des fichiers.
+
+## 🤝 Contribution
+
+Pour contribuer au projet :
+
+1. Fork le projet
+2. Créer une branche (`git checkout -b feature/AmazingFeature`)
+3. Commit les changements (`git commit -m 'Add some AmazingFeature'`)
+4. Push sur la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Ce projet est sous licence MIT.

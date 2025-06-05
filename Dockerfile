@@ -6,20 +6,30 @@ FROM node:20-alpine AS base
 
 ENV NODE_ENV="production"
 
+# Enable Corepack for Yarn
+RUN corepack enable
+
 FROM base AS builder
 
 # Set working directory
 WORKDIR /app
 
-COPY --chown=node:node ./package*.json ./
-COPY --chown=node:node . .
+# Copy package files
+COPY .yarnrc.yml ./
+COPY package.json yarn.lock ./
+COPY .yarn ./.yarn
 
-RUN npm install --include=dev
+# Install dependencies
+RUN yarn install --immutable
 
-ADD prisma prisma
+# Copy source files
+COPY . .
 
-RUN npm run prisma:generate
-RUN npm run build
+# Generate Prisma client
+RUN yarn prisma generate
+
+# Build application
+RUN yarn build
 
 
 FROM base AS production
@@ -30,25 +40,21 @@ WORKDIR /app
 # Set timezone
 ENV TZ=Europe/Paris
 
-RUN apk add --no-cache tzdata \
-    && cp /usr/share/zoneinfo/$TZ /etc/localtime \
-    && echo $TZ > /etc/timezone \
-    && apk del tzdata\
-	&& apk add --no-cache openssl\
-	&& rm -rf /var/lib/apt/lists/* \
-	&& rm -rf /var/cache/apk/*
-    
-# Don't run production as root
-RUN addgroup --system --gid 1024 nodejs
-RUN adduser --system --uid 1024 nestjs
+# Copy Yarn configuration
+COPY .yarnrc.yml ./
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/.yarn ./.yarn
+COPY --from=builder /app/yarn.lock ./
 
-USER nestjs
+# Copy build artifacts and dependencies
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/.yarn/cache ./.yarn/cache
+COPY --from=builder /app/.yarn/unplugged ./.yarn/unplugged
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/assets ./assets
 
-COPY --chown=nestjs:nodejs --from=builder /app/package.json ./package.json
-COPY --chown=nestjs:nodejs --from=builder /app/dist ./dist
-COPY --chown=nestjs:nodejs --from=builder /app/node_modules ./node_modules
-COPY --chown=nestjs:nodejs --from=builder /app/prisma ./prisma
-COPY --chown=nestjs:nodejs --from=builder /app/templates ./templates
+# Install production dependencies only
+RUN yarn workspaces focus --production
 
 # Start the server using the production build
-CMD ["npm", "run", "start:prod"]
+CMD ["yarn", "start:prod"]
