@@ -1,8 +1,8 @@
 import { Post } from '#domain/entities/post.entity';
-import { Prisma } from '@prisma/client';
 import { ContributorMapper } from '#domain/mappers/contributors/contributor.mapper';
-import { PostTagMapper } from '../post-tags/post-tag.mapper';
 import { PostResponseDto } from '#dto/post/post-response.dto';
+import { Prisma } from '@prisma/client';
+import { PostTagMapper } from '../post-tags/post-tag.mapper';
 
 type PostPrisma = Prisma.PostGetPayload<{
     include: {
@@ -22,6 +22,8 @@ export class PostMapper {
         post.content = JSON.stringify(postEntity.content);
         post.status = postEntity.status;
         post.imagePath = postEntity.imagePath;
+        post.createdAt = postEntity.createdAt;
+        post.updatedAt = postEntity.updatedAt;
         post.contributors = postEntity.contributors.map((contributor) =>
             ContributorMapper.toDomain(contributor)
         );
@@ -39,8 +41,10 @@ export class PostMapper {
         post.imagePath = postEntity.imagePath;
         post.content = postEntity.content;
         post.status = postEntity.status;
+        post.createdAt = postEntity.createdAt;
+        post.updatedAt = postEntity.updatedAt;
         post.contributors = postEntity.contributors.map((contributor) =>
-            ContributorMapper.toDomain(contributor)
+            ContributorMapper.toDto(contributor)
         );
         post.postTags = postEntity.postTags.map((postTag) =>
             PostTagMapper.toDomain(postTag)

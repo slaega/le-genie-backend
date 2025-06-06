@@ -1,13 +1,13 @@
+import { UploadImageCommand } from '#applications/commands/post-images/upload-image.command';
+import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { Auth } from '../auth/auth.decorator';
 import { AuthUser } from '../auth/auth.type';
-import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/auth.guard';
-import { UploadImageCommand } from '#applications/commands/post-images/upload-image.command';
 
 import { CreatePostImageDto } from '#dto/post-images/create-post-image.dto';
-import { FormDataRequest } from 'nestjs-form-data';
 import { ApiConsumes } from '@nestjs/swagger';
+import { FormDataRequest } from 'nestjs-form-data';
 
 @Controller('posts/:postId/images')
 export class PostImagesController {
@@ -17,7 +17,7 @@ export class PostImagesController {
     @FormDataRequest()
     @Post()
     @ApiConsumes('multipart/form-data')
-    uploadImage(
+    async uploadImage(
         @Param('postId') postId: string,
         @Body() createPostImage: CreatePostImageDto,
         @Auth() auth: AuthUser
@@ -27,8 +27,9 @@ export class PostImagesController {
             name: createPostImage.imageFile.originalName,
             contentType: createPostImage.imageFile.mimetype,
         };
-        return this.commandBus.execute(
+        const result = await this.commandBus.execute(
             new UploadImageCommand(postId, auth.sub, imageFile)
         );
+        return { url: result };
     }
 }

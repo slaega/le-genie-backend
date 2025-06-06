@@ -1,35 +1,35 @@
 import { CreateEmptyPostCommand } from '#applications/commands/post/create-empty-post.command';
-import {
-    Controller,
-    Post,
-    Body,
-    Delete,
-    Param,
-    UseGuards,
-    Get,
-    Query,
-    Patch,
-} from '@nestjs/common';
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { Auth } from '../auth/auth.decorator';
-import { UpdatePostCommand } from '#applications/commands/post/update-post.command';
 import { DeletePostCommand } from '#applications/commands/post/delete-post.command';
-import { AuthUser } from '../auth/auth.type';
-import { UpdatePostDto } from '#dto/post/update-post.dto';
-import { JwtAuthGuard, OptionalJwtAuthGuard } from '../auth/guards/auth.guard';
-import { PostParamDto } from '#dto/post/post-param.dto';
+import { UpdatePostCommand } from '#applications/commands/post/update-post.command';
 import { GetPostQuery } from '#applications/query/post/get-post.query';
 import { GetPostsQuery } from '#applications/query/post/get-posts.query';
+import { PostMapper } from '#domain/mappers/post/post.mapper';
+import { PostParamDto } from '#dto/post/post-param.dto';
 import { PostQueryDto } from '#dto/post/post-query.dto';
 import { PostResponseDto } from '#dto/post/post-response.dto';
-import { PostMapper } from '#domain/mappers/post/post.mapper';
-import { FormDataRequest } from 'nestjs-form-data';
+import { UpdatePostDto } from '#dto/post/update-post.dto';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    Query,
+    UseGuards,
+} from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
     ApiAcceptedResponse,
     ApiConsumes,
     ApiNotFoundResponse,
     ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { FormDataRequest } from 'nestjs-form-data';
+import { Auth } from '../auth/auth.decorator';
+import { AuthUser } from '../auth/auth.type';
+import { JwtAuthGuard, OptionalJwtAuthGuard } from '../auth/guards/auth.guard';
 @Controller('posts')
 export class PostController {
     constructor(
@@ -61,7 +61,7 @@ export class PostController {
         const command = new UpdatePostCommand();
         command.id = postId;
         command.currentUserId = user.sub;
-        command.title = updatePostDto.title;
+        command.title = updatePostDto.title + 'Slaega';
         command.content = updatePostDto.content;
         command.status = updatePostDto.status;
         command.imageFile = imageFile
