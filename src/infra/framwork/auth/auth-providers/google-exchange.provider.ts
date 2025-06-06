@@ -7,6 +7,7 @@ interface GoogleExchangeResponse {
     access_token: string;
     scope: string;
     token_type: string;
+    id_token: string;
 }
 
 export interface GoogleUser {
@@ -22,11 +23,10 @@ export interface GoogleUser {
 }
 
 export class GoogleExchangeProvider implements ExchangeProvider<GoogleUser> {
-    constructor(private readonly configService: ConfigService<AllConfigType>) {}
+    constructor(private readonly configService: ConfigService<AllConfigType>) { }
 
     decodeUser(accessToken: string) {
         const payload = jwt.decode(accessToken);
-
         if (!payload || typeof payload === 'string') {
             throw new UnauthorizedException({
                 error: 'Invalid id_token payload',
@@ -73,8 +73,7 @@ export class GoogleExchangeProvider implements ExchangeProvider<GoogleUser> {
             throw new UnauthorizedException({
                 error: 'Failed to exchange Google code',
             });
-
         const data = (await res.json()) as GoogleExchangeResponse;
-        return data.access_token;
+        return data.id_token;
     }
 }

@@ -22,7 +22,7 @@ export class UploadImageHandler implements ICommandHandler<UploadImageCommand> {
         if (!post) {
             throw new NotFoundException({ message: 'Post not found' });
         }
-        if (!post.contributors.find((item) => item.id === command.authId)) {
+        if (!post.contributors.find((item) => item.userId === command.authId)) {
             throw new ForbiddenException({ message: 'Required authorization' });
         }
         const path = await this.storageProvider.upload({
