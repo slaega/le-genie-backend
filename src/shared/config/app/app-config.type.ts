@@ -12,7 +12,6 @@ export type AppConfig = {
     headerLanguage: string;
     throttlerTtl: string | number;
     throttlerLimit: string | number;
-    cookieSecret: string;
     emailValidationEnabled: boolean;
     redis: {
         host: string;

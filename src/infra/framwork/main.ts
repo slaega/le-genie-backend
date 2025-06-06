@@ -9,7 +9,6 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { useContainer } from 'class-validator';
-import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import * as requestIp from 'request-ip';
 
@@ -79,13 +78,6 @@ async function bootstrap() {
 
     // Configuration de Swagger en dehors de l'environnement de production
     SwaggerConfig(app);
-
-    // Configuration des cookies
-    app.use(
-        cookieParser(
-            configService.getOrThrow('app.cookieSecret', { infer: true })
-        )
-    );
 
     // Démarrage du serveur
     const port = configService.getOrThrow('app.port', { infer: true });

@@ -1,0 +1,47 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: genie_db
+    environment:
+      POSTGRES_USER: legenie_owner
+      POSTGRES_PASSWORD: npg_BuM4NdW8XUro
+      POSTGRES_DB: legenie
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  storage:
+    image: minio/minio:latest
+    container_name: genie_storage
+    environment:
+      MINIO_ACCESS_KEY: Q3AM3UQ867SPQQA43P2F
+      MINIO_SECRET_KEY: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+
+  backend:
+    build: .
+    image: legenie/le-genie-brakend:latest
+    container_name: genie_backend
+    ports:
+      - "3030:3030"
+    depends_on:
+      - db
+      - storage
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://legenie_owner:npg_BuM4NdW8XUro@db:5432/legenie
+      STORAGE_BUCKET: legenie  #### Create This in minio console
+      STORAGE_REGION: eu-central-1
+      STORAGE_ACCESS_ID: Q3AM3UQ867SPQQA43P2F #### It is your $ MINIO_ACCESS_KEY
+      STORAGE_ACCESS_KEY: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG #### It is your $ MINIO_SECRET_KEY
+      STORAGE_ENDPOINT: http://host.docker.internal:9000  ### TODO: Configure this with the host's local Docker IP address (e.g., http://192.168.x.x:port or http://host.docker.internal:port). The frontend consuming this endpoint is not in the Docker network, so it needs a host-accessible URL.
+    
+volumes:
+  postgres_data:
+  minio_data:

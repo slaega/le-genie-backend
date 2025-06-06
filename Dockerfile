@@ -28,6 +28,7 @@ COPY . .
 # Generate Prisma client
 RUN yarn prisma generate
 
+
 # Build application
 RUN yarn build
 
@@ -48,8 +49,7 @@ COPY --from=builder /app/yarn.lock ./
 
 # Copy build artifacts and dependencies
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/.yarn/cache ./.yarn/cache
-COPY --from=builder /app/.yarn/unplugged ./.yarn/unplugged
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/assets ./assets
 

@@ -1,6 +1,5 @@
 import { registerAs } from '@nestjs/config';
 import {
-    IsBoolean,
     IsEnum,
     IsInt,
     IsNotEmpty,
@@ -76,24 +75,20 @@ class EnvironmentVariablesValidator {
     COOKIE_SECRET: string;
 
     @IsString()
-    @IsNotEmpty()
-    APP_REDIS_HOST: string;
+    @IsOptional()
+    APP_REDIS_HOST?: string;
 
     @IsInt()
-    @IsNotEmpty()
-    APP_REDIS_PORT: number;
-
-    @IsString()
-    @IsNotEmpty()
-    APP_REDIS_USERNAME: string;
-
-    @IsString()
-    @IsNotEmpty()
-    APP_REDIS_PASSWORD: string;
-
-    @IsBoolean()
     @IsOptional()
-    EMAIL_VALIDATION_ENABLED: boolean;
+    APP_REDIS_PORT?: number;
+
+    @IsString()
+    @IsOptional()
+    APP_REDIS_USERNAME?: string;
+
+    @IsString()
+    @IsOptional()
+    APP_REDIS_PASSWORD?: string;
 }
 
 export default registerAs<AppConfig>('app', () => {
@@ -112,13 +107,13 @@ export default registerAs<AppConfig>('app', () => {
             : validatedConfig.PORT
               ? validatedConfig.PORT
               : 3000,
+        emailValidationEnabled: true,
         apiPrefix: validatedConfig.API_PREFIX || 'api',
         fallbackLanguage: validatedConfig.APP_FALLBACK_LANGUAGE || 'en',
         headerLanguage: validatedConfig.APP_HEADER_LANGUAGE || 'x-custom-lang',
         throttlerTtl: validatedConfig.APP_THROTTLER_TTL || 1000,
         throttlerLimit: validatedConfig.APP_THROTTLER_LIMIT || 50,
         cookieSecret: validatedConfig.COOKIE_SECRET,
-        emailValidationEnabled: validatedConfig.EMAIL_VALIDATION_ENABLED,
         redis: {
             host: validatedConfig.APP_REDIS_HOST,
             port: validatedConfig.APP_REDIS_PORT,

@@ -1,11 +1,7 @@
 import { INestApplication } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AllConfigType } from '../config.type';
 
 export const SwaggerConfig = (app: INestApplication<any>) => {
-    const configService = app.get(ConfigService<AllConfigType>);
-    configService;
     const documentBuilder = new DocumentBuilder()
         .setTitle('Focus API')
         .setContact(
