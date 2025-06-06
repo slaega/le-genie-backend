@@ -21,12 +21,14 @@ import { PostModule } from './post/post.module';
 import { ContributorModule } from './contributor/contributor.module';
 import { InvitationModule } from './invitation/invitation.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
+import { PostImageModule } from './post-image/post-images.module';
 @Module({
     imports: [
         AuthModule,
         CommentModule,
         PostModule,
         ContributorModule,
+        PostImageModule,
         InvitationModule,
 
         ConfigModule.forRoot({

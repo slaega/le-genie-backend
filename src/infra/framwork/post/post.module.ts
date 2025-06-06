@@ -28,7 +28,7 @@ import { StorageModule } from '../common/storage/storage.module';
         GetPostQueryHandler,
         GetPostsQueryHandler,
     ],
-    exports: [],
+    exports: [POST_REPOSITORY],
     controllers: [PostController],
 })
 export class PostModule {}

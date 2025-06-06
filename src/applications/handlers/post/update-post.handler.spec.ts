@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Test } from '@nestjs/testing';
 import { UpdatePostHandler } from './update-post.handler';
 import { UpdatePostCommand } from '#applications/commands/post/update-post.command';

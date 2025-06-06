@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test } from '@nestjs/testing';
 import { CreateEmptyPostHandler } from './create-empty-post.handler';
 import { CreateEmptyPostCommand } from '#applications/commands/post/create-empty-post.command';

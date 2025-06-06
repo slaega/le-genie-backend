@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Test } from '@nestjs/testing';
 import { DeletePostHandler } from './delete-post.handler';
 import { DeletePostCommand } from '#applications/commands/post/delete-post.command';

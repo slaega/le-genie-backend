@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Test } from '@nestjs/testing';
 import { MakeCommentHandler } from './make-comment.handler';
 import { MakeCommentCommand } from '#applications/commands/comment/make-comment.command';
