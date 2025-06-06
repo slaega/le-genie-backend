@@ -3,7 +3,6 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { PrismaModule } from '../common/prisma/prisma.module';
-import { InvitationController } from './invitation.controller';
 import { InvitationPrismaRepository } from '#infra/percistences/prisma/invitation.repository';
 import { ContributorModule } from '../contributor/contributor.module';
 import { AcceptedInvitationHandler } from '#applications/handlers/invitation/accepted-invitation.handler';
@@ -25,6 +24,6 @@ import { SendInvitationHandler } from '#applications/handlers/invitation/send-in
         SendInvitationHandler,
     ],
     exports: [INVITATION_REPOSITORY],
-    controllers: [InvitationController],
+    controllers: [],
 })
 export class InvitationModule {}

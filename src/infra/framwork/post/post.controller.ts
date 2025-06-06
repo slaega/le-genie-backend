@@ -24,6 +24,12 @@ import { PostQueryDto } from '#dto/post/post-query.dto';
 import { PostResponseDto } from '#dto/post/post-response.dto';
 import { PostMapper } from '#domain/mappers/post/post.mapper';
 import { FormDataRequest } from 'nestjs-form-data';
+import {
+    ApiAcceptedResponse,
+    ApiConsumes,
+    ApiNotFoundResponse,
+    ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 @Controller('posts')
 export class PostController {
     constructor(
@@ -41,6 +47,10 @@ export class PostController {
 
     @UseGuards(JwtAuthGuard)
     @FormDataRequest()
+    @ApiConsumes('multipart/form-data')
+    @ApiAcceptedResponse({ type: PostResponseDto })
+    @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+    @ApiNotFoundResponse({ description: 'Post not found' })
     @Patch(':postId')
     async update(
         @Param('postId') postId: string,
@@ -66,6 +76,9 @@ export class PostController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @ApiAcceptedResponse({ description: 'Post deleted' })
+    @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+    @ApiNotFoundResponse({ description: 'Post not found' })
     @Delete(':postId')
     delete(@Param('postId') postId: string, @Auth() user: AuthUser) {
         return this.commandBus.execute(new DeletePostCommand(postId, user.sub));
@@ -73,6 +86,9 @@ export class PostController {
 
     @Get(':postId')
     @UseGuards(OptionalJwtAuthGuard)
+    @ApiAcceptedResponse({ description: 'Post deleted' })
+    @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+    @ApiNotFoundResponse({ description: 'Post not found' })
     async getPost(@Param() param: PostParamDto, @Auth() user: AuthUser | null) {
         const post = await this.queryBus.execute(
             new GetPostQuery(param.postId, user?.sub ? 'ALL' : 'PUBLISHED')
@@ -82,6 +98,9 @@ export class PostController {
 
     @Get()
     @UseGuards(OptionalJwtAuthGuard)
+    @ApiAcceptedResponse({ description: 'Post deleted' })
+    @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+    @ApiNotFoundResponse({ description: 'Post not found' })
     async getPosts(
         @Query() query: PostQueryDto,
         @Auth() user: AuthUser | null

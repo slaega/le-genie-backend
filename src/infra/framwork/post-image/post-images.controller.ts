@@ -1,19 +1,13 @@
 import { CommandBus } from '@nestjs/cqrs';
 import { Auth } from '../auth/auth.decorator';
 import { AuthUser } from '../auth/auth.type';
-import {
-    Body,
-    Controller,
-    Delete,
-    Param,
-    Post,
-    UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/auth.guard';
 import { UploadImageCommand } from '#applications/commands/post-images/upload-image.command';
-import { RemoveImageCommand } from '#applications/commands/post-images/remove-image.command';
+
 import { CreatePostImageDto } from '#dto/post-images/create-post-image.dto';
 import { FormDataRequest } from 'nestjs-form-data';
+import { ApiConsumes } from '@nestjs/swagger';
 
 @Controller('posts/:postId/images')
 export class PostImagesController {
@@ -22,6 +16,7 @@ export class PostImagesController {
     @UseGuards(JwtAuthGuard)
     @FormDataRequest()
     @Post()
+    @ApiConsumes('multipart/form-data')
     uploadImage(
         @Param('postId') postId: string,
         @Body() createPostImage: CreatePostImageDto,
@@ -34,14 +29,6 @@ export class PostImagesController {
         };
         return this.commandBus.execute(
             new UploadImageCommand(postId, auth.sub, imageFile)
-        );
-    }
-
-    @UseGuards(JwtAuthGuard)
-    @Delete(':url')
-    refuse(@Param() postId: string, @Auth() user: AuthUser) {
-        return this.commandBus.execute(
-            new RemoveImageCommand(postId, user.sub)
         );
     }
 }
