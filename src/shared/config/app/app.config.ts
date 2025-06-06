@@ -2,7 +2,6 @@ import { registerAs } from '@nestjs/config';
 import {
     IsEnum,
     IsInt,
-    IsNotEmpty,
     IsOptional,
     IsString,
     IsUrl,
@@ -71,7 +70,7 @@ class EnvironmentVariablesValidator {
     APP_THROTTLER_LIMIT: number;
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     COOKIE_SECRET: string;
 
     @IsString()
