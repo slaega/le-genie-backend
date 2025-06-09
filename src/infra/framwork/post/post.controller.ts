@@ -61,7 +61,7 @@ export class PostController {
         const command = new UpdatePostCommand();
         command.id = postId;
         command.currentUserId = user.sub;
-        command.title = updatePostDto.title + 'Slaega';
+        command.title = updatePostDto.title;
         command.content = updatePostDto.content;
         command.status = updatePostDto.status;
         command.imageFile = imageFile
