@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UpdatePostCommand } from '#applications/commands/post/update-post.command';
-import { Inject, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Inject, NotFoundException } from '@nestjs/common';
 import {
     POST_REPOSITORY,
     STORAGE_PROVIDER,
@@ -22,6 +22,12 @@ export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
         if (!post) {
             throw new NotFoundException({
                 message: 'Post non  Found',
+            });
+        }
+
+        if (!post.contributors.find((c) => c.id === command.currentUserId)) {
+            throw new ForbiddenException({
+                message: 'Forbidden your not authorized',
             });
         }
 
