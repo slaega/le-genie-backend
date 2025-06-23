@@ -25,7 +25,9 @@ export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
             });
         }
 
-        if (!post.contributors.find((c) => c.id === command.currentUserId)) {
+        if (
+            !post.contributors.find((c) => c.userId === command.currentUserId)
+        ) {
             throw new ForbiddenException({
                 message: 'Forbidden your not authorized',
             });
