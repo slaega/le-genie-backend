@@ -24,6 +24,7 @@ export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
                 message: 'Post non  Found',
             });
         }
+        console.log(post.contributors);
 
         if (
             !post.contributors.find((c) => c.userId === command.currentUserId)
