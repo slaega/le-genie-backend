@@ -8,6 +8,7 @@ import {
 } from '#shared/constantes/inject-token';
 import { PostRepository } from '#domain/repository/post.repository';
 import { Post } from '#domain/entities/post.entity';
+import { Contributor } from '#domain/entities/contributor.entity';
 import { NotFoundException } from '@nestjs/common';
 import { PostStatus } from '#shared/enums/post-status.enum';
 // import { StorageProvider } from '#domain/services/storage.provider';
@@ -26,7 +27,7 @@ describe('UpdatePostHandler', () => {
         const storageProviderMock = {
             upload: jest.fn(),
             delete: jest.fn(),
-            getPublicUrl: jest.fn(),
+            getPublicUrl: jest.fn().mockResolvedValue(null),
         };
 
         const moduleRef = await Test.createTestingModule({
@@ -69,9 +70,13 @@ describe('UpdatePostHandler', () => {
             command.content = updateData.content;
             command.status = updateData.status;
 
+            const contributor = new Contributor();
+            contributor.userId = command.currentUserId;
             const existingPost = new Post();
             existingPost.id = postId;
+            existingPost.contributors = [contributor];
             const updatedPost = new Post();
+            updatedPost.contributors = [contributor];
             Object.assign(existingPost, updateData);
             postRepository.getPostById.mockResolvedValue(existingPost);
             postRepository.updatePost.mockResolvedValue(updatedPost);
@@ -133,13 +138,16 @@ describe('UpdatePostHandler', () => {
             command.content = updateData.content;
             command.status = updateData.status;
 
+            const contributor = new Contributor();
+            contributor.userId = command.currentUserId;
             const existingPost = new Post();
             existingPost.id = postId;
+            existingPost.contributors = [contributor];
+            Object.assign(existingPost, updateData);
             const error = new Error('Database error');
 
             postRepository.getPostById.mockResolvedValue(existingPost);
             postRepository.updatePost.mockRejectedValue(error);
-            Object.assign(existingPost, updateData);
             // Act & Assert
             await expect(handler.execute(command)).rejects.toThrow(error);
             expect(postRepository.getPostById).toHaveBeenCalledWith(postId);

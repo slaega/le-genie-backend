@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaProxyRepository } from '#infra/percistences/prisma/prisma';
+import { PrismaProxyRepository } from '#infra/persistences/prisma/prisma';
 import { CommentRepository } from '#domain/repository/comment.repository';
 import { Comment } from '#domain/entities/comment.entity';
 import { PrismaClient } from '@prisma/client';

@@ -3,7 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { PrismaModule } from '../common/prisma/prisma.module';
 import { CommentController } from './comment.controller';
-import { CommentPrismaRepository } from '#infra/percistences/prisma/comment.repository';
+import { CommentPrismaRepository } from '#infra/persistences/prisma/comment.repository';
 import { COMMENT_REPOSITORY } from '#shared/constantes/inject-token';
 import { MakeCommentHandler } from '#applications/handlers/comment/make-comment.handler';
 import { RefactorCommentHandler } from '#applications/handlers/comment/refactor-comment.handler';

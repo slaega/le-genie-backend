@@ -1,32 +1,33 @@
-import { PostStatus } from '#shared/enums/post-status.enum';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { PostStatus } from '#shared/enums/post-status.enum'
+import { ApiProperty } from '@nestjs/swagger'
+import { IsEnum, IsOptional, IsString } from 'class-validator'
 import {
     HasMimeType,
     IsFile,
     MaxFileSize,
     MemoryStoredFile,
-} from 'nestjs-form-data';
+} from 'nestjs-form-data'
+
 export class UpdatePostDto {
-    @ApiProperty()
+    @ApiProperty({ required: false })
     @IsString()
-    title: string;
-    @ApiProperty()
-    @IsString()
-    content: string;
+    @IsOptional()
+    title?: string
 
-    @ApiProperty()
+    @ApiProperty({ required: false })
     @IsString()
+    @IsOptional()
+    content?: string
+
+    @ApiProperty({ enum: PostStatus, required: false })
     @IsEnum(PostStatus)
-    status: PostStatus;
+    @IsOptional()
+    status?: PostStatus
 
-    @ApiProperty({
-        type: 'string',
-        format: 'binary',
-    })
+    @ApiProperty({ type: 'string', format: 'binary', required: false })
     @IsOptional()
     @IsFile()
     @MaxFileSize(5 * 1024 * 1024)
-    @HasMimeType(['image/jpeg', 'image/png'])
-    imageFile?: MemoryStoredFile;
+    @HasMimeType(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+    imageFile?: MemoryStoredFile
 }

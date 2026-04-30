@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AuthProviderRepository } from '#domain/repository/auth-provider.repository';
 import { AuthProvider } from '#domain/entities/auth-provider.entity';
-import { PrismaProxyRepository } from '#infra/percistences/prisma/prisma';
+import { PrismaProxyRepository } from '#infra/persistences/prisma/prisma';
 import { PrismaService } from '#infra/framwork/common/prisma/prisma.service';
 
 @Injectable()

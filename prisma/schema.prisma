@@ -1,15 +1,14 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Le Génie — Headless CMS
+// Prisma schema — multi-provider: postgresql | mysql | sqlite
+// Switch via DATABASE_PROVIDER env var (default: postgresql)
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  // DATABASE_PROVIDER: postgresql | mysql | sqlite
+  provider = env("DATABASE_PROVIDER")
   url      = env("DATABASE_URL")
 }
 
@@ -26,7 +25,7 @@ model User {
   comments         Comment[]
   refreshTokens    RefreshToken[]
   authProviders    AuthProvider[]
-  PostReader       PostReader[]
+  postReaders      PostReader[]
   invitations      Invitation[]
 
   @@index([email])
@@ -34,19 +33,23 @@ model User {
 }
 
 model Post {
-  id           String        @id @default(cuid())
-  title        String
-  content      Json
-  imagePath    String?
-  status       PostStatus    @default(EMPTY)
+  id          String      @id @default(cuid())
+  title       String
+  // Stored as TipTap JSON string — generateHTML() on read for SSR/SEO
+  content     String      @default("{}")
+  imagePath   String?
+  status      PostStatus  @default(EMPTY)
+  readingTime Int?        @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
   contributors Contributor[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
   comments     Comment[]
   invitations  Invitation[]
   postReaders  PostReader[]
   postTags     PostTag[]
 
+  @@index([status, createdAt])
   @@map("posts")
 }
 
@@ -59,10 +62,9 @@ model PostReader {
   userId    String?
   user      User?    @relation(fields: [userId], references: [id])
   viewedAt  DateTime @default(now())
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@unique([postId, readerId])
-  @@unique([readerId, postId])
   @@index([postId, readerId])
   @@index([userId, postId])
   @@map("post_readers")
@@ -71,15 +73,14 @@ model PostReader {
 model Contributor {
   id        String   @id @default(cuid())
   postId    String
-  post      Post     @relation(fields: [postId], references: [id])
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   owner     Boolean  @default(false)
 
   @@unique([postId, userId])
-  @@index([id])
   @@index([postId, userId])
   @@map("contributors")
 }
@@ -89,19 +90,20 @@ model Comment {
   content    String
   refactorAt DateTime?
   postId     String
-  post       Post      @relation(fields: [postId], references: [id])
+  post       Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
   userId     String
-  user       User      @relation(fields: [userId], references: [id])
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 
+  @@index([postId, createdAt])
   @@map("comments")
 }
 
 model AuthProvider {
   id             String    @id @default(cuid())
   userId         String
-  user           User      @relation(fields: [userId], references: [id])
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   provider       Provider
   providerUserId String
   createdAt      DateTime  @default(now())
@@ -116,7 +118,7 @@ model AuthProvider {
 model RefreshToken {
   id        String   @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   token     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -132,14 +134,15 @@ model Invitation {
   email     String
   user      User?    @relation(fields: [email], references: [email])
   postId    String
-  post      Post     @relation(fields: [postId], references: [id])
-  token     String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  token     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   expiredAt DateTime
 
   @@unique([postId, email])
   @@index([postId, email])
+  @@index([token])
   @@map("invitations")
 }
 
@@ -155,7 +158,7 @@ model PostTag {
   id     String @id @default(cuid())
   postId String
   name   String
-  post   Post   @relation(fields: [postId], references: [id])
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
   tag    Tag    @relation(fields: [name], references: [name])
 
   @@unique([postId, name])

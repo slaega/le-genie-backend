@@ -4,10 +4,10 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { PrismaModule } from '../common/prisma/prisma.module';
 import { PostTagsController } from './post-tags.controller';
 import { PostModule } from '../post/post.module';
-import { RemoveContributorHandler } from '#applications/handlers/contributor/remove.contribtion.handler';
+import { RemoveContributorHandler } from '#applications/handlers/contributor/remove.contribution.handler';
 import { UploadImageHandler } from '#applications/handlers/post-images/upload-image.handler';
 import { PrismaService } from '../common/prisma/prisma.service';
-import { PostTagsPrismaRepository } from '#infra/percistences/prisma/post-tags.repository';
+import { PostTagsPrismaRepository } from '#infra/persistences/prisma/post-tags.repository';
 
 @Module({
     imports: [CqrsModule, PrismaModule, PostModule],

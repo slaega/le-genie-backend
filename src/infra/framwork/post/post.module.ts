@@ -1,4 +1,4 @@
-import { PostPrismaRepository } from '#infra/percistences/prisma/post.repository';
+import { PostPrismaRepository } from '#infra/persistences/prisma/post.repository';
 import { POST_REPOSITORY } from '#shared/constantes/inject-token';
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';

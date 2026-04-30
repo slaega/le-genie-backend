@@ -4,7 +4,7 @@ import { Inject } from '@nestjs/common';
 import { RefreshTokenRepository } from '#domain/repository/refresh-token.repository';
 import { REFRESH_TOKEN_REPOSITORY } from '#shared/constantes/inject-token';
 import { USER_REPOSITORY } from '#shared/constantes/inject-token';
-import { UserPrismaRepository } from '#infra/percistences/prisma/user.repository';
+import { UserPrismaRepository } from '#infra/persistences/prisma/user.repository';
 import { TokenService } from '#infra/dependencies/token.service';
 import { nanoid } from 'nanoid';
 import { RefreshToken } from '#domain/entities/refresh-token.entity';

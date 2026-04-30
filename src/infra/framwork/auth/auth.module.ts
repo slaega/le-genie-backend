@@ -14,12 +14,12 @@ import {
     REFRESH_TOKEN_REPOSITORY,
     USER_REPOSITORY,
 } from '#shared/constantes/inject-token';
-import { UserPrismaRepository } from '#infra/percistences/prisma/user.repository';
+import { UserPrismaRepository } from '#infra/persistences/prisma/user.repository';
 import { PrismaService } from '../common/prisma/prisma.service';
-import { AuthProviderPrismaRepository } from '#infra/percistences/prisma/auth-provider.repository';
+import { AuthProviderPrismaRepository } from '#infra/persistences/prisma/auth-provider.repository';
 import { JwtStrategy } from './strategies/jwt-access.strategy';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
-import { RefreshTokenPrismaRepository } from '#infra/percistences/prisma/refresh.repository';
+import { RefreshTokenPrismaRepository } from '#infra/persistences/prisma/refresh.repository';
 import { ExchangeProviderRegistry } from './auth-providers/exchange.provider';
 import { GithubExchangeProvider } from './auth-providers/github-exchange.provider';
 import { GoogleExchangeProvider } from './auth-providers/google-exchange.provider';

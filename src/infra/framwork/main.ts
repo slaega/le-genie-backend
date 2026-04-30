@@ -18,20 +18,21 @@ import { LoggerErrorInterceptor } from 'nestjs-pino';
 import { AllConfigType } from '#config/config.type';
 import { SwaggerConfig } from '#config/swagger/swagger.config';
 import { LoggerService } from '#infra/framwork/common/logger/logger.service';
-// import { appStart } from './app-start';
 import { AllExceptionsFilter } from '#shared/utils/filters/all-exceptions.filter';
 import { PrismaExceptionFilter } from '#shared/utils/filters/prisma-exception.filter';
 import validationOptions from '#shared/utils/validation-options';
 import { ResolvePromisesInterceptor } from '#shared/utils/serializer.interceptor';
 
 async function bootstrap() {
-    //   appStart();
     const app = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService<AllConfigType>);
     //   const origin = configService.get('app.corsOrigins', { infer: true });
+    const corsOrigins = configService.get('app.corsOrigins', { infer: true }) ?? []
     app.enableCors({
-        origin: ['*'],
+        origin: corsOrigins,
         credentials: true,
+        methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
     });
 
     useContainer(app.select(AppModule), { fallbackOnErrors: true });

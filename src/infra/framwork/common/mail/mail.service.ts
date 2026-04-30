@@ -197,17 +197,4 @@ export class MailService {
         });
     }
 
-    // TODO : A Developper
-
-    async sendChangeEmailMail(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        mailData: MailData<{ name: string; oldEmail: string; token: string }>
-    ): Promise<void> {}
-
-    // TODO : A Developper
-
-    async sendVerifyEmailMail(
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        mailData: MailData<{ name: string; email: string; token: string }>
-    ): Promise<void> {}
 }

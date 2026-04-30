@@ -3,9 +3,9 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { PrismaModule } from '../common/prisma/prisma.module';
-import { ContributorPrismaRepository } from '#infra/percistences/prisma/contributor.repository';
-import { LeaveContributorHandler } from '#applications/handlers/contributor/leave.contribtion.handler';
-import { RemoveContributorHandler } from '#applications/handlers/contributor/remove.contribtion.handler';
+import { ContributorPrismaRepository } from '#infra/persistences/prisma/contributor.repository';
+import { LeaveContributorHandler } from '#applications/handlers/contributor/leave.contribution.handler';
+import { RemoveContributorHandler } from '#applications/handlers/contributor/remove.contribution.handler';
 
 @Module({
     imports: [CqrsModule, PrismaModule],
