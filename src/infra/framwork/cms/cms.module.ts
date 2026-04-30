@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common'
-import { CqrsModule } from '@nestjs/cqrs'
-import { CmsController } from './cms.controller'
+import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
+import { CmsController } from './cms.controller';
 
 @Module({
     imports: [CqrsModule],

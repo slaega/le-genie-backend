@@ -27,7 +27,8 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     const configService = app.get(ConfigService<AllConfigType>);
     //   const origin = configService.get('app.corsOrigins', { infer: true });
-    const corsOrigins = configService.get('app.corsOrigins', { infer: true }) ?? []
+    const corsOrigins =
+        configService.get('app.corsOrigins', { infer: true }) ?? [];
     app.enableCors({
         origin: corsOrigins,
         credentials: true,
