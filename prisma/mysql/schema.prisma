@@ -1,0 +1,204 @@
+// Le Génie — MySQL schema
+// Usage: DATABASE_PROVIDER=mysql
+// Migrate : yarn db:migrate:dev
+// Push    : yarn db:push  (dev sans migration history)
+// Generate: yarn db:generate
+// Studio  : yarn db:studio
+//
+// Notes MySQL :
+//   - TEXT/LONGTEXT ne supportent pas @default() côté DB
+//     → content est initialisé par le service, pas par le schéma
+//   - Les champs @unique indexés utilisent @db.VarChar pour rester
+//     dans la limite de 3072 bytes (innodb_large_prefix)
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  relationMode      = "prisma"
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+model User {
+  id               String   @id @default(cuid())
+  email            String   @unique @db.VarChar(320)
+  name             String   @db.VarChar(255)
+  avatarPath       String?  @db.VarChar(2048)
+  coverPath        String?  @db.VarChar(2048)
+  professionalRole String?  @db.VarChar(255)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  contributors  Contributor[]
+  comments      Comment[]
+  refreshTokens RefreshToken[]
+  authProviders AuthProvider[]
+  postReaders   PostReader[]
+  invitations   Invitation[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Post {
+  id          String     @id @default(cuid())
+  title       String     @db.VarChar(512)
+  /// TipTap JSON — pas de DEFAULT DB côté MySQL (restriction TEXT)
+  /// Toujours initialisé côté service avant insertion
+  content     String     @db.LongText
+  imagePath   String?    @db.VarChar(2048)
+  status      PostStatus @default(EMPTY)
+  readingTime Int?       @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  contributors Contributor[]
+  comments     Comment[]
+  invitations  Invitation[]
+  postReaders  PostReader[]
+  postTags     PostTag[]
+
+  @@index([status, createdAt])
+  @@map("posts")
+}
+
+model PostReader {
+  id        String   @id @default(cuid())
+  postId    String
+  readerId  String   @db.VarChar(255)
+  ip        String?  @db.VarChar(45)
+  userAgent String?  @db.VarChar(512)
+  userId    String?
+  viewedAt  DateTime @default(now())
+
+  post Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id])
+
+  @@unique([postId, readerId])
+  @@index([postId, readerId])
+  @@index([userId, postId])
+  @@map("post_readers")
+}
+
+model Contributor {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String
+  owner     Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([postId, userId])
+  @@map("contributors")
+}
+
+model Comment {
+  id         String    @id @default(cuid())
+  content    String    @db.Text
+  refactorAt DateTime?
+  postId     String
+  userId     String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([postId, createdAt])
+  @@map("comments")
+}
+
+model AuthProvider {
+  id             String    @id @default(cuid())
+  userId         String
+  provider       Provider
+  providerUserId String    @db.VarChar(255)
+  activatedAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider])
+  @@index([userId, provider])
+  @@map("auth_providers")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  /// JWT — VarChar(512) pour rester indexable (@unique)
+  token     String   @db.VarChar(512)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, token])
+  @@index([userId, token])
+  @@map("refresh_tokens")
+}
+
+model Invitation {
+  id        String   @id @default(cuid())
+  content   String?  @db.Text
+  email     String   @db.VarChar(320)
+  postId    String
+  token     String   @unique @db.VarChar(512)
+  expiredAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User? @relation(fields: [email], references: [email])
+  post Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, email])
+  @@index([postId, email])
+  @@index([token])
+  @@map("invitations")
+}
+
+model Tag {
+  id    String    @id @default(cuid())
+  name  String    @unique @db.VarChar(255)
+  posts PostTag[]
+
+  @@map("tags")
+}
+
+model PostTag {
+  id     String @id @default(cuid())
+  postId String
+  name   String @db.VarChar(255)
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [name], references: [name])
+
+  @@unique([postId, name])
+  @@index([postId, name])
+  @@map("post_tags")
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum Provider {
+  GOOGLE
+  GITHUB
+}
+
+enum PostStatus {
+  EMPTY
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}

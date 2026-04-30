@@ -1,0 +1,199 @@
+// Le Génie — SQLite schema (développement local uniquement)
+// Usage: DATABASE_PROVIDER=sqlite
+// Push    : yarn db:push   (pas de migration history, idéal pour dev)
+// Generate: yarn db:generate
+// Studio  : yarn db:studio
+//
+// Notes SQLite :
+//   - Pas d'annotations @db.* (SQLite type-mapping automatique)
+//   - Les enums sont émulés en TEXT avec CHECK constraints (Prisma ≥4)
+//   - Pas de shadowDatabaseUrl requis
+//   - Préférer `db push` plutôt que `migrate dev` en local
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+model User {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  name             String
+  avatarPath       String?
+  coverPath        String?
+  professionalRole String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  contributors  Contributor[]
+  comments      Comment[]
+  refreshTokens RefreshToken[]
+  authProviders AuthProvider[]
+  postReaders   PostReader[]
+  invitations   Invitation[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Post {
+  id          String     @id @default(cuid())
+  title       String
+  /// TipTap JSON — generateHTML() renders it server-side for SEO
+  content     String     @default("{}")
+  imagePath   String?
+  status      PostStatus @default(EMPTY)
+  readingTime Int?       @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  contributors Contributor[]
+  comments     Comment[]
+  invitations  Invitation[]
+  postReaders  PostReader[]
+  postTags     PostTag[]
+
+  @@index([status, createdAt])
+  @@map("posts")
+}
+
+model PostReader {
+  id        String   @id @default(cuid())
+  postId    String
+  readerId  String
+  ip        String?
+  userAgent String?
+  userId    String?
+  viewedAt  DateTime @default(now())
+
+  post Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id])
+
+  @@unique([postId, readerId])
+  @@index([postId, readerId])
+  @@index([userId, postId])
+  @@map("post_readers")
+}
+
+model Contributor {
+  id        String   @id @default(cuid())
+  postId    String
+  userId    String
+  owner     Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([postId, userId])
+  @@map("contributors")
+}
+
+model Comment {
+  id         String    @id @default(cuid())
+  content    String
+  refactorAt DateTime?
+  postId     String
+  userId     String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([postId, createdAt])
+  @@map("comments")
+}
+
+model AuthProvider {
+  id             String    @id @default(cuid())
+  userId         String
+  provider       Provider
+  providerUserId String
+  activatedAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, provider])
+  @@index([userId, provider])
+  @@map("auth_providers")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, token])
+  @@index([userId, token])
+  @@map("refresh_tokens")
+}
+
+model Invitation {
+  id        String   @id @default(cuid())
+  content   String?
+  email     String
+  postId    String
+  token     String   @unique
+  expiredAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User? @relation(fields: [email], references: [email])
+  post Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, email])
+  @@index([postId, email])
+  @@index([token])
+  @@map("invitations")
+}
+
+model Tag {
+  id    String    @id @default(cuid())
+  name  String    @unique
+  posts PostTag[]
+
+  @@map("tags")
+}
+
+model PostTag {
+  id     String @id @default(cuid())
+  postId String
+  name   String
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [name], references: [name])
+
+  @@unique([postId, name])
+  @@index([postId, name])
+  @@map("post_tags")
+}
+
+// ─── Enums (émulés en TEXT + CHECK constraint) ────────────────────────────────
+
+enum Provider {
+  GOOGLE
+  GITHUB
+}
+
+enum PostStatus {
+  EMPTY
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}

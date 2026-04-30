@@ -34,7 +34,7 @@
       "#domain/*": ["src/domain/*"],
       "#applications/*": ["src/applications/*"],
       "#framework/*": ["src/infra/framework/*"],
-      "#percistences/*": ["src/infra/percistences/*"],
+      "#persistences/*": ["src/infra/persistences/*"],
       "#core/*": ["src/core/*"],
 
     },

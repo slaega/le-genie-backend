@@ -25,8 +25,10 @@ RUN yarn install --immutable
 # Copy source files
 COPY . .
 
-# Generate Prisma client
-RUN yarn prisma generate
+# Generate Prisma client (provider sélectionné via DATABASE_PROVIDER, postgres par défaut)
+ARG DATABASE_PROVIDER=postgres
+ENV DATABASE_PROVIDER=${DATABASE_PROVIDER}
+RUN yarn db:generate
 
 
 # Build application
