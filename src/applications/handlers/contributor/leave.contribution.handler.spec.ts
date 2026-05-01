@@ -18,7 +18,10 @@ function makeContributor(userId: string, owner = false): Contributor {
 describe('LeaveContributorHandler', () => {
     let handler: LeaveContributorHandler;
     let contributorRepository: jest.Mocked<
-        Pick<ContributorRepository, 'getContributorsByPostId' | 'removeContributor'>
+        Pick<
+            ContributorRepository,
+            'getContributorsByPostId' | 'removeContributor'
+        >
     >;
 
     beforeEach(async () => {
@@ -30,7 +33,10 @@ describe('LeaveContributorHandler', () => {
         const moduleRef = await Test.createTestingModule({
             providers: [
                 LeaveContributorHandler,
-                { provide: CONTRIBUTOR_REPOSITORY, useValue: contributorRepository },
+                {
+                    provide: CONTRIBUTOR_REPOSITORY,
+                    useValue: contributorRepository,
+                },
             ],
         }).compile();
 
@@ -45,30 +51,49 @@ describe('LeaveContributorHandler', () => {
         it('removes the matching contributor', async () => {
             const alice = makeContributor('user-alice');
             const bob = makeContributor('user-bob');
-            contributorRepository.getContributorsByPostId.mockResolvedValue([alice, bob]);
-            contributorRepository.removeContributor.mockResolvedValue(undefined as never);
+            contributorRepository.getContributorsByPostId.mockResolvedValue([
+                alice,
+                bob,
+            ]);
+            contributorRepository.removeContributor.mockResolvedValue(
+                undefined as never
+            );
 
             const command = new LeaveContributorCommand('post-1', 'user-alice');
             await handler.execute(command);
 
-            expect(contributorRepository.removeContributor).toHaveBeenCalledWith('contributor-user-alice');
+            expect(
+                contributorRepository.removeContributor
+            ).toHaveBeenCalledWith('contributor-user-alice');
         });
 
         it('throws NotFoundException when post has no contributors', async () => {
-            contributorRepository.getContributorsByPostId.mockResolvedValue(null as never);
+            contributorRepository.getContributorsByPostId.mockResolvedValue(
+                null as never
+            );
 
             const command = new LeaveContributorCommand('post-1', 'user-alice');
-            await expect(handler.execute(command)).rejects.toThrow(NotFoundException);
-            expect(contributorRepository.removeContributor).not.toHaveBeenCalled();
+            await expect(handler.execute(command)).rejects.toThrow(
+                NotFoundException
+            );
+            expect(
+                contributorRepository.removeContributor
+            ).not.toHaveBeenCalled();
         });
 
         it('throws ForbiddenException when user is not a contributor', async () => {
             const bob = makeContributor('user-bob');
-            contributorRepository.getContributorsByPostId.mockResolvedValue([bob]);
+            contributorRepository.getContributorsByPostId.mockResolvedValue([
+                bob,
+            ]);
 
             const command = new LeaveContributorCommand('post-1', 'user-alice');
-            await expect(handler.execute(command)).rejects.toThrow(ForbiddenException);
-            expect(contributorRepository.removeContributor).not.toHaveBeenCalled();
+            await expect(handler.execute(command)).rejects.toThrow(
+                ForbiddenException
+            );
+            expect(
+                contributorRepository.removeContributor
+            ).not.toHaveBeenCalled();
         });
     });
 });

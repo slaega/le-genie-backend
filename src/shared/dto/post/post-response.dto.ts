@@ -1,31 +1,31 @@
-import { ApiResponseProperty } from '@nestjs/swagger'
-import { PostStatus } from '#shared/enums/post-status.enum'
+import { ApiResponseProperty } from '@nestjs/swagger';
+import { PostStatus } from '#shared/enums/post-status.enum';
 
 export class PostResponseDto {
     @ApiResponseProperty()
-    id: string
+    id: string;
 
     @ApiResponseProperty()
-    title: string
+    title: string;
 
     @ApiResponseProperty()
-    imagePath: string | null
+    imagePath: string | null;
 
     @ApiResponseProperty()
-    content: Record<string, unknown>
+    content: Record<string, unknown>;
 
     @ApiResponseProperty({ enum: PostStatus })
-    status: PostStatus
+    status: PostStatus;
 
     @ApiResponseProperty()
-    contributors: unknown[]
+    contributors: unknown[];
 
     @ApiResponseProperty()
-    postTags: unknown[]
+    postTags: unknown[];
 
     @ApiResponseProperty()
-    createdAt: Date
+    createdAt: Date;
 
     @ApiResponseProperty()
-    updatedAt: Date
+    updatedAt: Date;
 }

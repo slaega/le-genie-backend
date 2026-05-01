@@ -3,7 +3,7 @@
 /node_modules
 /build
 
-
+dev.db
 # dependencies
 /node_modules
 /.pnp

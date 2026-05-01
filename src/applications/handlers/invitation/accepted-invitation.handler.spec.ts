@@ -38,8 +38,14 @@ describe('AcceptedInvitationHandler', () => {
         const moduleRef = await Test.createTestingModule({
             providers: [
                 AcceptedInvitationHandler,
-                { provide: INVITATION_REPOSITORY, useValue: invitationRepository },
-                { provide: CONTRIBUTOR_REPOSITORY, useValue: contributorRepository },
+                {
+                    provide: INVITATION_REPOSITORY,
+                    useValue: invitationRepository,
+                },
+                {
+                    provide: CONTRIBUTOR_REPOSITORY,
+                    useValue: contributorRepository,
+                },
             ],
         }).compile();
 
@@ -54,13 +60,18 @@ describe('AcceptedInvitationHandler', () => {
         it('creates a non-owner contributor from the invitation', async () => {
             const inv = makeInvitation('inv-1', 'post-1');
             invitationRepository.getInvitationById.mockResolvedValue(inv);
-            contributorRepository.createContributor.mockResolvedValue(undefined as never);
-            invitationRepository.removeInvitation.mockResolvedValue(undefined as never);
+            contributorRepository.createContributor.mockResolvedValue(
+                undefined as never
+            );
+            invitationRepository.removeInvitation.mockResolvedValue(
+                undefined as never
+            );
 
             const command = new AcceptedInvitationCommand('inv-1', 'user-bob');
             await handler.execute(command);
 
-            const [contributor] = contributorRepository.createContributor.mock.calls[0];
+            const [contributor] =
+                contributorRepository.createContributor.mock.calls[0];
             expect(contributor.postId).toBe('post-1');
             expect(contributor.userId).toBe('user-bob');
             expect(contributor.owner).toBe(false);
@@ -69,21 +80,36 @@ describe('AcceptedInvitationHandler', () => {
         it('removes the invitation after accepting', async () => {
             const inv = makeInvitation('inv-1', 'post-1');
             invitationRepository.getInvitationById.mockResolvedValue(inv);
-            contributorRepository.createContributor.mockResolvedValue(undefined as never);
-            invitationRepository.removeInvitation.mockResolvedValue(undefined as never);
+            contributorRepository.createContributor.mockResolvedValue(
+                undefined as never
+            );
+            invitationRepository.removeInvitation.mockResolvedValue(
+                undefined as never
+            );
 
             const command = new AcceptedInvitationCommand('inv-1', 'user-bob');
             await handler.execute(command);
 
-            expect(invitationRepository.removeInvitation).toHaveBeenCalledWith('inv-1');
+            expect(invitationRepository.removeInvitation).toHaveBeenCalledWith(
+                'inv-1'
+            );
         });
 
         it('throws when invitation does not exist', async () => {
-            invitationRepository.getInvitationById.mockResolvedValue(null as never);
+            invitationRepository.getInvitationById.mockResolvedValue(
+                null as never
+            );
 
-            const command = new AcceptedInvitationCommand('missing', 'user-bob');
-            await expect(handler.execute(command)).rejects.toThrow('Invitation not found');
-            expect(contributorRepository.createContributor).not.toHaveBeenCalled();
+            const command = new AcceptedInvitationCommand(
+                'missing',
+                'user-bob'
+            );
+            await expect(handler.execute(command)).rejects.toThrow(
+                'Invitation not found'
+            );
+            expect(
+                contributorRepository.createContributor
+            ).not.toHaveBeenCalled();
         });
     });
 });

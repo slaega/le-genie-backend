@@ -1,45 +1,45 @@
-import { registerAs } from '@nestjs/config'
-import { IsEnum, IsOptional, IsString, IsUrl } from 'class-validator'
-import type { StorageConfig, StorageDriver } from './storage-config.type'
-import validateConfig from '#shared/utils/validate-config'
+import { registerAs } from '@nestjs/config';
+import { IsEnum, IsOptional, IsString, IsUrl } from 'class-validator';
+import type { StorageConfig, StorageDriver } from './storage-config.type';
+import validateConfig from '#shared/utils/validate-config';
 
 class StorageEnvValidator {
     @IsEnum(['local', 's3', 'minio', 'r2'])
     @IsOptional()
-    STORAGE_DRIVER: StorageDriver
+    STORAGE_DRIVER: StorageDriver;
 
     @IsString()
     @IsOptional()
-    STORAGE_ACCESS_ID: string
+    STORAGE_ACCESS_ID: string;
 
     @IsString()
     @IsOptional()
-    STORAGE_ACCESS_KEY: string
+    STORAGE_ACCESS_KEY: string;
 
     @IsUrl({ require_tld: false })
     @IsOptional()
-    STORAGE_ENDPOINT: string
+    STORAGE_ENDPOINT: string;
 
     @IsString()
     @IsOptional()
-    STORAGE_BUCKET: string
+    STORAGE_BUCKET: string;
 
     @IsString()
     @IsOptional()
-    STORAGE_REGION: string
+    STORAGE_REGION: string;
 
     @IsUrl({ require_tld: false })
     @IsOptional()
-    STORAGE_PUBLIC_URL: string
+    STORAGE_PUBLIC_URL: string;
 
     @IsString()
     @IsOptional()
-    STORAGE_UPLOAD_DIR: string
+    STORAGE_UPLOAD_DIR: string;
 }
 
 export default registerAs<StorageConfig>('storage', () => {
-    validateConfig(process.env, StorageEnvValidator)
-    const driver = (process.env.STORAGE_DRIVER ?? 'local') as StorageDriver
+    validateConfig(process.env, StorageEnvValidator);
+    const driver = (process.env.STORAGE_DRIVER ?? 'local') as StorageDriver;
     return {
         driver,
         accessKeyId: process.env.STORAGE_ACCESS_ID,
@@ -50,6 +50,7 @@ export default registerAs<StorageConfig>('storage', () => {
         publicUrl: process.env.STORAGE_PUBLIC_URL,
         forcePathStyle: driver === 'minio' || driver === 'r2',
         uploadDir: process.env.STORAGE_UPLOAD_DIR ?? './uploads',
-        localPublicUrl: process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3030',
-    }
-})
+        localPublicUrl:
+            process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3030',
+    };
+});

@@ -1,17 +1,17 @@
-import { PostRepository } from '#domain/repository/post.repository'
-import { Injectable } from '@nestjs/common'
-import { PrismaService } from '#infra/framwork/common/prisma/prisma.service'
-import { Post } from '#domain/entities/post.entity'
-import { PostMapper } from '#domain/mappers/post/post.mapper'
-import { PrismaProxyRepository } from './prisma'
-import { PostStatus } from '#shared/enums/post-status.enum'
-import { Prisma } from '@prisma/client'
-import { paginate, type Pagination } from '#shared/Pagination'
+import { PostRepository } from '#domain/repository/post.repository';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '#infra/framwork/common/prisma/prisma.service';
+import { Post } from '#domain/entities/post.entity';
+import { PostMapper } from '#domain/mappers/post/post.mapper';
+import { PrismaProxyRepository } from './prisma';
+import { PostStatus } from '#shared/enums/post-status.enum';
+import { Prisma } from '@prisma/client';
+import { paginate, type Pagination } from '#shared/Pagination';
 
 const INCLUDE = {
     contributors: { include: { user: true } },
     postTags: true,
-} as const
+} as const;
 
 @Injectable()
 export class PostPrismaRepository
@@ -19,7 +19,7 @@ export class PostPrismaRepository
     implements PostRepository
 {
     constructor(prisma: PrismaService) {
-        super(prisma.post)
+        super(prisma.post);
     }
 
     async getPosts(
@@ -27,25 +27,27 @@ export class PostPrismaRepository
         limit: number,
         filter: { tags?: string[]; status?: PostStatus },
         sort: string,
-        authId?: string,
+        authId?: string
     ): Promise<Pagination<Post>> {
-        const where: Prisma.PostWhereInput = {}
+        const where: Prisma.PostWhereInput = {};
         const orderBy: Prisma.PostOrderByWithRelationInput =
-            sort === 'popular' ? { postReaders: { _count: 'desc' } } : { createdAt: 'desc' }
+            sort === 'popular'
+                ? { postReaders: { _count: 'desc' } }
+                : { createdAt: 'desc' };
 
         if (filter.status) {
-            where.status = filter.status
+            where.status = filter.status;
         } else if (!authId) {
             // Public access — only show published posts
-            where.status = PostStatus.PUBLISHED
+            where.status = PostStatus.PUBLISHED;
         }
 
         if (filter.tags?.length) {
-            where.postTags = { some: { tag: { name: { in: filter.tags } } } }
+            where.postTags = { some: { tag: { name: { in: filter.tags } } } };
         }
 
         if (authId) {
-            where.contributors = { some: { userId: authId } }
+            where.contributors = { some: { userId: authId } };
         }
 
         const [rows, total] = await Promise.all([
@@ -57,26 +59,27 @@ export class PostPrismaRepository
                 include: INCLUDE,
             }),
             this.count({ where }),
-        ])
+        ]);
 
-        return paginate(
-            rows.map(PostMapper.toDomain),
-            total,
-            page,
-            limit,
-        )
+        return paginate(rows.map(PostMapper.toDomain), total, page, limit);
     }
 
-    async getPostByIdAndStatus(postId: string, status: PostStatus | 'ALL'): Promise<Post | null> {
-        const where: Prisma.PostWhereInput = { id: postId }
-        if (status !== 'ALL') where.status = status
-        const raw = await this.findFirst({ where, include: INCLUDE })
-        return raw ? PostMapper.toDomain(raw) : null
+    async getPostByIdAndStatus(
+        postId: string,
+        status: PostStatus | 'ALL'
+    ): Promise<Post | null> {
+        const where: Prisma.PostWhereInput = { id: postId };
+        if (status !== 'ALL') where.status = status;
+        const raw = await this.findFirst({ where, include: INCLUDE });
+        return raw ? PostMapper.toDomain(raw) : null;
     }
 
     async getPostById(postId: string): Promise<Post | null> {
-        const raw = await this.findUnique({ where: { id: postId }, include: INCLUDE })
-        return raw ? PostMapper.toDomain(raw) : null
+        const raw = await this.findUnique({
+            where: { id: postId },
+            include: INCLUDE,
+        });
+        return raw ? PostMapper.toDomain(raw) : null;
     }
 
     async createPost(post: Post): Promise<Post> {
@@ -93,8 +96,8 @@ export class PostPrismaRepository
                 },
             },
             include: INCLUDE,
-        })
-        return PostMapper.toDomain(created)
+        });
+        return PostMapper.toDomain(created);
     }
 
     async updatePost(postId: string, post: Post): Promise<Post> {
@@ -107,11 +110,11 @@ export class PostPrismaRepository
                 imagePath: post.imagePath,
             },
             include: INCLUDE,
-        })
-        return PostMapper.toDomain(updated)
+        });
+        return PostMapper.toDomain(updated);
     }
 
     async removePost(postId: string): Promise<void> {
-        await this.delete({ where: { id: postId } })
+        await this.delete({ where: { id: postId } });
     }
 }

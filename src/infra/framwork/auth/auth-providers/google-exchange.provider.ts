@@ -23,7 +23,7 @@ export interface GoogleUser {
 }
 
 export class GoogleExchangeProvider implements ExchangeProvider<GoogleUser> {
-    constructor(private readonly configService: ConfigService<AllConfigType>) { }
+    constructor(private readonly configService: ConfigService<AllConfigType>) {}
 
     decodeUser(accessToken: string) {
         const payload = jwt.decode(accessToken);

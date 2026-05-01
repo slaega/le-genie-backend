@@ -1,16 +1,16 @@
 export interface Pagination<T> {
-    items: T[]
-    total: number
-    page: number
-    limit: number
-    hasNextPage: boolean
+    items: T[];
+    total: number;
+    page: number;
+    limit: number;
+    hasNextPage: boolean;
 }
 
 export function paginate<T>(
     items: T[],
     total: number,
     page: number,
-    limit: number,
+    limit: number
 ): Pagination<T> {
     return {
         items,
@@ -18,5 +18,5 @@ export function paginate<T>(
         page,
         limit,
         hasNextPage: page * limit < total,
-    }
+    };
 }

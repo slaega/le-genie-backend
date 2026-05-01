@@ -7,7 +7,9 @@ import { Invitation } from '#domain/entities/invitation.entity';
 
 describe('SendInvitationHandler', () => {
     let handler: SendInvitationHandler;
-    let invitationRepository: jest.Mocked<Pick<InvitationRepository, 'createInvitation'>>;
+    let invitationRepository: jest.Mocked<
+        Pick<InvitationRepository, 'createInvitation'>
+    >;
 
     beforeEach(async () => {
         invitationRepository = { createInvitation: jest.fn() };
@@ -15,7 +17,10 @@ describe('SendInvitationHandler', () => {
         const moduleRef = await Test.createTestingModule({
             providers: [
                 SendInvitationHandler,
-                { provide: INVITATION_REPOSITORY, useValue: invitationRepository },
+                {
+                    provide: INVITATION_REPOSITORY,
+                    useValue: invitationRepository,
+                },
             ],
         }).compile();
 
@@ -27,7 +32,11 @@ describe('SendInvitationHandler', () => {
     });
 
     describe('execute', () => {
-        const command = new SendInvitationCommand('post-1', 'bob@example.com', 'user-1');
+        const command = new SendInvitationCommand(
+            'post-1',
+            'bob@example.com',
+            'user-1'
+        );
 
         it('creates an invitation with a UUID token', async () => {
             const saved = new Invitation();
@@ -35,20 +44,24 @@ describe('SendInvitationHandler', () => {
 
             await handler.execute(command);
 
-            const [invitation] = invitationRepository.createInvitation.mock.calls[0];
+            const [invitation] =
+                invitationRepository.createInvitation.mock.calls[0];
             expect(typeof invitation.token).toBe('string');
             expect(invitation.token).toMatch(
-                /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+                /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
             );
         });
 
         it('sets expiration 24 hours from now', async () => {
             const before = Date.now();
-            invitationRepository.createInvitation.mockResolvedValue(new Invitation());
+            invitationRepository.createInvitation.mockResolvedValue(
+                new Invitation()
+            );
 
             await handler.execute(command);
 
-            const [invitation] = invitationRepository.createInvitation.mock.calls[0];
+            const [invitation] =
+                invitationRepository.createInvitation.mock.calls[0];
             const expiresMs = invitation.expiredAt.getTime();
             const expectedMs = before + 24 * 60 * 60 * 1000;
 
@@ -58,11 +71,14 @@ describe('SendInvitationHandler', () => {
         });
 
         it('passes postId and email from command', async () => {
-            invitationRepository.createInvitation.mockResolvedValue(new Invitation());
+            invitationRepository.createInvitation.mockResolvedValue(
+                new Invitation()
+            );
 
             await handler.execute(command);
 
-            const [invitation] = invitationRepository.createInvitation.mock.calls[0];
+            const [invitation] =
+                invitationRepository.createInvitation.mock.calls[0];
             expect(invitation.postId).toBe('post-1');
             expect(invitation.email).toBe('bob@example.com');
         });

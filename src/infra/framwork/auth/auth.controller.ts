@@ -28,7 +28,7 @@ export class AuthController {
     constructor(
         private readonly commandBus: CommandBus,
         private readonly queryBus: QueryBus
-    ) { }
+    ) {}
 
     @Post('token')
     @UseGuards(OAuthCallbackGuard)
