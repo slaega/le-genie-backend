@@ -16,11 +16,10 @@ generator client {
   output   = "../../node_modules/.prisma/client"
 }
 
+// Prisma 7 : url et shadowDatabaseUrl gérées dans prisma.config.ts
 datasource db {
-  provider          = "mysql"
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-  relationMode      = "prisma"
+  provider     = "mysql"
+  relationMode = "prisma"
 }
 
 // ─── Models ───────────────────────────────────────────────────────────────────
