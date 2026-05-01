@@ -1,5 +1,7 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
+import { Pool } from 'pg';
 
 @Injectable()
 export class PrismaService
@@ -7,8 +9,11 @@ export class PrismaService
     implements OnModuleInit, OnModuleDestroy
 {
     constructor() {
-        // Prisma 7 : DATABASE_URL est lu automatiquement depuis l'environnement
+        // Prisma 7 : utilise le driver adapter pg pour PostgreSQL
+        const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+        const adapter = new PrismaPg(pool);
         super({
+            adapter,
             log: ['error', 'warn'],
         });
     }
