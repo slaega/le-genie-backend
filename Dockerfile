@@ -1,62 +1,36 @@
-##########################################	
-# DOCKERFILE FOR DEV ENVIRONMENT, PRODUCTION & STAGING         
-##########################################
-
 FROM node:20-alpine AS base
-
-ENV NODE_ENV="production"
-
-# Enable Corepack for Yarn
+ENV NODE_ENV=production
+# YARN_NODE_LINKER évite de dépendre du fichier .yarnrc.yml dans le contexte Docker
+ENV YARN_NODE_LINKER=node-modules
 RUN corepack enable
 
+# ── Builder ───────────────────────────────────────────────────────────────────
 FROM base AS builder
-
-# Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY .yarnrc.yml ./
 COPY package.json yarn.lock ./
-
-
-# Install dependencies
 RUN yarn install --immutable
 
-# Copy source files
 COPY . .
 
-# Generate Prisma client (provider sélectionné via DATABASE_PROVIDER, postgres par défaut)
+# Generate Prisma client — prisma.config.ts lit DATABASE_PROVIDER (défaut: postgres)
 ARG DATABASE_PROVIDER=postgres
 ENV DATABASE_PROVIDER=${DATABASE_PROVIDER}
 RUN yarn db:generate
 
-
-# Build application
 RUN yarn build
 
-
+# ── Production ────────────────────────────────────────────────────────────────
 FROM base AS production
-
-# Set working directory
 WORKDIR /app
-
-# Set timezone
 ENV TZ=Europe/Paris
 
-# Copy Yarn configuration
-COPY .yarnrc.yml ./
 COPY --from=builder /app/package.json ./
-COPY --from=builder /app/.yarn ./.yarn
 COPY --from=builder /app/yarn.lock ./
-
-# Copy build artifacts and dependencies
+COPY --from=builder /app/.yarn ./.yarn
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/assets ./assets
 
-# Install production dependencies only
-RUN yarn workspaces focus --production
-
-# Start the server using the production build
 CMD ["yarn", "start:prod"]
