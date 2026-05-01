@@ -107,6 +107,7 @@ export default registerAs<AppConfig>('app', () => {
               ? validatedConfig.PORT
               : 3000,
         emailValidationEnabled: true,
+        corsOrigins: process.env.CORS_ORIGINS?.split(',') ?? [],
         apiPrefix: validatedConfig.API_PREFIX || 'api',
         fallbackLanguage: validatedConfig.APP_FALLBACK_LANGUAGE || 'en',
         headerLanguage: validatedConfig.APP_HEADER_LANGUAGE || 'x-custom-lang',

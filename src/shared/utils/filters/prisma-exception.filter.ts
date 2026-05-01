@@ -5,7 +5,7 @@ import {
     ExceptionFilter,
     HttpStatus,
 } from '@nestjs/common';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { PrismaClientKnownRequestError } from '@prisma/client-runtime-utils';
 
 import { Request, Response } from 'express';
 import { ErrorResponseDto } from '../dto/error-response.dto';

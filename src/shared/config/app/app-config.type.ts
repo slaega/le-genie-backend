@@ -13,6 +13,7 @@ export type AppConfig = {
     throttlerTtl: string | number;
     throttlerLimit: string | number;
     emailValidationEnabled: boolean;
+    corsOrigins?: string[];
     redis: {
         host: string;
         port: number;

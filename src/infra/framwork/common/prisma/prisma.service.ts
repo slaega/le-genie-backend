@@ -7,11 +7,9 @@ export class PrismaService
     implements OnModuleInit, OnModuleDestroy
 {
     constructor() {
-        // Prisma 7 : l'URL n'est plus dans le schéma, elle doit être
-        // passée explicitement au client via datasourceUrl
+        // Prisma 7 : DATABASE_URL est lu automatiquement depuis l'environnement
         super({
             log: ['error', 'warn'],
-            datasourceUrl: process.env.DATABASE_URL,
         });
     }
 

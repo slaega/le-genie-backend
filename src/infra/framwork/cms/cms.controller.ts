@@ -5,7 +5,7 @@ import { PostQueryDto } from '#dto/post/post-query.dto';
 import { PostStatus } from '#shared/enums/post-status.enum';
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 /**
  * Public headless CMS content delivery API.
@@ -56,7 +56,7 @@ export class CmsController {
             new GetPostQuery(id, PostStatus.PUBLISHED)
         );
         const dto = PostMapper.toDto(post);
-        const tags = dto.postTags.map((t: { name: string }) => t.name);
+        const tags = (dto.postTags as { name: string }[]).map((t) => t.name);
 
         if (!tags.length) return { items: [] };
 

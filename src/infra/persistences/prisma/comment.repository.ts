@@ -36,6 +36,7 @@ export class CommentPrismaRepository
             total,
             page,
             limit,
+            hasNextPage: page * limit < total,
         };
     }
     getCommentsById(commentId: string): Promise<Comment | null> {
