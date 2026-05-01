@@ -2422,14 +2422,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/adapter-pg@npm:^6.0.0":
-  version: 6.19.3
-  resolution: "@prisma/adapter-pg@npm:6.19.3"
+"@prisma/adapter-pg@npm:^7.8.0":
+  version: 7.8.0
+  resolution: "@prisma/adapter-pg@npm:7.8.0"
   dependencies:
-    "@prisma/driver-adapter-utils": "npm:6.19.3"
-    pg: "npm:^8.11.3"
+    "@prisma/driver-adapter-utils": "npm:7.8.0"
+    "@types/pg": "npm:^8.16.0"
+    pg: "npm:^8.16.3"
     postgres-array: "npm:3.0.4"
-  checksum: 10c0/03f97c4390c4f21309ba06641b0fda010509dbe3946af5edc8d37c2c5177df7b874ab4de24a95fbace927a3d140b4f9b906baa5ff3e5ac96dec11fef0f679396
+  checksum: 10c0/5cc759ef634336b1264dcfd1aa34674b57d7e8817efc31a245acc28209ad8df822d5c8694b6693fbab5730b03310af4b1acd02aa1bf8f524e051a72d66d7dde3
   languageName: node
   linkType: hard
 
@@ -2466,13 +2467,6 @@ __metadata:
     effect: "npm:3.20.0"
     empathic: "npm:2.0.0"
   checksum: 10c0/ab625928113cfcde147ebdc6d42d82d541cf1ce9353460ae1c4173dce744032f02919e5a190ca5b91078f76e2267f9672b404df026798fe4fc1f784e67816233
-  languageName: node
-  linkType: hard
-
-"@prisma/debug@npm:6.19.3":
-  version: 6.19.3
-  resolution: "@prisma/debug@npm:6.19.3"
-  checksum: 10c0/5be746e0c2a1bb4c10eaa5e6584c90626090d437b4570503845e31776239fa52f04cf224cf8278e3f738c9e7e39ab78594dd7a4db2cd4ae8ddf863ef1f8c18a1
   languageName: node
   linkType: hard
 
@@ -2515,12 +2509,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/driver-adapter-utils@npm:6.19.3":
-  version: 6.19.3
-  resolution: "@prisma/driver-adapter-utils@npm:6.19.3"
+"@prisma/driver-adapter-utils@npm:7.8.0":
+  version: 7.8.0
+  resolution: "@prisma/driver-adapter-utils@npm:7.8.0"
   dependencies:
-    "@prisma/debug": "npm:6.19.3"
-  checksum: 10c0/46604cff3f592786ca945e87bac210b245600312e738b3f389e80aec5f87d1b9ece478daf4902237039a54849abecad3b35de0f97441719f20af5efc84652cb2
+    "@prisma/debug": "npm:7.8.0"
+  checksum: 10c0/d8db769e63df3072942b1369641e9eba4a00607dfce66ddce822992d0bbd77507acd6a08b6d7ee32cdab7f27767f8e86afa1016e347f2732362e71337330d1ec
   languageName: node
   linkType: hard
 
@@ -3965,7 +3959,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/pg@npm:^8.11.0":
+"@types/pg@npm:^8.11.0, @types/pg@npm:^8.16.0":
   version: 8.20.0
   resolution: "@types/pg@npm:8.20.0"
   dependencies:
@@ -4946,7 +4940,7 @@ __metadata:
     "@nestjs/swagger": "npm:^11.4.2"
     "@nestjs/testing": "npm:^11.0.1"
     "@nestjs/throttler": "npm:^6.5.0"
-    "@prisma/adapter-pg": "npm:^6.0.0"
+    "@prisma/adapter-pg": "npm:^7.8.0"
     "@prisma/client": "npm:^7.8.0"
     "@swc/cli": "npm:^0.6.0"
     "@swc/core": "npm:^1.10.7"
@@ -9733,7 +9727,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pg@npm:^8.11.3, pg@npm:^8.12.0":
+"pg@npm:^8.12.0, pg@npm:^8.16.3":
   version: 8.20.0
   resolution: "pg@npm:8.20.0"
   dependencies:
