@@ -1,0 +1,39 @@
+# Dépendances — réinstallées dans l'image
+node_modules
+
+# Build NestJS
+dist
+
+# Git
+.git
+.gitignore
+
+# Dev
+.env
+.env.*
+!.env.sample
+*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Tests / couverture
+coverage
+test
+
+# SQLite dev local — ne pas inclure dans l'image
+prisma/*.db
+prisma/*.db-journal
+
+# CI / éditeur
+.github
+.vscode
+.idea
+docs
+*.swp
+
+# macOS
+.DS_Store
