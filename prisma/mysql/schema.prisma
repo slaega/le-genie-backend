@@ -40,6 +40,7 @@ model User {
   authProviders AuthProvider[]
   postReaders   PostReader[]
   invitations   Invitation[]
+  likes         Like[]
 
   @@index([email])
   @@map("users")
@@ -62,6 +63,7 @@ model Post {
   invitations  Invitation[]
   postReaders  PostReader[]
   postTags     PostTag[]
+  likes        Like[]
 
   @@index([status, createdAt])
   @@map("posts")
@@ -186,6 +188,27 @@ model PostTag {
   @@unique([postId, name])
   @@index([postId, name])
   @@map("post_tags")
+}
+
+/// "Like" anonyme : identifié par fingerprint (hash IP+userAgent ou cookie).
+/// Si l'utilisateur est connecté, userId est rempli en plus.
+model Like {
+  id          String   @id @default(cuid())
+  postId      String
+  fingerprint String   @db.VarChar(255)
+  ip          String?  @db.VarChar(45)
+  userAgent   String?  @db.VarChar(512)
+  userId      String?
+  createdAt   DateTime @default(now())
+
+  post Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@unique([postId, fingerprint])
+  @@index([postId])
+  @@index([postId, fingerprint])
+  @@index([userId])
+  @@map("likes")
 }
 
 // ─── Enums ────────────────────────────────────────────────────────────────────

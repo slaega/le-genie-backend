@@ -20,6 +20,8 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
 import { PostImageModule } from './post-image/post-images.module';
 import { CmsModule } from './cms/cms.module';
 import { HealthModule } from './health/health.module';
+import { LikeModule } from './like/like.module';
+import { PostReaderModule } from './post-reader/post-reader.module';
 
 @Module({
     imports: [
@@ -32,6 +34,8 @@ import { HealthModule } from './health/health.module';
         InvitationModule,
         CmsModule,
         HealthModule,
+        LikeModule,
+        PostReaderModule,
 
         // Config
         ConfigModule.forRoot({
