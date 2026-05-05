@@ -33,6 +33,8 @@ model User {
   postReaders   PostReader[]
   invitations   Invitation[]
   likes         Like[]
+  following     Follow[]      @relation("Follower")
+  followers     Follow[]      @relation("Author")
 
   @@index([email])
   @@map("users")
@@ -46,6 +48,7 @@ model Post {
   imagePath   String?
   status      PostStatus @default(EMPTY)
   scheduledAt DateTime?
+  publishedAt DateTime?
   readingTime Int?       @default(0)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -201,6 +204,30 @@ model Like {
   @@index([postId])
   @@index([postId, fingerprint])
   @@map("likes")
+}
+
+/// Abonné à la newsletter globale du blog (anonyme ou non).
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+
+  @@map("subscribers")
+}
+
+/// Un utilisateur suit un auteur — notifications à chaque nouvelle publication.
+model Follow {
+  id         String   @id @default(cuid())
+  followerId String
+  authorId   String
+  createdAt  DateTime @default(now())
+
+  follower User @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  author   User @relation("Author",   fields: [authorId],   references: [id], onDelete: Cascade)
+
+  @@unique([followerId, authorId])
+  @@index([authorId])
+  @@map("follows")
 }
 
 // ─── Enums ────────────────────────────────────────────────────────────────────

@@ -23,6 +23,9 @@ import { HealthModule } from './health/health.module';
 import { LikeModule } from './like/like.module';
 import { PostReaderModule } from './post-reader/post-reader.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
+import { MailerModule } from './mailer/mailer.module';
+import { NewsletterModule } from './newsletter/newsletter.module';
+import { FollowModule } from './follow/follow.module';
 
 @Module({
     imports: [
@@ -38,6 +41,9 @@ import { SchedulerModule } from './scheduler/scheduler.module';
         LikeModule,
         PostReaderModule,
         SchedulerModule,
+        MailerModule,
+        NewsletterModule,
+        FollowModule,
 
         // Config
         ConfigModule.forRoot({

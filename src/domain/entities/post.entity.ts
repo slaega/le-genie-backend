@@ -9,6 +9,7 @@ export class Post extends Entity {
     public status: PostStatus;
     public imagePath: string;
     public scheduledAt?: Date | null;
+    public publishedAt?: Date | null;
     public readingTime?: number;
     public commentsCount?: number;
     public contributors: Contributor[];

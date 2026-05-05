@@ -160,6 +160,7 @@ export class PostPrismaRepository
                 status: post.status,
                 imagePath: post.imagePath,
                 scheduledAt: post.scheduledAt,
+                publishedAt: post.publishedAt,
                 readingTime: post.readingTime,
             },
             include: INCLUDE,

@@ -46,7 +46,15 @@ export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
         post.title = command.title ?? post.title;
         post.content = command.content ?? post.content;
         post.readingTime = computeReadingTime(post.content);
+
+        const wasPublished = post.status === 'PUBLISHED';
         post.status = command.status ?? post.status;
+
+        // Set publishedAt the first time a post transitions to PUBLISHED
+        if (!wasPublished && post.status === 'PUBLISHED' && !post.publishedAt) {
+            post.publishedAt = new Date();
+        }
+
         // scheduledAt: undefined = not touched, null = clear, Date = set
         if (command.scheduledAt !== undefined) {
             post.scheduledAt = command.scheduledAt;

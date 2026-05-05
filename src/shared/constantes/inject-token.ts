@@ -9,3 +9,6 @@ export const REFRESH_TOKEN_REPOSITORY = Symbol.for('RefreshTokenRepository');
 export const POST_TAGS_REPOSITORY = Symbol.for('PostTagsRepository');
 export const LIKE_REPOSITORY = Symbol.for('LikeRepository');
 export const POST_READER_REPOSITORY = Symbol.for('PostReaderRepository');
+export const SUBSCRIBER_REPOSITORY = Symbol.for('SubscriberRepository');
+export const FOLLOW_REPOSITORY = Symbol.for('FollowRepository');
+export const MAILER_SERVICE = Symbol.for('MailerService');

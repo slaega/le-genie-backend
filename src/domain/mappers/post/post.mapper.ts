@@ -22,6 +22,7 @@ export class PostMapper {
         post.status = raw.status;
         post.imagePath = raw.imagePath ?? '';
         post.scheduledAt = raw.scheduledAt;
+        post.publishedAt = raw.publishedAt;
         post.createdAt = raw.createdAt;
         post.updatedAt = raw.updatedAt;
         post.readingTime = raw.readingTime ?? 0;
