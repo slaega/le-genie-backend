@@ -143,17 +143,21 @@ export class SchedulerService {
             process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
         const postUrl = `${appUrl}/post/${postId}`;
 
-        const followerRows = await this.prisma.follow.findMany({
-            where: { authorId },
-            include: { follower: { select: { email: true } } },
-        });
+        const [author, followerRows] = await Promise.all([
+            this.prisma.user.findUnique({ where: { id: authorId }, select: { name: true } }),
+            this.prisma.follow.findMany({
+                where: { authorId },
+                include: { follower: { select: { email: true } } },
+            }),
+        ]);
 
         if (!followerRows.length) return;
 
+        const authorName = author?.name ?? 'Un auteur';
         const to = followerRows.map((r) => r.follower.email);
 
         await this.mailerService.sendNewPostNotification({
-            authorName: authorId, // will be resolved to real name if needed
+            authorName,
             postTitle: postTitle ?? 'Nouveau post',
             postUrl,
             to,

@@ -103,6 +103,50 @@ export class CmsController {
         };
     }
 
+    // ─── Author endpoints ─────────────────────────────────────────────────────
+
+    @Get('authors/:authorId')
+    @ApiOperation({ summary: 'Get public author profile with their latest published posts' })
+    async getAuthor(@Param('authorId') authorId: string) {
+        const [user, posts] = await Promise.all([
+            this.prisma.user.findUniqueOrThrow({
+                where: { id: authorId },
+                select: {
+                    id: true,
+                    name: true,
+                    avatarPath: true,
+                    coverPath: true,
+                    professionalRole: true,
+                    createdAt: true,
+                    _count: { select: { followers: true } },
+                },
+            }),
+            this.prisma.post.findMany({
+                where: {
+                    status: 'PUBLISHED',
+                    contributors: { some: { userId: authorId, owner: true } },
+                },
+                include: {
+                    contributors: { include: { user: true } },
+                    postTags: true,
+                    _count: { select: { comments: true } },
+                },
+                orderBy: { publishedAt: 'desc' },
+                take: 12,
+            }),
+        ]);
+
+        return {
+            id: user.id,
+            name: user.name,
+            avatarPath: user.avatarPath ?? null,
+            coverPath: user.coverPath ?? null,
+            professionalRole: user.professionalRole ?? null,
+            followersCount: user._count.followers,
+            posts: posts.map(PostMapper.toDto),
+        };
+    }
+
     // ─── Post endpoints ───────────────────────────────────────────────────────
 
     @Get('posts/search')

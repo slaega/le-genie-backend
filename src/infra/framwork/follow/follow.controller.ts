@@ -62,4 +62,14 @@ export class FollowController {
         ]);
         return { following, followersCount };
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('following')
+    @ApiOperation({ summary: 'Get the list of authors followed by :authorId' })
+    async getFollowing(
+        @Param('authorId') authorId: string,
+        @Auth() user: AuthUser
+    ) {
+        return this.followRepo.getFollowing(authorId);
+    }
 }

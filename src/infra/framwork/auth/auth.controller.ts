@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Get,
+    Patch,
     Post,
     UnauthorizedException,
     UseGuards,
@@ -22,12 +23,15 @@ import { QueryBus } from '@nestjs/cqrs';
 import { GetMeQuery } from '#applications/query/auth/get-me.query';
 import { UserResponseDto } from '#dto/auth/user-response.dto';
 import { UserMapper } from '#domain/mappers/user/user.mapper';
+import { PrismaService } from '../common/prisma/prisma.service';
+import { UpdateMeDto } from '#dto/auth/update-me.dto';
 
 @Controller('auth')
 export class AuthController {
     constructor(
         private readonly commandBus: CommandBus,
-        private readonly queryBus: QueryBus
+        private readonly queryBus: QueryBus,
+        private readonly prisma: PrismaService
     ) {}
 
     @Post('token')
@@ -87,5 +91,21 @@ export class AuthController {
             new GetMeQuery(user.sub)
         );
         return UserMapper.toDto(authResponse);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Patch('me')
+    async updateMe(
+        @Auth() user: AuthUser,
+        @Body() dto: UpdateMeDto
+    ): Promise<UserResponseDto> {
+        const updatedUser = await this.prisma.user.update({
+            where: { id: user.sub },
+            data: {
+                ...(dto.name !== undefined && { name: dto.name }),
+                ...(dto.professionalRole !== undefined && { professionalRole: dto.professionalRole }),
+            },
+        });
+        return UserMapper.toDto(updatedUser);
     }
 }

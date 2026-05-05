@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FollowRepository } from '#domain/repository/follow.repository';
+import { FollowRepository, FollowingAuthor } from '#domain/repository/follow.repository';
 import { PrismaService } from '#infra/framwork/common/prisma/prisma.service';
 
 @Injectable()
@@ -44,5 +44,29 @@ export class FollowPrismaRepository implements FollowRepository {
 
     async getFollowersCount(authorId: string): Promise<number> {
         return this.prisma.follow.count({ where: { authorId } });
+    }
+
+    async getFollowing(followerId: string): Promise<FollowingAuthor[]> {
+        const rows = await this.prisma.follow.findMany({
+            where: { followerId },
+            include: {
+                author: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatarPath: true,
+                        professionalRole: true,
+                        _count: { select: { followers: true } },
+                    },
+                },
+            },
+        });
+        return rows.map((r) => ({
+            id: r.author.id,
+            name: r.author.name,
+            avatarPath: r.author.avatarPath ?? null,
+            professionalRole: r.author.professionalRole ?? null,
+            followersCount: r.author._count.followers,
+        }));
     }
 }
