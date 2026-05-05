@@ -156,11 +156,35 @@ export class SchedulerService {
         const authorName = author?.name ?? 'Un auteur';
         const to = followerRows.map((r) => r.follower.email);
 
-        await this.mailerService.sendNewPostNotification({
-            authorName,
-            postTitle: postTitle ?? 'Nouveau post',
-            postUrl,
-            to,
-        });
+        // ── In-app notifications ──────────────────────────────────────────────
+        const followerIds = followerRows.map((r) => r.followerId);
+        if (followerIds.length) {
+            await this.prisma.notification
+                .createMany({
+                    data: followerIds.map((userId) => ({
+                        userId,
+                        type: 'NEW_POST' as const,
+                        title: `${authorName} a publié un article`,
+                        body: postTitle ?? 'Nouveau post',
+                        postId,
+                    })),
+                    skipDuplicates: true,
+                })
+                .catch((err: Error) =>
+                    this.logger.error(
+                        `Failed to create in-app notifications: ${err.message}`
+                    )
+                );
+        }
+
+        // ── Email notifications ───────────────────────────────────────────────
+        if (to.length) {
+            await this.mailerService.sendNewPostNotification({
+                authorName,
+                postTitle: postTitle ?? 'Nouveau post',
+                postUrl,
+                to,
+            });
+        }
     }
 }

@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Get,
+    Inject,
     Patch,
     Post,
     UnauthorizedException,
@@ -25,13 +26,19 @@ import { UserResponseDto } from '#dto/auth/user-response.dto';
 import { UserMapper } from '#domain/mappers/user/user.mapper';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { UpdateMeDto } from '#dto/auth/update-me.dto';
+import { UpdateAvatarDto } from '#dto/auth/update-avatar.dto';
+import { StorageProvider } from '#domain/services/storage.provider';
+import { STORAGE_PROVIDER } from '#shared/constantes/inject-token';
+import { FormDataRequest } from 'nestjs-form-data';
 
 @Controller('auth')
 export class AuthController {
     constructor(
         private readonly commandBus: CommandBus,
         private readonly queryBus: QueryBus,
-        private readonly prisma: PrismaService
+        private readonly prisma: PrismaService,
+        @Inject(STORAGE_PROVIDER)
+        private readonly storage: StorageProvider
     ) {}
 
     @Post('token')
@@ -103,9 +110,38 @@ export class AuthController {
             where: { id: user.sub },
             data: {
                 ...(dto.name !== undefined && { name: dto.name }),
-                ...(dto.professionalRole !== undefined && { professionalRole: dto.professionalRole }),
+                ...(dto.professionalRole !== undefined && {
+                    professionalRole: dto.professionalRole,
+                }),
             },
         });
+        return UserMapper.toDto(updatedUser);
+    }
+
+    /** PATCH /auth/me/avatar — upload d'une nouvelle photo de profil */
+    @UseGuards(JwtAuthGuard)
+    @Patch('me/avatar')
+    @FormDataRequest()
+    async updateAvatar(
+        @Auth() user: AuthUser,
+        @Body() dto: UpdateAvatarDto
+    ): Promise<UserResponseDto> {
+        const ext = dto.avatarFile.originalName.split('.').pop() ?? 'jpg';
+        const path = `avatars/${user.sub}.${ext}`;
+
+        const storagePath = await this.storage.upload({
+            path,
+            file: dto.avatarFile.buffer,
+            contentType: dto.avatarFile.mimetype,
+        });
+
+        const avatarUrl = await this.storage.getPublicUrl(storagePath);
+
+        const updatedUser = await this.prisma.user.update({
+            where: { id: user.sub },
+            data: { avatarPath: avatarUrl },
+        });
+
         return UserMapper.toDto(updatedUser);
     }
 }

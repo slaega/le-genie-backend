@@ -26,6 +26,8 @@ import { GoogleExchangeProvider } from './auth-providers/google-exchange.provide
 import { ConfigService } from '@nestjs/config';
 import { RefreshTokenHandler } from '#applications/handlers/auth/refresh-token.handler';
 import { GetMeQueryHandler } from '#applications/query-handler/auth/get-me.query-handler';
+import { StorageModule } from '../common/storage/storage.module';
+
 @Module({
     imports: [
         CqrsModule,
@@ -34,6 +36,7 @@ import { GetMeQueryHandler } from '#applications/query-handler/auth/get-me.query
             secret: process.env.JWT_SECRET,
             signOptions: { expiresIn: '1h' },
         }),
+        StorageModule,
     ],
     controllers: [AuthController],
     providers: [
