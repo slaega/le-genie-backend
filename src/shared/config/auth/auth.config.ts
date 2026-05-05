@@ -36,6 +36,14 @@ class EnvironmentVariablesValidator {
     @IsString()
     @IsNotEmpty()
     AUTH_GITHUB_CLIENT_SECRET: string;
+
+    @IsString()
+    @IsNotEmpty()
+    AUTH_MICROSOFT_CLIENT_ID: string;
+
+    @IsString()
+    @IsNotEmpty()
+    AUTH_MICROSOFT_CLIENT_SECRET: string;
 }
 
 export default registerAs<AuthConfig>('auth', () => {
@@ -58,6 +66,10 @@ export default registerAs<AuthConfig>('auth', () => {
         github: {
             clientID: validatedConfig.AUTH_GITHUB_CLIENT_ID,
             clientSecret: validatedConfig.AUTH_GITHUB_CLIENT_SECRET,
+        },
+        microsoft: {
+            clientID: validatedConfig.AUTH_MICROSOFT_CLIENT_ID,
+            clientSecret: validatedConfig.AUTH_MICROSOFT_CLIENT_SECRET,
         },
     };
 });

@@ -11,4 +11,8 @@ export type AuthConfig = {
         clientID: string;
         clientSecret: string;
     };
+    microsoft: {
+        clientID: string;
+        clientSecret: string;
+    };
 };

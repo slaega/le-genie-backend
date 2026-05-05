@@ -263,6 +263,7 @@ model Notification {
 enum Provider {
   GOOGLE
   GITHUB
+  MICROSOFT
 }
 
 enum PostStatus {

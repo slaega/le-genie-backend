@@ -3,6 +3,7 @@ import { Entity } from '#core/entity';
 export const SocialProvider = {
     GITHUB: 'GITHUB',
     GOOGLE: 'GOOGLE',
+    MICROSOFT: 'MICROSOFT',
 } as const;
 
 export type SocialProvider =

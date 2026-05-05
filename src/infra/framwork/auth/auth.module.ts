@@ -27,6 +27,7 @@ import { ConfigService } from '@nestjs/config';
 import { RefreshTokenHandler } from '#applications/handlers/auth/refresh-token.handler';
 import { GetMeQueryHandler } from '#applications/query-handler/auth/get-me.query-handler';
 import { StorageModule } from '../common/storage/storage.module';
+import { MicrosoftExchangeProvider } from './auth-providers/microsoft-exchange.provider';
 
 @Module({
     imports: [
@@ -57,6 +58,10 @@ import { StorageModule } from '../common/storage/storage.module';
                 registry.register(
                     new GoogleExchangeProvider(configService),
                     'GOOGLE'
+                );
+                registry.register(
+                    new MicrosoftExchangeProvider(configService),
+                    'MICROSOFT'
                 );
                 return registry;
             },

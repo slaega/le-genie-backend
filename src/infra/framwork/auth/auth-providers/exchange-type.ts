@@ -1,5 +1,6 @@
 import { GithubUser } from './github-exchange.provider';
 import { GoogleUser } from './google-exchange.provider';
+import { MicrosoftUser } from './microsoft-exchange.provider';
 
 export type ExchangeType =
     | {
@@ -9,4 +10,8 @@ export type ExchangeType =
     | {
           user: GithubUser;
           provider: 'GITHUB';
+      }
+    | {
+          user: MicrosoftUser;
+          provider: 'MICROSOFT';
       };

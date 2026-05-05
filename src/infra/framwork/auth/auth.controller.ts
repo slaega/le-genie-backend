@@ -57,13 +57,19 @@ export class AuthController {
         if (provider === SocialProvider.GOOGLE) {
             providerUserId = user.sub;
             email = user.email;
-            displayName = user.name;
-            avatarUrl = user.picture;
+            displayName = user.name ?? '';
+            avatarUrl = user.picture ?? '';
         } else if (provider === SocialProvider.GITHUB) {
             providerUserId = String(user.id);
-            email = user.email;
-            displayName = user.name;
-            avatarUrl = user.avatar_url;
+            email = user.email ?? undefined;
+            displayName = user.name ?? user.login ?? '';
+            avatarUrl = user.avatar_url ?? '';
+        } else if (provider === SocialProvider.MICROSOFT) {
+            // Microsoft uses `oid` as the stable unique identifier
+            providerUserId = (user as any).oid ?? user.sub;
+            email = user.email ?? user.preferred_username;
+            displayName = user.name ?? '';
+            avatarUrl = ''; // Microsoft profile photos require a separate Graph API call
         } else {
             throw new UnauthorizedException({
                 message: 'Unsupported provider',
