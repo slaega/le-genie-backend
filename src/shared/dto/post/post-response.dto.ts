@@ -27,6 +27,12 @@ export class PostResponseDto {
     scheduledAt: Date | null;
 
     @ApiResponseProperty()
+    readingTime: number;
+
+    @ApiResponseProperty()
+    commentsCount: number;
+
+    @ApiResponseProperty()
     createdAt: Date;
 
     @ApiResponseProperty()

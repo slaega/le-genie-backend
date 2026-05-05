@@ -11,6 +11,7 @@ import { paginate, type Pagination } from '#shared/Pagination';
 const INCLUDE = {
     contributors: { include: { user: true } },
     postTags: true,
+    _count: { select: { comments: true } },
 } as const;
 
 @Injectable()
@@ -159,6 +160,7 @@ export class PostPrismaRepository
                 status: post.status,
                 imagePath: post.imagePath,
                 scheduledAt: post.scheduledAt,
+                readingTime: post.readingTime,
             },
             include: INCLUDE,
         });

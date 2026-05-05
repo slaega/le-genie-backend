@@ -8,6 +8,7 @@ type PostPrisma = Prisma.PostGetPayload<{
     include: {
         contributors: { include: { user: true } };
         postTags: true;
+        _count: { select: { comments: true } };
     };
 }>;
 
@@ -23,6 +24,8 @@ export class PostMapper {
         post.scheduledAt = raw.scheduledAt;
         post.createdAt = raw.createdAt;
         post.updatedAt = raw.updatedAt;
+        post.readingTime = raw.readingTime ?? 0;
+        post.commentsCount = raw._count?.comments ?? 0;
         post.contributors = raw.contributors.map(ContributorMapper.toDomain);
         post.postTags = raw.postTags.map(PostTagMapper.toDomain);
         return post;
@@ -45,6 +48,8 @@ export class PostMapper {
         dto.scheduledAt = post.scheduledAt ?? null;
         dto.createdAt = post.createdAt;
         dto.updatedAt = post.updatedAt;
+        dto.readingTime = post.readingTime ?? 0;
+        dto.commentsCount = post.commentsCount ?? 0;
         dto.contributors = post.contributors.map(ContributorMapper.toDto);
         dto.postTags = post.postTags.map(PostTagMapper.toDomain);
         return dto;

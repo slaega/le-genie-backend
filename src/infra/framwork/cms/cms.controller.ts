@@ -4,6 +4,7 @@ import { SearchPostsQuery } from '#applications/query/post/search-posts.query';
 import { PostMapper } from '#domain/mappers/post/post.mapper';
 import { PostQueryDto } from '#dto/post/post-query.dto';
 import { PostStatus } from '#shared/enums/post-status.enum';
+import { PrismaService } from '#infra/framwork/common/prisma/prisma.service';
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -16,7 +17,10 @@ import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 @ApiTags('cms')
 @Controller('cms')
 export class CmsController {
-    constructor(private readonly queryBus: QueryBus) {}
+    constructor(
+        private readonly queryBus: QueryBus,
+        private readonly prisma: PrismaService,
+    ) {}
 
     @Get('posts')
     @ApiOperation({ summary: 'List published posts (public, no auth)' })
@@ -40,6 +44,66 @@ export class CmsController {
             hasNextPage: result.hasNextPage,
         };
     }
+
+    // ─── Sidebar endpoints ────────────────────────────────────────────────────
+
+    @Get('stats')
+    @ApiOperation({ summary: 'Global statistics for the homepage sidebar' })
+    async getStats() {
+        const [totalPosts, totalAuthors, totalTags, totalComments] =
+            await Promise.all([
+                this.prisma.post.count(),
+                this.prisma.user.count(),
+                this.prisma.tag.count(),
+                this.prisma.comment.count(),
+            ]);
+        return { totalPosts, totalAuthors, totalTags, totalComments };
+    }
+
+    @Get('tags')
+    @ApiOperation({ summary: 'Tags list with their post count (top 20)' })
+    async getTags() {
+        const tags = await this.prisma.tag.findMany({
+            include: {
+                _count: { select: { posts: true } },
+            },
+            orderBy: { posts: { _count: 'desc' } },
+            take: 20,
+        });
+        return {
+            items: tags.map((t) => ({ name: t.name, count: t._count.posts })),
+        };
+    }
+
+    @Get('authors')
+    @ApiOperation({ summary: 'Top authors (owner contributors) with post count' })
+    async getAuthors() {
+        const users = await this.prisma.user.findMany({
+            where: {
+                contributors: { some: { owner: true } },
+            },
+            include: {
+                _count: {
+                    select: {
+                        contributors: { where: { owner: true } },
+                    },
+                },
+            },
+            orderBy: { contributors: { _count: 'desc' } },
+            take: 20,
+        });
+        return {
+            items: users.map((u) => ({
+                id: u.id,
+                name: u.name,
+                avatarPath: u.avatarPath ?? null,
+                professionalRole: u.professionalRole ?? null,
+                postCount: u._count.contributors,
+            })),
+        };
+    }
+
+    // ─── Post endpoints ───────────────────────────────────────────────────────
 
     @Get('posts/search')
     @ApiOperation({ summary: 'Full-text search on published posts' })

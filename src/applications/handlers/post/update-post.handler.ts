@@ -7,6 +7,7 @@ import {
 } from '#shared/constantes/inject-token';
 import { PostRepository } from '#domain/repository/post.repository';
 import { StorageProvider } from '#domain/services/storage.provider';
+import { computeReadingTime } from '#shared/utils/reading-time';
 
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
@@ -44,6 +45,7 @@ export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
         }
         post.title = command.title ?? post.title;
         post.content = command.content ?? post.content;
+        post.readingTime = computeReadingTime(post.content);
         post.status = command.status ?? post.status;
         // scheduledAt: undefined = not touched, null = clear, Date = set
         if (command.scheduledAt !== undefined) {
