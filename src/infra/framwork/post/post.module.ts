@@ -11,6 +11,7 @@ import { PostController } from './post.controller';
 import { ContributorModule } from '../contributor/contributor.module';
 import { GetPostQueryHandler } from '#applications/query-handler/post/get-post.query-handler';
 import { GetPostsQueryHandler } from '#applications/query-handler/post/get-posts.query-handler';
+import { SearchPostsQueryHandler } from '#applications/query-handler/post/search-posts.query-handler';
 import { StorageModule } from '../common/storage/storage.module';
 
 @Module({
@@ -27,6 +28,7 @@ import { StorageModule } from '../common/storage/storage.module';
         UpdatePostHandler,
         GetPostQueryHandler,
         GetPostsQueryHandler,
+        SearchPostsQueryHandler,
     ],
     exports: [POST_REPOSITORY],
     controllers: [PostController],

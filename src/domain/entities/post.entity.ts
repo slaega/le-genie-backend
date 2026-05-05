@@ -8,6 +8,7 @@ export class Post extends Entity {
     public content: string;
     public status: PostStatus;
     public imagePath: string;
+    public scheduledAt?: Date | null;
     public contributors: Contributor[];
     public postTags: PostTag[];
     constructor() {

@@ -1,11 +1,12 @@
 import { GetPostsQuery } from '#applications/query/post/get-posts.query';
 import { GetPostQuery } from '#applications/query/post/get-post.query';
+import { SearchPostsQuery } from '#applications/query/post/search-posts.query';
 import { PostMapper } from '#domain/mappers/post/post.mapper';
 import { PostQueryDto } from '#dto/post/post-query.dto';
 import { PostStatus } from '#shared/enums/post-status.enum';
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { QueryBus } from '@nestjs/cqrs';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 /**
  * Public headless CMS content delivery API.
@@ -30,6 +31,30 @@ export class CmsController {
                 { tags: query.tags, status: PostStatus.PUBLISHED },
                 query.sort ?? 'recent'
             )
+        );
+        return {
+            items: result.items.map(PostMapper.toDto),
+            total: result.total,
+            page: result.page,
+            limit: result.limit,
+            hasNextPage: result.hasNextPage,
+        };
+    }
+
+    @Get('posts/search')
+    @ApiOperation({ summary: 'Full-text search on published posts' })
+    @ApiQuery({ name: 'q', required: true, description: 'Search query' })
+    @ApiQuery({ name: 'page', required: false })
+    @ApiQuery({ name: 'limit', required: false })
+    async searchPosts(
+        @Query('q') q: string,
+        @Query('page') page?: string,
+        @Query('limit') limit?: string
+    ) {
+        const p = parseInt(page ?? '1', 10);
+        const l = Math.min(parseInt(limit ?? '12', 10), 50);
+        const result = await this.queryBus.execute(
+            new SearchPostsQuery(q ?? '', p, l)
         );
         return {
             items: result.items.map(PostMapper.toDto),

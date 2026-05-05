@@ -6,10 +6,12 @@ export interface PostRepository {
     getPosts(
         page: number,
         limit: number,
-        filter: { tags?: string[] },
+        filter: { tags?: string[]; status?: PostStatus },
         sort: string,
         authId?: string
     ): Promise<Pagination<Post>>;
+    searchPosts(q: string, page: number, limit: number): Promise<Pagination<Post>>;
+    getScheduledToPublish(): Promise<Post[]>;
     getPostById(postId: string): Promise<Post>;
     getPostByIdAndStatus(
         postId: string,

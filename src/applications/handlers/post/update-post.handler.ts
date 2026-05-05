@@ -45,6 +45,10 @@ export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
         post.title = command.title ?? post.title;
         post.content = command.content ?? post.content;
         post.status = command.status ?? post.status;
+        // scheduledAt: undefined = not touched, null = clear, Date = set
+        if (command.scheduledAt !== undefined) {
+            post.scheduledAt = command.scheduledAt;
+        }
         const updatedPost = await this.postRepository.updatePost(post.id, post);
         updatedPost.imagePath = await this.storageProvider.getPublicUrl(
             updatedPost.imagePath

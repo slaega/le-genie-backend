@@ -64,6 +64,56 @@ export class PostPrismaRepository
         return paginate(rows.map(PostMapper.toDomain), total, page, limit);
     }
 
+    /**
+     * Full-text search on title + content (case-insensitive LIKE — works on
+     * postgres, mysql and sqlite).  For Postgres the `mode: 'insensitive'` flag
+     * is used; for other providers a simple `contains` is used which translates
+     * to a LIKE query.
+     */
+    async searchPosts(
+        q: string,
+        page: number,
+        limit: number
+    ): Promise<Pagination<Post>> {
+        const term = q.trim();
+        const where: Prisma.PostWhereInput = {
+            status: PostStatus.PUBLISHED,
+            OR: [
+                { title: { contains: term, mode: 'insensitive' } },
+                { content: { contains: term, mode: 'insensitive' } },
+                { postTags: { some: { name: { contains: term, mode: 'insensitive' } } } },
+            ],
+        };
+
+        const [rows, total] = await Promise.all([
+            this.findMany({
+                skip: (page - 1) * limit,
+                take: limit,
+                where,
+                orderBy: { createdAt: 'desc' },
+                include: INCLUDE,
+            }),
+            this.count({ where }),
+        ]);
+
+        return paginate(rows.map(PostMapper.toDomain), total, page, limit);
+    }
+
+    /**
+     * Returns all DRAFT posts whose scheduledAt is in the past.
+     * Called by the scheduler cron job every minute.
+     */
+    async getScheduledToPublish(): Promise<Post[]> {
+        const rows = await this.findMany({
+            where: {
+                status: PostStatus.DRAFT,
+                scheduledAt: { lte: new Date() },
+            },
+            include: INCLUDE,
+        });
+        return rows.map(PostMapper.toDomain);
+    }
+
     async getPostByIdAndStatus(
         postId: string,
         status: PostStatus | 'ALL'
@@ -108,6 +158,7 @@ export class PostPrismaRepository
                 content: post.content,
                 status: post.status,
                 imagePath: post.imagePath,
+                scheduledAt: post.scheduledAt,
             },
             include: INCLUDE,
         });

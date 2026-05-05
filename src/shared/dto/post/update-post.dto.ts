@@ -1,6 +1,6 @@
 import { PostStatus } from '#shared/enums/post-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsDateString, IsEnum, IsOptional, IsString } from 'class-validator';
 import {
     HasMimeType,
     IsFile,
@@ -23,6 +23,14 @@ export class UpdatePostDto {
     @IsEnum(PostStatus)
     @IsOptional()
     status?: PostStatus;
+
+    @ApiProperty({
+        required: false,
+        description: 'ISO8601 date-time — auto-publishes the post at this date',
+    })
+    @IsDateString()
+    @IsOptional()
+    scheduledAt?: string;
 
     @ApiProperty({ type: 'string', format: 'binary', required: false })
     @IsOptional()

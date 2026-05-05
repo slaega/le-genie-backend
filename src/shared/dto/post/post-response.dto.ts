@@ -24,6 +24,9 @@ export class PostResponseDto {
     postTags: unknown[];
 
     @ApiResponseProperty()
+    scheduledAt: Date | null;
+
+    @ApiResponseProperty()
     createdAt: Date;
 
     @ApiResponseProperty()

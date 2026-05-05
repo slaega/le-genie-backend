@@ -71,6 +71,11 @@ export class PostController {
         command.title = dto.title;
         command.content = dto.content;
         command.status = dto.status;
+        command.scheduledAt = dto.scheduledAt
+            ? new Date(dto.scheduledAt)
+            : dto.scheduledAt === null
+              ? null
+              : undefined;
         command.imageFile = dto.imageFile
             ? {
                   buffer: dto.imageFile.buffer,

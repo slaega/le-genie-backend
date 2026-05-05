@@ -20,6 +20,7 @@ export class PostMapper {
         post.content = raw.content;
         post.status = raw.status;
         post.imagePath = raw.imagePath ?? '';
+        post.scheduledAt = raw.scheduledAt;
         post.createdAt = raw.createdAt;
         post.updatedAt = raw.updatedAt;
         post.contributors = raw.contributors.map(ContributorMapper.toDomain);
@@ -41,6 +42,7 @@ export class PostMapper {
             }
         })();
         dto.status = post.status;
+        dto.scheduledAt = post.scheduledAt ?? null;
         dto.createdAt = post.createdAt;
         dto.updatedAt = post.updatedAt;
         dto.contributors = post.contributors.map(ContributorMapper.toDto);

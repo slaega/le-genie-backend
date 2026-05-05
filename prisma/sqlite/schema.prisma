@@ -51,6 +51,7 @@ model Post {
   content     String     @default("{}")
   imagePath   String?
   status      PostStatus @default(EMPTY)
+  scheduledAt DateTime?
   readingTime Int?       @default(0)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -63,6 +64,7 @@ model Post {
   likes        Like[]
 
   @@index([status, createdAt])
+  @@index([scheduledAt, status])
   @@map("posts")
 }
 

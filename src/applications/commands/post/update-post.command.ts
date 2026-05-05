@@ -8,5 +8,6 @@ export class UpdatePostCommand extends Command<Post> {
     public title?: string;
     public content?: string;
     public status?: PostStatus;
+    public scheduledAt?: Date | null;
     public imageFile?: FileI;
 }

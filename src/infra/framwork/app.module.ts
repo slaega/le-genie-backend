@@ -22,6 +22,7 @@ import { CmsModule } from './cms/cms.module';
 import { HealthModule } from './health/health.module';
 import { LikeModule } from './like/like.module';
 import { PostReaderModule } from './post-reader/post-reader.module';
+import { SchedulerModule } from './scheduler/scheduler.module';
 
 @Module({
     imports: [
@@ -36,6 +37,7 @@ import { PostReaderModule } from './post-reader/post-reader.module';
         HealthModule,
         LikeModule,
         PostReaderModule,
+        SchedulerModule,
 
         // Config
         ConfigModule.forRoot({
