@@ -79,7 +79,10 @@ export class PostPrismaRepository
         const term = q.trim();
         // mode: 'insensitive' is Postgres-only; cast to any for SQLite compatibility
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const icontains = (value: string) => ({ contains: value, mode: 'insensitive' as any });
+        const icontains = (value: string) => ({
+            contains: value,
+            mode: 'insensitive' as any,
+        });
         const where: Prisma.PostWhereInput = {
             status: PostStatus.PUBLISHED,
             OR: [

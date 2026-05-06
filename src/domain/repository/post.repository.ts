@@ -10,7 +10,11 @@ export interface PostRepository {
         sort: string,
         authId?: string
     ): Promise<Pagination<Post>>;
-    searchPosts(q: string, page: number, limit: number): Promise<Pagination<Post>>;
+    searchPosts(
+        q: string,
+        page: number,
+        limit: number
+    ): Promise<Pagination<Post>>;
     getScheduledToPublish(): Promise<Post[]>;
     getPostById(postId: string): Promise<Post>;
     getPostByIdAndStatus(

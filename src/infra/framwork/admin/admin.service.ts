@@ -165,7 +165,9 @@ export class AdminService {
             where: { id },
             data: {
                 ...(dto.role !== undefined && { role: dto.role }),
-                ...(dto.suspended !== undefined && { suspended: dto.suspended }),
+                ...(dto.suspended !== undefined && {
+                    suspended: dto.suspended,
+                }),
             },
             select: {
                 id: true,

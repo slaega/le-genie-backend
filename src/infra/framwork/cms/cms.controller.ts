@@ -19,7 +19,7 @@ import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 export class CmsController {
     constructor(
         private readonly queryBus: QueryBus,
-        private readonly prisma: PrismaService,
+        private readonly prisma: PrismaService
     ) {}
 
     @Get('posts')
@@ -76,7 +76,9 @@ export class CmsController {
     }
 
     @Get('authors')
-    @ApiOperation({ summary: 'Top authors (owner contributors) with post count' })
+    @ApiOperation({
+        summary: 'Top authors (owner contributors) with post count',
+    })
     async getAuthors() {
         const users = await this.prisma.user.findMany({
             where: {
@@ -106,7 +108,9 @@ export class CmsController {
     // ─── Author endpoints ─────────────────────────────────────────────────────
 
     @Get('authors/:authorId')
-    @ApiOperation({ summary: 'Get public author profile with their latest published posts' })
+    @ApiOperation({
+        summary: 'Get public author profile with their latest published posts',
+    })
     async getAuthor(@Param('authorId') authorId: string) {
         const [user, posts] = await Promise.all([
             this.prisma.user.findUniqueOrThrow({

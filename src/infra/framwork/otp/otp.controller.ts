@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, Post, Inject, BadRequestException } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    HttpCode,
+    Post,
+    Inject,
+    BadRequestException,
+} from '@nestjs/common';
 import { IsEmail, IsString, Length } from 'class-validator';
 import { Throttle } from '@nestjs/throttler';
 import { nanoid } from 'nanoid';
@@ -50,7 +57,9 @@ export class OtpController {
         await this.otpService.verifyOtp(dto.email, dto.code);
 
         // Trouve ou crée l'utilisateur
-        let user = await this.prisma.user.findUnique({ where: { email: dto.email } });
+        let user = await this.prisma.user.findUnique({
+            where: { email: dto.email },
+        });
         if (!user) {
             const name = dto.email.split('@')[0];
             user = await this.prisma.user.create({

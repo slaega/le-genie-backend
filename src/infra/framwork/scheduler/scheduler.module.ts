@@ -7,11 +7,7 @@ import { PrismaModule } from '../common/prisma/prisma.module';
 import { MailerModule } from '../mailer/mailer.module';
 
 @Module({
-    imports: [
-        ScheduleModule.forRoot(),
-        PrismaModule,
-        MailerModule,
-    ],
+    imports: [ScheduleModule.forRoot(), PrismaModule, MailerModule],
     providers: [
         {
             provide: POST_REPOSITORY,

@@ -1,9 +1,7 @@
 /**
  * Recursively extracts all plain text from a TipTap JSON document.
  */
-export function extractTextFromTipTap(
-    json: Record<string, unknown>
-): string {
+export function extractTextFromTipTap(json: Record<string, unknown>): string {
     const parts: string[] = [];
 
     if (typeof json.text === 'string') {

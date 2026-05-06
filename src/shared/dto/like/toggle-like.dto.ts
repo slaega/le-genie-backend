@@ -6,7 +6,9 @@ import { IsOptional, IsString, MaxLength } from 'class-validator';
  * If absent, the API falls back to hash(IP + UserAgent).
  */
 export class ToggleLikeDto {
-    @ApiPropertyOptional({ description: 'Optional client-supplied fingerprint' })
+    @ApiPropertyOptional({
+        description: 'Optional client-supplied fingerprint',
+    })
     @IsOptional()
     @IsString()
     @MaxLength(128)

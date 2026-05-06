@@ -7,7 +7,8 @@ import { PostReader } from '#domain/entities/post-reader.entity';
 
 @CommandHandler(TrackViewCommand)
 export class TrackViewHandler
-    implements ICommandHandler<TrackViewCommand, { count: number; isNew: boolean }>
+    implements
+        ICommandHandler<TrackViewCommand, { count: number; isNew: boolean }>
 {
     constructor(
         @Inject(POST_READER_REPOSITORY)

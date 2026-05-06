@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { FollowRepository, FollowingAuthor } from '#domain/repository/follow.repository';
+import {
+    FollowRepository,
+    FollowingAuthor,
+} from '#domain/repository/follow.repository';
 import { PrismaService } from '#infra/framwork/common/prisma/prisma.service';
 
 @Injectable()

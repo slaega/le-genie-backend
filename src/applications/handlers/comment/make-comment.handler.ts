@@ -2,7 +2,10 @@ import { MakeCommentCommand } from '#applications/commands/comment/make-comment.
 import { CommentRepository } from '#domain/repository/comment.repository';
 import { ICommandHandler, CommandHandler } from '@nestjs/cqrs';
 import { Inject, Logger } from '@nestjs/common';
-import { COMMENT_REPOSITORY, MAILER_SERVICE } from '#shared/constantes/inject-token';
+import {
+    COMMENT_REPOSITORY,
+    MAILER_SERVICE,
+} from '#shared/constantes/inject-token';
 import { Comment } from '#domain/entities/comment.entity';
 import { PrismaService } from '#infra/framwork/common/prisma/prisma.service';
 import { MailerService } from '#infra/framwork/mailer/mailer.service';
@@ -36,7 +39,8 @@ export class MakeCommentHandler implements ICommandHandler<MakeCommentCommand> {
     }
 
     private async notifyPostOwner(command: MakeCommentCommand): Promise<void> {
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+        const appUrl =
+            process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
 
         // Fetch post + owner + commenter in parallel
         const [post, commenter] = await Promise.all([
@@ -45,7 +49,11 @@ export class MakeCommentHandler implements ICommandHandler<MakeCommentCommand> {
                 include: {
                     contributors: {
                         where: { owner: true },
-                        include: { user: { select: { id: true, name: true, email: true } } },
+                        include: {
+                            user: {
+                                select: { id: true, name: true, email: true },
+                            },
+                        },
                         take: 1,
                     },
                 },
@@ -79,7 +87,9 @@ export class MakeCommentHandler implements ICommandHandler<MakeCommentCommand> {
                 },
             })
             .catch((err: Error) =>
-                this.logger.error(`Failed to create in-app notification: ${err.message}`)
+                this.logger.error(
+                    `Failed to create in-app notification: ${err.message}`
+                )
             );
 
         // ── Email notification ────────────────────────────────────────────────

@@ -36,8 +36,7 @@ export class MailerService {
         const transport = this.getTransporter();
         if (!transport) return;
 
-        const from =
-            process.env.MAIL_FROM ?? 'Le Génie <noreply@le-genie.com>';
+        const from = process.env.MAIL_FROM ?? 'Le Génie <noreply@le-genie.com>';
 
         try {
             await transport.sendMail({ from, to, subject, html });
@@ -92,7 +91,11 @@ export class MailerService {
             unsubscribeUrl,
         });
 
-        await this.sendMail(to, `✨ ${authorName} a publié : ${postTitle}`, html);
+        await this.sendMail(
+            to,
+            `✨ ${authorName} a publié : ${postTitle}`,
+            html
+        );
     }
 
     async sendWeeklyDigest(opts: {
@@ -163,11 +166,7 @@ export class MailerService {
             unsubscribeUrl,
         });
 
-        await this.sendMail(
-            to,
-            '📚 Le Génie — Digest de la semaine',
-            html
-        );
+        await this.sendMail(to, '📚 Le Génie — Digest de la semaine', html);
     }
 
     async sendCommentNotification(opts: {
@@ -177,8 +176,15 @@ export class MailerService {
         postTitle: string;
         postUrl: string;
     }): Promise<void> {
-        const { postOwnerEmail, postOwnerName, commenterName, postTitle, postUrl } = opts;
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+        const {
+            postOwnerEmail,
+            postOwnerName,
+            commenterName,
+            postTitle,
+            postUrl,
+        } = opts;
+        const appUrl =
+            process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
 
         const html = this.baseLayout({
             title: `Nouveau commentaire sur "${postTitle}"`,

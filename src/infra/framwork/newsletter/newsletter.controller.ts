@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, HttpCode, HttpStatus, Inject, Post } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    HttpCode,
+    HttpStatus,
+    Inject,
+    Post,
+} from '@nestjs/common';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { SUBSCRIBER_REPOSITORY } from '#shared/constantes/inject-token';
@@ -20,15 +28,25 @@ export class NewsletterController {
 
     @Post('subscribe')
     @HttpCode(HttpStatus.OK)
-    async subscribe(@Body() body: SubscribeDto): Promise<{ success: boolean; message: string }> {
+    async subscribe(
+        @Body() body: SubscribeDto
+    ): Promise<{ success: boolean; message: string }> {
         await this.subscriberRepository.subscribe(body.email);
-        return { success: true, message: 'Vous êtes maintenant abonné à la newsletter.' };
+        return {
+            success: true,
+            message: 'Vous êtes maintenant abonné à la newsletter.',
+        };
     }
 
     @Delete('unsubscribe')
     @HttpCode(HttpStatus.OK)
-    async unsubscribe(@Body() body: SubscribeDto): Promise<{ success: boolean; message: string }> {
+    async unsubscribe(
+        @Body() body: SubscribeDto
+    ): Promise<{ success: boolean; message: string }> {
         await this.subscriberRepository.unsubscribe(body.email);
-        return { success: true, message: 'Vous avez été désabonné de la newsletter.' };
+        return {
+            success: true,
+            message: 'Vous avez été désabonné de la newsletter.',
+        };
     }
 }

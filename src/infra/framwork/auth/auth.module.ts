@@ -39,7 +39,8 @@ import { MicrosoftExchangeProvider } from './auth-providers/microsoft-exchange.p
             useFactory: (config: ConfigService) => ({
                 secret: config.get('auth.accessTokenJwtSecret'),
                 signOptions: {
-                    expiresIn: config.get('auth.accessTokenJwtExpiresIn') ?? '15m',
+                    expiresIn:
+                        config.get('auth.accessTokenJwtExpiresIn') ?? '15m',
                 },
             }),
         }),

@@ -21,7 +21,8 @@ import { RefreshTokenPrismaRepository } from '#infra/persistences/prisma/refresh
             useFactory: (config: ConfigService) => ({
                 secret: config.get('auth.accessTokenJwtSecret'),
                 signOptions: {
-                    expiresIn: config.get('auth.accessTokenJwtExpiresIn') ?? '15m',
+                    expiresIn:
+                        config.get('auth.accessTokenJwtExpiresIn') ?? '15m',
                 },
             }),
         }),

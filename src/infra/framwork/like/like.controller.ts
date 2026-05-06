@@ -18,10 +18,7 @@ import { PostParamDto } from '#dto/post/post-param.dto';
 import { OptionalJwtAuthGuard } from '../auth/guards/auth.guard';
 import { Auth } from '../auth/auth.decorator';
 import { AuthUser } from '../auth/auth.type';
-import {
-    buildFingerprint,
-    extractClientIp,
-} from '#shared/utils/fingerprint';
+import { buildFingerprint, extractClientIp } from '#shared/utils/fingerprint';
 
 /**
  * Public Like API.
@@ -79,8 +76,6 @@ export class LikeController {
             userAgent,
         });
 
-        return this.queryBus.execute(
-            new GetLikeStatsQuery(param.postId, fp)
-        );
+        return this.queryBus.execute(new GetLikeStatsQuery(param.postId, fp));
     }
 }

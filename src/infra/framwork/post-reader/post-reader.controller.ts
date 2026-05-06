@@ -17,10 +17,7 @@ import { PostParamDto } from '#dto/post/post-param.dto';
 import { OptionalJwtAuthGuard } from '../auth/guards/auth.guard';
 import { Auth } from '../auth/auth.decorator';
 import { AuthUser } from '../auth/auth.type';
-import {
-    buildFingerprint,
-    extractClientIp,
-} from '#shared/utils/fingerprint';
+import { buildFingerprint, extractClientIp } from '#shared/utils/fingerprint';
 
 /**
  * Public Views API.

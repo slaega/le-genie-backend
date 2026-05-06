@@ -12,10 +12,7 @@ import {
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { FollowRepository } from '#domain/repository/follow.repository';
 import { FOLLOW_REPOSITORY } from '#shared/constantes/inject-token';
-import {
-    JwtAuthGuard,
-    OptionalJwtAuthGuard,
-} from '../auth/guards/auth.guard';
+import { JwtAuthGuard, OptionalJwtAuthGuard } from '../auth/guards/auth.guard';
 import { Auth } from '../auth/auth.decorator';
 import { AuthUser } from '../auth/auth.type';
 
@@ -51,13 +48,17 @@ export class FollowController {
 
     @UseGuards(OptionalJwtAuthGuard)
     @Get('follow/status')
-    @ApiOperation({ summary: 'Get follow status and follower count for an author' })
+    @ApiOperation({
+        summary: 'Get follow status and follower count for an author',
+    })
     async status(
         @Param('authorId') authorId: string,
         @Auth() user: AuthUser | null
     ): Promise<{ following: boolean; followersCount: number }> {
         const [following, followersCount] = await Promise.all([
-            user ? this.followRepo.isFollowing(user.sub, authorId) : Promise.resolve(false),
+            user
+                ? this.followRepo.isFollowing(user.sub, authorId)
+                : Promise.resolve(false),
             this.followRepo.getFollowersCount(authorId),
         ]);
         return { following, followersCount };

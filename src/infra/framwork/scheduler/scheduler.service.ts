@@ -1,7 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { PostRepository } from '#domain/repository/post.repository';
-import { POST_REPOSITORY, MAILER_SERVICE } from '#shared/constantes/inject-token';
+import {
+    POST_REPOSITORY,
+    MAILER_SERVICE,
+} from '#shared/constantes/inject-token';
 import { PostStatus } from '#shared/enums/post-status.enum';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { MailerService } from '../mailer/mailer.service';
@@ -38,7 +41,9 @@ export class SchedulerService {
                     post.status = PostStatus.PUBLISHED;
                     post.scheduledAt = null; // clear so it won't re-trigger
                     await this.postRepository.updatePost(post.id, post);
-                    this.logger.log(`Published post ${post.id} — "${post.title}"`);
+                    this.logger.log(
+                        `Published post ${post.id} — "${post.title}"`
+                    );
 
                     // Notify followers of the post author
                     const authorId =
@@ -144,7 +149,10 @@ export class SchedulerService {
         const postUrl = `${appUrl}/post/${postId}`;
 
         const [author, followerRows] = await Promise.all([
-            this.prisma.user.findUnique({ where: { id: authorId }, select: { name: true } }),
+            this.prisma.user.findUnique({
+                where: { id: authorId },
+                select: { name: true },
+            }),
             this.prisma.follow.findMany({
                 where: { authorId },
                 include: { follower: { select: { email: true } } },

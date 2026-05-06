@@ -7,7 +7,8 @@ import { Like } from '#domain/entities/like.entity';
 
 @CommandHandler(ToggleLikeCommand)
 export class ToggleLikeHandler
-    implements ICommandHandler<ToggleLikeCommand, { liked: boolean; count: number }>
+    implements
+        ICommandHandler<ToggleLikeCommand, { liked: boolean; count: number }>
 {
     constructor(
         @Inject(LIKE_REPOSITORY)

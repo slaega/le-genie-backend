@@ -26,9 +26,7 @@ export interface MicrosoftUser {
 export class MicrosoftExchangeProvider
     implements ExchangeProvider<MicrosoftUser>
 {
-    constructor(
-        private readonly configService: ConfigService<AllConfigType>
-    ) {}
+    constructor(private readonly configService: ConfigService<AllConfigType>) {}
 
     decodeUser(idToken: string): MicrosoftUser {
         const payload = jwt.decode(idToken);

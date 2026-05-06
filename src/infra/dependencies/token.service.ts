@@ -13,7 +13,11 @@ export class TokenService {
     /**
      * Given a userId (string), generate a signed JWT payload.
      */
-    private generateAccessToken(userId: string, email: string, role: string): string {
+    private generateAccessToken(
+        userId: string,
+        email: string,
+        role: string
+    ): string {
         const payload = { sub: userId, email, role };
         return this.jwtService.sign(payload, {
             expiresIn: this.configService.getOrThrow(

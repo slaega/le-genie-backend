@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaProxyRepository } from '#infra/persistences/prisma/prisma';
-import {
-    LikeRepository,
-    LikeStats,
-} from '#domain/repository/like.repository';
+import { LikeRepository, LikeStats } from '#domain/repository/like.repository';
 import { Like } from '#domain/entities/like.entity';
 import { PrismaClient } from '@prisma/client';
 
@@ -67,10 +64,7 @@ export class LikePrismaRepository
         return !!found;
     }
 
-    async getStats(
-        postId: string,
-        fingerprint: string
-    ): Promise<LikeStats> {
+    async getStats(postId: string, fingerprint: string): Promise<LikeStats> {
         const [count, liked] = await Promise.all([
             this.countByPost(postId),
             this.hasLiked(postId, fingerprint),
