@@ -46,6 +46,7 @@ model User {
   following      Follow[]       @relation("Follower")
   followers      Follow[]       @relation("Author")
   notifications  Notification[]
+  resume         Resume?
 
   @@index([email])
   @@map("users")
@@ -270,6 +271,20 @@ model OtpCode {
   createdAt DateTime @default(now())
 
   @@index([email])
+}
+
+model Resume {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  templateId String   @default("minimal-light") @db.VarChar(50)
+  isPublic   Boolean  @default(true)
+  data       Json     @default("{}")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
+  @@map("resumes")
 }
 
 // ─── Enums ────────────────────────────────────────────────────────────────────

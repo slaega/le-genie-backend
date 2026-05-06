@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, TooManyRequestsException, Inject } from '@nestjs/common';
+import { Injectable, BadRequestException, HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { MailerService } from '../mailer/mailer.service';
 import * as bcrypt from 'bcrypt';
@@ -26,7 +26,7 @@ export class OtpService {
       },
     });
     if (recent) {
-      throw new TooManyRequestsException('Un code a déjà été envoyé. Attendez 1 minute.');
+      throw new HttpException('Un code a déjà été envoyé. Attendez 1 minute.', HttpStatus.TOO_MANY_REQUESTS);
     }
 
     // Invalide les anciens OTP pour cet email
