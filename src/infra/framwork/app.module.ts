@@ -30,7 +30,6 @@ import { NotificationModule } from './notification/notification.module';
 import { AdminModule } from './admin/admin.module';
 import { OnlineModule } from './online/online.module';
 import { OtpModule } from './otp/otp.module';
-import { ResumeModule } from './resume/resume.module';
 
 @Module({
     imports: [
@@ -53,7 +52,6 @@ import { ResumeModule } from './resume/resume.module';
         AdminModule,
         OnlineModule,
         OtpModule,
-        ResumeModule,
 
         // Config
         ConfigModule.forRoot({

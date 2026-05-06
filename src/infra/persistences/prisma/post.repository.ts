@@ -77,12 +77,15 @@ export class PostPrismaRepository
         limit: number
     ): Promise<Pagination<Post>> {
         const term = q.trim();
+        // mode: 'insensitive' is Postgres-only; cast to any for SQLite compatibility
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const icontains = (value: string) => ({ contains: value, mode: 'insensitive' as any });
         const where: Prisma.PostWhereInput = {
             status: PostStatus.PUBLISHED,
             OR: [
-                { title: { contains: term, mode: 'insensitive' } },
-                { content: { contains: term, mode: 'insensitive' } },
-                { postTags: { some: { name: { contains: term, mode: 'insensitive' } } } },
+                { title: icontains(term) },
+                { content: icontains(term) },
+                { postTags: { some: { name: icontains(term) } } },
             ],
         };
 

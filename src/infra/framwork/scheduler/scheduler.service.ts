@@ -168,7 +168,7 @@ export class SchedulerService {
                         body: postTitle ?? 'Nouveau post',
                         postId,
                     })),
-                    skipDuplicates: true,
+                    skipDuplicates: true as never, // Postgres/MySQL only — ignored by SQLite
                 })
                 .catch((err: Error) =>
                     this.logger.error(

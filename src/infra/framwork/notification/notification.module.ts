@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { NotificationController } from './notification.controller';
-import { CommonModule } from '../common/common.module';
+import { PrismaModule } from '../common/prisma/prisma.module';
 
 @Module({
-    imports: [CommonModule],
+    imports: [PrismaModule],
     controllers: [NotificationController],
 })
 export class NotificationModule {}

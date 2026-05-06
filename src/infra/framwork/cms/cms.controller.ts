@@ -143,7 +143,7 @@ export class CmsController {
             coverPath: user.coverPath ?? null,
             professionalRole: user.professionalRole ?? null,
             followersCount: user._count.followers,
-            posts: posts.map(PostMapper.toDto),
+            posts: posts.map((p) => PostMapper.toDto(PostMapper.toDomain(p))),
         };
     }
 
