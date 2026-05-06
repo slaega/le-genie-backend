@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PrismaService } from '../common/prisma/prisma.service';
 import { PrismaModule } from '../common/prisma/prisma.module';
+import { MailerModule } from '../mailer/mailer.module';
 import { CommentController } from './comment.controller';
 import { CommentPrismaRepository } from '#infra/persistences/prisma/comment.repository';
 import { COMMENT_REPOSITORY } from '#shared/constantes/inject-token';
@@ -11,7 +12,7 @@ import { RemoveCommentHandler } from '#applications/handlers/comment/remove-comm
 import { GetCommentsQueryHandler } from '#applications/query-handler/comment/get-comments.query-handler';
 
 @Module({
-    imports: [CqrsModule, PrismaModule],
+    imports: [CqrsModule, PrismaModule, MailerModule],
     providers: [
         {
             provide: COMMENT_REPOSITORY,

@@ -170,6 +170,55 @@ export class MailerService {
         );
     }
 
+    async sendCommentNotification(opts: {
+        postOwnerEmail: string;
+        postOwnerName: string;
+        commenterName: string;
+        postTitle: string;
+        postUrl: string;
+    }): Promise<void> {
+        const { postOwnerEmail, postOwnerName, commenterName, postTitle, postUrl } = opts;
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+
+        const html = this.baseLayout({
+            title: `Nouveau commentaire sur "${postTitle}"`,
+            previewText: `${commenterName} a commenté votre article "${postTitle}"`,
+            body: `
+              <tr>
+                <td style="padding:32px 40px 0;">
+                  <p style="margin:0 0 8px;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#6366f1;">
+                    Nouveau commentaire
+                  </p>
+                  <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;line-height:1.3;color:#111827;">
+                    Bonjour ${this.escapeHtml(postOwnerName)} 👋
+                  </h1>
+                  <p style="margin:0 0 28px;font-size:15px;line-height:1.7;color:#4b5563;">
+                    <strong>${this.escapeHtml(commenterName)}</strong> vient de commenter votre article
+                    <strong>« ${this.escapeHtml(postTitle)} »</strong>.
+                  </p>
+                  <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 32px;">
+                    <tr>
+                      <td style="border-radius:8px;background:#6366f1;">
+                        <a href="${postUrl}"
+                           style="display:inline-block;padding:14px 28px;font-size:15px;font-weight:600;color:#fff;text-decoration:none;border-radius:8px;">
+                          Voir le commentaire &rarr;
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            `,
+            unsubscribeUrl: `${appUrl}/me`,
+        });
+
+        await this.sendMail(
+            postOwnerEmail,
+            `💬 ${commenterName} a commenté "${postTitle}"`,
+            html
+        );
+    }
+
     // ─── Private helpers ──────────────────────────────────────────────────────
 
     private escapeHtml(str: string): string {
