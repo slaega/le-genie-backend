@@ -253,6 +253,18 @@ model Notification {
   @@map("notifications")
 }
 
+model OtpCode {
+  id        String   @id @default(cuid())
+  email     String
+  code      String   // bcrypt hash du code à 6 chiffres
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
 // ─── Enums (émulés en TEXT + CHECK constraint) ────────────────────────────────
 
 enum Provider {

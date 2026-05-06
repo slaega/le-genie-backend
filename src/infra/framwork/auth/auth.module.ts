@@ -23,7 +23,7 @@ import { RefreshTokenPrismaRepository } from '#infra/persistences/prisma/refresh
 import { ExchangeProviderRegistry } from './auth-providers/exchange.provider';
 import { GithubExchangeProvider } from './auth-providers/github-exchange.provider';
 import { GoogleExchangeProvider } from './auth-providers/google-exchange.provider';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RefreshTokenHandler } from '#applications/handlers/auth/refresh-token.handler';
 import { GetMeQueryHandler } from '#applications/query-handler/auth/get-me.query-handler';
 import { StorageModule } from '../common/storage/storage.module';
@@ -33,9 +33,15 @@ import { MicrosoftExchangeProvider } from './auth-providers/microsoft-exchange.p
     imports: [
         CqrsModule,
         PassportModule.register({ session: false }),
-        JwtModule.register({
-            secret: process.env.JWT_SECRET,
-            signOptions: { expiresIn: '1h' },
+        JwtModule.registerAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (config: ConfigService) => ({
+                secret: config.get('auth.accessTokenJwtSecret'),
+                signOptions: {
+                    expiresIn: config.get('auth.accessTokenJwtExpiresIn') ?? '15m',
+                },
+            }),
         }),
         StorageModule,
     ],

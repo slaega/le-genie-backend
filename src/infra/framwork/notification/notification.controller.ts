@@ -48,6 +48,13 @@ export class NotificationController {
         return { success: true };
     }
 
+    /** DELETE /notifications — supprime toutes les notifs de l'utilisateur */
+    @Delete()
+    async removeAll(@Auth() user: AuthUser) {
+        await this.prisma.notification.deleteMany({ where: { userId: user.sub } });
+        return { success: true };
+    }
+
     /** DELETE /notifications/:id — supprime une notif */
     @Delete(':id')
     async remove(@Auth() user: AuthUser, @Param('id') id: string) {

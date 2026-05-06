@@ -219,6 +219,40 @@ export class MailerService {
         );
     }
 
+    async sendOtpEmail(opts: { to: string; code: string }): Promise<void> {
+        const { to, code } = opts;
+        const html = this.baseLayout({
+            title: 'Votre code de connexion',
+            previewText: `Code de connexion Le Génie : ${code}`,
+            body: `
+          <tr>
+            <td style="padding:32px 40px 0;">
+              <p style="margin:0 0 8px;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#6366f1;">
+                Connexion sans mot de passe
+              </p>
+              <h1 style="margin:0 0 24px;font-size:22px;font-weight:700;line-height:1.3;color:#111827;">
+                Votre code de connexion
+              </h1>
+              <p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#4b5563;">
+                Utilisez ce code pour vous connecter à Le Génie.
+                Il expire dans <strong>5 minutes</strong>.
+              </p>
+              <div style="background:#f3f4f6;border-radius:12px;padding:24px;text-align:center;margin:0 0 24px;">
+                <span style="font-size:36px;font-weight:700;letter-spacing:12px;color:#111827;font-family:monospace;">
+                  ${code}
+                </span>
+              </div>
+              <p style="margin:0;font-size:13px;color:#9ca3af;">
+                Si vous n'avez pas demandé ce code, ignorez cet email.
+              </p>
+            </td>
+          </tr>
+        `,
+            unsubscribeUrl: '#',
+        });
+        await this.sendMail(to, '🔑 Votre code de connexion Le Génie', html);
+    }
+
     // ─── Private helpers ──────────────────────────────────────────────────────
 
     private escapeHtml(str: string): string {

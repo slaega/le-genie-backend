@@ -29,6 +29,7 @@ import { FollowModule } from './follow/follow.module';
 import { NotificationModule } from './notification/notification.module';
 import { AdminModule } from './admin/admin.module';
 import { OnlineModule } from './online/online.module';
+import { OtpModule } from './otp/otp.module';
 
 @Module({
     imports: [
@@ -50,6 +51,7 @@ import { OnlineModule } from './online/online.module';
         NotificationModule,
         AdminModule,
         OnlineModule,
+        OtpModule,
 
         // Config
         ConfigModule.forRoot({

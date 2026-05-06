@@ -30,6 +30,7 @@ import { UpdateAvatarDto } from '#dto/auth/update-avatar.dto';
 import { StorageProvider } from '#domain/services/storage.provider';
 import { STORAGE_PROVIDER } from '#shared/constantes/inject-token';
 import { FormDataRequest } from 'nestjs-form-data';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -43,6 +44,7 @@ export class AuthController {
 
     @Post('token')
     @UseGuards(OAuthCallbackGuard)
+    @Throttle({ default: { limit: 10, ttl: 60000 } })
     async oauthCallback(
         @Oauth2User() oauthUser: ExchangeType,
         @Body() _body: CreateTokenDto
@@ -90,6 +92,7 @@ export class AuthController {
 
     @UseGuards(JwtRefreshGuard)
     @Post('refresh-token')
+    @Throttle({ default: { limit: 20, ttl: 60000 } })
     async refreshToken(@Refresh() user: RefreshUser): Promise<AuthResponseDto> {
         const authResponse = await this.commandBus.execute(
             new RefreshTokenCommand(user.sub, user.token)
