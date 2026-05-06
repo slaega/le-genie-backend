@@ -13,8 +13,8 @@ export class TokenService {
     /**
      * Given a userId (string), generate a signed JWT payload.
      */
-    private generateAccessToken(userId: string, email: string): string {
-        const payload = { sub: userId, email };
+    private generateAccessToken(userId: string, email: string, role: string): string {
+        const payload = { sub: userId, email, role };
         return this.jwtService.sign(payload, {
             expiresIn: this.configService.getOrThrow(
                 'auth.accessTokenJwtExpiresIn',
@@ -54,9 +54,10 @@ export class TokenService {
     generateTokens(
         userId: string,
         email: string,
-        token: string
+        token: string,
+        role = 'USER'
     ): { accessToken: string; refreshToken: string } {
-        const accessToken = this.generateAccessToken(userId, email);
+        const accessToken = this.generateAccessToken(userId, email, role);
         const refreshToken = this.generateRefreshToken(userId, token);
         return { accessToken, refreshToken };
     }

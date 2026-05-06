@@ -65,7 +65,8 @@ export class AuthenticateWithProviderHandler
         const { accessToken, refreshToken } = this.tokenService.generateTokens(
             user.id,
             user.email,
-            nanoid(50)
+            nanoid(50),
+            (user as any).role ?? 'USER'
         );
         const newRefresh = new RefreshToken();
         newRefresh.userId = user.id;

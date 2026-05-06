@@ -30,10 +30,16 @@ export class RefreshTokenHandler
             command.userId,
             command.token
         );
+        // Block suspended users at refresh time
+        if ((user as any).suspended) {
+            throw new Error('Account suspended');
+        }
+
         const { accessToken, refreshToken } = this.tokenService.generateTokens(
             user.id,
             user.email,
-            nanoid(50)
+            nanoid(50),
+            (user as any).role ?? 'USER'
         );
         const newRefresh = new RefreshToken();
         newRefresh.userId = user.id;

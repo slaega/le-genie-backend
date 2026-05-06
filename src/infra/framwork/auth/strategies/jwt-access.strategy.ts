@@ -7,6 +7,7 @@ import { AuthErrors } from '../auth.errors';
 export type JwtAccessTokenPayloadType = {
     sub: string;
     email: string;
+    role?: string;
 };
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-access') {

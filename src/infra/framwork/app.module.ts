@@ -27,6 +27,8 @@ import { MailerModule } from './mailer/mailer.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
 import { FollowModule } from './follow/follow.module';
 import { NotificationModule } from './notification/notification.module';
+import { AdminModule } from './admin/admin.module';
+import { OnlineModule } from './online/online.module';
 
 @Module({
     imports: [
@@ -46,6 +48,8 @@ import { NotificationModule } from './notification/notification.module';
         NewsletterModule,
         FollowModule,
         NotificationModule,
+        AdminModule,
+        OnlineModule,
 
         // Config
         ConfigModule.forRoot({
