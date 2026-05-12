@@ -17,19 +17,17 @@ function buildOptions(): Prisma.PrismaClientOptions {
     }
 
     if (provider === 'sqlite') {
-        // Prisma 7 requires a driver adapter even for SQLite
+        // Prisma 7 requires a driver adapter even for SQLite.
+        // PrismaBetterSqlite3 is a factory — pass { url } and it opens the DB internally.
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const {
             PrismaBetterSqlite3,
         } = require('@prisma/adapter-better-sqlite3');
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const Database = require('better-sqlite3');
-        const url = (process.env.DATABASE_URL ?? 'file:./dev.db').replace(
-            /^file:/,
-            ''
-        );
-        const db = new Database(url);
-        return { adapter: new PrismaBetterSqlite3(db), log: ['error', 'warn'] };
+        const url = process.env.DATABASE_URL ?? 'file:./dev.db';
+        return {
+            adapter: new PrismaBetterSqlite3({ url }),
+            log: ['error', 'warn'],
+        };
     }
 
     // mysql — native Prisma query engine (no driver adapter in this setup)
