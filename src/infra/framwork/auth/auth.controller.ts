@@ -119,11 +119,42 @@ export class AuthController {
             where: { id: user.sub },
             data: {
                 ...(dto.name !== undefined && { name: dto.name }),
-                ...(dto.professionalRole !== undefined && {
-                    professionalRole: dto.professionalRole,
-                }),
+                ...(dto.professionalRole !== undefined && { professionalRole: dto.professionalRole }),
+                ...(dto.bio !== undefined && { bio: dto.bio || null }),
+                ...(dto.about !== undefined && { about: dto.about || null }),
+                ...(dto.website !== undefined && { website: dto.website || null }),
+                ...(dto.twitterHandle !== undefined && { twitterHandle: dto.twitterHandle || null }),
+                ...(dto.githubHandle !== undefined && { githubHandle: dto.githubHandle || null }),
+                ...(dto.location !== undefined && { location: dto.location || null }),
             },
         });
+        return UserMapper.toDto(updatedUser);
+    }
+
+    /** PATCH /auth/me/cover — upload de la photo de couverture */
+    @UseGuards(JwtAuthGuard)
+    @Patch('me/cover')
+    @FormDataRequest()
+    async updateCover(
+        @Auth() user: AuthUser,
+        @Body() dto: UpdateAvatarDto
+    ): Promise<UserResponseDto> {
+        const ext = dto.avatarFile.originalName.split('.').pop() ?? 'jpg';
+        const path = `covers/${user.sub}.${ext}`;
+
+        const storagePath = await this.storage.upload({
+            path,
+            file: dto.avatarFile.buffer,
+            contentType: dto.avatarFile.mimetype,
+        });
+
+        const coverUrl = await this.storage.getPublicUrl(storagePath);
+
+        const updatedUser = await this.prisma.user.update({
+            where: { id: user.sub },
+            data: { coverPath: coverUrl },
+        });
+
         return UserMapper.toDto(updatedUser);
     }
 

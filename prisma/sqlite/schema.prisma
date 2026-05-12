@@ -29,6 +29,12 @@ model User {
   avatarPath       String?
   coverPath        String?
   professionalRole String?
+  bio              String?
+  about            String?
+  website          String?
+  twitterHandle    String?
+  githubHandle     String?
+  location         String?
   role             UserRole  @default(USER)
   suspended        Boolean   @default(false)
   createdAt        DateTime  @default(now())

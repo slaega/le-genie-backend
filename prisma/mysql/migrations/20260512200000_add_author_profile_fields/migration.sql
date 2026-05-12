@@ -1,0 +1,6 @@
+ALTER TABLE `users` ADD COLUMN `bio` VARCHAR(300);
+ALTER TABLE `users` ADD COLUMN `about` TEXT;
+ALTER TABLE `users` ADD COLUMN `website` VARCHAR(2048);
+ALTER TABLE `users` ADD COLUMN `twitterHandle` VARCHAR(100);
+ALTER TABLE `users` ADD COLUMN `githubHandle` VARCHAR(100);
+ALTER TABLE `users` ADD COLUMN `location` VARCHAR(150);
