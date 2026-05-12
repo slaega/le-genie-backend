@@ -69,6 +69,9 @@ declare module 'http' {
                     },
                 },
                 exclude: [{ path: 'healthcheck', method: RequestMethod.ALL }],
+                // path-to-regexp v8 requires named wildcards — override pino's
+                // default `{ path: '*' }` to silence the LegacyRouteConverter warning.
+                forRoutes: [{ path: '*path', method: RequestMethod.ALL }],
             }),
             inject: [ConfigService],
         }),

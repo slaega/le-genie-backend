@@ -58,7 +58,7 @@
     "helmet": "^8.1.0",
     "nanoid": "^5.1.5",
     "nestjs-form-data": "^1.9.93",
-    "nestjs-i18n": "^10.5.1",
+    "nestjs-i18n": "^10.8.4",
     "nestjs-pino": "^4.4.0",
     "nodemailer": "^7.0.3",
     "nodemailer-sendgrid": "^1.0.3",
