@@ -3,7 +3,7 @@ import { PrismaClient, type Prisma } from '@prisma/client';
 
 type Provider = 'postgres' | 'mysql' | 'sqlite';
 
-/** Builds Prisma constructor options based on DATABASE_PROVIDER. */
+/** Returns Prisma constructor options for the configured DATABASE_PROVIDER. */
 function buildOptions(): Prisma.PrismaClientOptions {
     const provider = (process.env.DATABASE_PROVIDER ?? 'postgres') as Provider;
 
@@ -16,7 +16,23 @@ function buildOptions(): Prisma.PrismaClientOptions {
         return { adapter: new PrismaPg(pool), log: ['error', 'warn'] };
     }
 
-    // sqlite / mysql — native Prisma query engine, no driver adapter needed
+    if (provider === 'sqlite') {
+        // Prisma 7 requires a driver adapter even for SQLite
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const {
+            PrismaBetterSqlite3,
+        } = require('@prisma/adapter-better-sqlite3');
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const Database = require('better-sqlite3');
+        const url = (process.env.DATABASE_URL ?? 'file:./dev.db').replace(
+            /^file:/,
+            ''
+        );
+        const db = new Database(url);
+        return { adapter: new PrismaBetterSqlite3(db), log: ['error', 'warn'] };
+    }
+
+    // mysql — native Prisma query engine (no driver adapter in this setup)
     return { log: ['error', 'warn'] };
 }
 
