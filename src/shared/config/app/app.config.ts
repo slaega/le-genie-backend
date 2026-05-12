@@ -97,7 +97,7 @@ export default registerAs<AppConfig>('app', () => {
     );
     return {
         nodeEnv: validatedConfig.NODE_ENV,
-        name: validatedConfig.APP_NAME || 'Akieni Blog',
+        name: validatedConfig.APP_NAME || 'Le Génie',
         workingDirectory: validatedConfig.PWD || process.cwd(),
         frontendDomain: validatedConfig.FRONTEND_DOMAIN,
         backendDomain: validatedConfig.BACKEND_DOMAIN ?? 'http://localhost',

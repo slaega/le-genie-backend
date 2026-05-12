@@ -1,11 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import 'dotenv/config';
 
-import {
-    ClassSerializerInterceptor,
-    ValidationPipe,
-    VersioningType,
-} from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { useContainer } from 'class-validator';
@@ -57,13 +53,6 @@ async function bootstrap() {
     // Configuration permettant de récupérer l'adresse IP du
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     app.use(requestIp.mw());
-
-    // Configuration globale de gestion des versions
-    app.enableVersioning({
-        type: VersioningType.URI,
-        prefix: 'v',
-        defaultVersion: '1.0',
-    });
 
     // Configuration du préfixe global pour les routes de l'API
     const apiPrefix = configService.getOrThrow('app.apiPrefix', {
