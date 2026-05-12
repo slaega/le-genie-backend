@@ -61,18 +61,27 @@ import { MicrosoftExchangeProvider } from './auth-providers/microsoft-exchange.p
             provide: ExchangeProviderRegistry,
             useFactory: (configService: ConfigService) => {
                 const registry = new ExchangeProviderRegistry();
-                registry.register(
-                    new GithubExchangeProvider(configService),
-                    'GITHUB'
-                );
-                registry.register(
-                    new GoogleExchangeProvider(configService),
-                    'GOOGLE'
-                );
-                registry.register(
-                    new MicrosoftExchangeProvider(configService),
-                    'MICROSOFT'
-                );
+
+                // Only register providers whose credentials are present
+                if (configService.get('auth.github')) {
+                    registry.register(
+                        new GithubExchangeProvider(configService),
+                        'GITHUB'
+                    );
+                }
+                if (configService.get('auth.google')) {
+                    registry.register(
+                        new GoogleExchangeProvider(configService),
+                        'GOOGLE'
+                    );
+                }
+                if (configService.get('auth.microsoft')) {
+                    registry.register(
+                        new MicrosoftExchangeProvider(configService),
+                        'MICROSOFT'
+                    );
+                }
+
                 return registry;
             },
             inject: [ConfigService],

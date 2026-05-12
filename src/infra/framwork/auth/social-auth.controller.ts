@@ -106,8 +106,9 @@ export class SocialAuthController {
     @Get(':provider')
     initiate(@Param('provider') slug: string, @Res() res: Response): void {
         const providerKey = SLUG_TO_PROVIDER[slug as ProviderSlug];
-        if (!providerKey)
-            throw new NotFoundException(`Unknown provider: ${slug}`);
+        if (!providerKey || !this.registry.has(providerKey)) {
+            throw new NotFoundException(`OAuth provider "${slug}" is not configured`);
+        }
 
         const url = this.registry
             .get(providerKey)

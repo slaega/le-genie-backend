@@ -1,4 +1,4 @@
-import { UnauthorizedException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { ExchangeType } from './exchange-type';
 
 export interface ExchangeProvider<T> {
@@ -20,14 +20,18 @@ export class ExchangeProviderRegistry {
         this.providers.set(name, provider);
     }
 
+    has(name: ExchangeType['provider']): boolean {
+        return this.providers.has(name);
+    }
+
     get(
         name: ExchangeType['provider']
     ): ExchangeProvider<ExchangeType['user']> {
         const provider = this.providers.get(name);
         if (!provider) {
-            throw new UnauthorizedException({
-                error: `Provider ${name} not found`,
-            });
+            throw new NotFoundException(
+                `OAuth provider ${name} is not configured`
+            );
         }
         return provider;
     }

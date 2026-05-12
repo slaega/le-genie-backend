@@ -17,10 +17,17 @@ export interface PostRepository {
     ): Promise<Pagination<Post>>;
     getScheduledToPublish(): Promise<Post[]>;
     getPostById(postId: string): Promise<Post>;
+    /** Find a published post by slug or id (slug takes precedence). */
+    getPostBySlugOrId(
+        slugOrId: string,
+        status: PostStatus | 'ALL'
+    ): Promise<Post | null>;
     getPostByIdAndStatus(
         postId: string,
         status: PostStatus | 'ALL'
     ): Promise<Post | null>;
+    /** Returns true if a post with this slug already exists (excluding postId). */
+    isSlugTaken(slug: string, excludePostId?: string): Promise<boolean>;
     createPost(post: Post): Promise<Post>;
     updatePost(postId: string, post: Post): Promise<Post>;
     removePost(postId: string): Promise<void>;

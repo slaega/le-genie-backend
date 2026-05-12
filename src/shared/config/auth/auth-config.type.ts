@@ -1,18 +1,14 @@
+export type OAuthProviderConfig = {
+    clientID: string;
+    clientSecret: string;
+};
+
 export type AuthConfig = {
     accessTokenJwtSecret: string;
     accessTokenJwtExpiresIn: string;
     refreshTokenJwtSecret: string;
     refreshTokenJwtExpiresIn: string;
-    google: {
-        clientID: string;
-        clientSecret: string;
-    };
-    github: {
-        clientID: string;
-        clientSecret: string;
-    };
-    microsoft: {
-        clientID: string;
-        clientSecret: string;
-    };
+    google?: OAuthProviderConfig;
+    github?: OAuthProviderConfig;
+    microsoft?: OAuthProviderConfig;
 };

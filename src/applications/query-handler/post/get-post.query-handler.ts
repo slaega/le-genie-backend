@@ -17,7 +17,8 @@ export class GetPostQueryHandler implements IQueryHandler<GetPostQuery> {
     ) {}
 
     async execute(query: GetPostQuery) {
-        const post = await this.postRepository.getPostByIdAndStatus(
+        // Accept both slug and id — slug takes precedence
+        const post = await this.postRepository.getPostBySlugOrId(
             query.postId,
             query.status
         );

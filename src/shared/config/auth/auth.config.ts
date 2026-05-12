@@ -1,5 +1,5 @@
 import { registerAs } from '@nestjs/config';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 import { AuthConfig } from './auth-config.type';
 import validateConfig from '#shared/utils/validate-config';
@@ -21,29 +21,31 @@ class EnvironmentVariablesValidator {
     @IsNotEmpty()
     AUTH_REFRESH_TOKEN_JWT_EXPIRES_IN: string;
 
-    @IsString()
-    @IsNotEmpty()
-    AUTH_GOOGLE_CLIENT_ID: string;
+    // OAuth providers — all optional (NestJS starts even if not configured)
 
+    @IsOptional()
     @IsString()
-    @IsNotEmpty()
-    AUTH_GOOGLE_CLIENT_SECRET: string;
+    AUTH_GOOGLE_CLIENT_ID?: string;
 
+    @IsOptional()
     @IsString()
-    @IsNotEmpty()
-    AUTH_GITHUB_CLIENT_ID: string;
+    AUTH_GOOGLE_CLIENT_SECRET?: string;
 
+    @IsOptional()
     @IsString()
-    @IsNotEmpty()
-    AUTH_GITHUB_CLIENT_SECRET: string;
+    AUTH_GITHUB_CLIENT_ID?: string;
 
+    @IsOptional()
     @IsString()
-    @IsNotEmpty()
-    AUTH_MICROSOFT_CLIENT_ID: string;
+    AUTH_GITHUB_CLIENT_SECRET?: string;
 
+    @IsOptional()
     @IsString()
-    @IsNotEmpty()
-    AUTH_MICROSOFT_CLIENT_SECRET: string;
+    AUTH_MICROSOFT_CLIENT_ID?: string;
+
+    @IsOptional()
+    @IsString()
+    AUTH_MICROSOFT_CLIENT_SECRET?: string;
 }
 
 export default registerAs<AuthConfig>('auth', () => {
@@ -52,6 +54,16 @@ export default registerAs<AuthConfig>('auth', () => {
         EnvironmentVariablesValidator
     );
 
+    const googleConfigured =
+        validatedConfig.AUTH_GOOGLE_CLIENT_ID &&
+        validatedConfig.AUTH_GOOGLE_CLIENT_SECRET;
+    const githubConfigured =
+        validatedConfig.AUTH_GITHUB_CLIENT_ID &&
+        validatedConfig.AUTH_GITHUB_CLIENT_SECRET;
+    const microsoftConfigured =
+        validatedConfig.AUTH_MICROSOFT_CLIENT_ID &&
+        validatedConfig.AUTH_MICROSOFT_CLIENT_SECRET;
+
     return {
         accessTokenJwtSecret: validatedConfig.AUTH_ACCESS_TOKEN_JWT_SECRET,
         accessTokenJwtExpiresIn:
@@ -59,17 +71,23 @@ export default registerAs<AuthConfig>('auth', () => {
         refreshTokenJwtSecret: validatedConfig.AUTH_REFRESH_TOKEN_JWT_SECRET,
         refreshTokenJwtExpiresIn:
             validatedConfig.AUTH_REFRESH_TOKEN_JWT_EXPIRES_IN,
-        google: {
-            clientID: validatedConfig.AUTH_GOOGLE_CLIENT_ID,
-            clientSecret: validatedConfig.AUTH_GOOGLE_CLIENT_SECRET,
-        },
-        github: {
-            clientID: validatedConfig.AUTH_GITHUB_CLIENT_ID,
-            clientSecret: validatedConfig.AUTH_GITHUB_CLIENT_SECRET,
-        },
-        microsoft: {
-            clientID: validatedConfig.AUTH_MICROSOFT_CLIENT_ID,
-            clientSecret: validatedConfig.AUTH_MICROSOFT_CLIENT_SECRET,
-        },
+        google: googleConfigured
+            ? {
+                  clientID: validatedConfig.AUTH_GOOGLE_CLIENT_ID!,
+                  clientSecret: validatedConfig.AUTH_GOOGLE_CLIENT_SECRET!,
+              }
+            : undefined,
+        github: githubConfigured
+            ? {
+                  clientID: validatedConfig.AUTH_GITHUB_CLIENT_ID!,
+                  clientSecret: validatedConfig.AUTH_GITHUB_CLIENT_SECRET!,
+              }
+            : undefined,
+        microsoft: microsoftConfigured
+            ? {
+                  clientID: validatedConfig.AUTH_MICROSOFT_CLIENT_ID!,
+                  clientSecret: validatedConfig.AUTH_MICROSOFT_CLIENT_SECRET!,
+              }
+            : undefined,
     };
 });

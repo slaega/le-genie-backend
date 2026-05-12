@@ -131,6 +131,29 @@ export class PostPrismaRepository
         return raw ? PostMapper.toDomain(raw) : null;
     }
 
+    async getPostBySlugOrId(
+        slugOrId: string,
+        status: PostStatus | 'ALL'
+    ): Promise<Post | null> {
+        const statusFilter: Prisma.PostWhereInput =
+            status !== 'ALL' ? { status } : {};
+        const raw = await this.findFirst({
+            where: {
+                ...statusFilter,
+                OR: [{ slug: slugOrId }, { id: slugOrId }],
+            },
+            include: INCLUDE,
+        });
+        return raw ? PostMapper.toDomain(raw) : null;
+    }
+
+    async isSlugTaken(slug: string, excludePostId?: string): Promise<boolean> {
+        const where: Prisma.PostWhereInput = { slug };
+        if (excludePostId) where.id = { not: excludePostId };
+        const count = await this.count({ where });
+        return count > 0;
+    }
+
     async getPostById(postId: string): Promise<Post | null> {
         const raw = await this.findUnique({
             where: { id: postId },
@@ -161,6 +184,7 @@ export class PostPrismaRepository
         const updated = await this.update({
             where: { id: postId },
             data: {
+                slug: post.slug,
                 title: post.title,
                 content: post.content,
                 status: post.status,

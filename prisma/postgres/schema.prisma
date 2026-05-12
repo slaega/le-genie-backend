@@ -45,6 +45,7 @@ model User {
 
 model Post {
   id          String     @id @default(cuid())
+  slug        String?    @unique
   title       String
   /// TipTap JSON — generateHTML() renders it server-side for SEO
   content     String     @default("{}") @db.Text

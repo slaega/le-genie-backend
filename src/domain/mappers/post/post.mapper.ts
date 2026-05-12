@@ -16,6 +16,7 @@ export class PostMapper {
     static toDomain(raw: PostPrisma): Post {
         const post = new Post();
         post.id = raw.id;
+        post.slug = (raw as any).slug ?? null;
         post.title = raw.title;
         // content is stored as a JSON string in the DB (multi-DB compatible)
         post.content = raw.content;
@@ -35,6 +36,7 @@ export class PostMapper {
     static toDto(post: Post): PostResponseDto {
         const dto = new PostResponseDto();
         dto.id = post.id;
+        dto.slug = post.slug ?? null;
         dto.title = post.title;
         dto.imagePath = post.imagePath;
         // Parse JSON string so the client receives a proper object

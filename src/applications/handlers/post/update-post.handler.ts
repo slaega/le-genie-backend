@@ -8,6 +8,7 @@ import {
 import { PostRepository } from '#domain/repository/post.repository';
 import { StorageProvider } from '#domain/services/storage.provider';
 import { computeReadingTime } from '#shared/utils/reading-time';
+import { slugify } from '#shared/utils/slugify';
 
 @CommandHandler(UpdatePostCommand)
 export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
@@ -43,21 +44,36 @@ export class UpdatePostHandler implements ICommandHandler<UpdatePostCommand> {
                 contentType: command.imageFile.contentType,
             });
         }
-        post.title = command.title ?? post.title;
+        const newTitle = command.title ?? post.title;
+        post.title = newTitle;
         post.content = command.content ?? post.content;
         post.readingTime = computeReadingTime(post.content);
+
+        // Generate slug once from title (never overwrite an existing slug)
+        if (!post.slug && newTitle && newTitle.trim()) {
+            const base = slugify(newTitle);
+            if (base) {
+                let candidate = base;
+                let counter = 2;
+                while (await this.postRepository.isSlugTaken(candidate, post.id)) {
+                    candidate = `${base}-${counter++}`;
+                }
+                post.slug = candidate;
+            }
+        }
 
         const wasPublished = post.status === 'PUBLISHED';
         post.status = command.status ?? post.status;
 
-        // Set publishedAt the first time a post transitions to PUBLISHED
-        if (!wasPublished && post.status === 'PUBLISHED' && !post.publishedAt) {
-            post.publishedAt = new Date();
-        }
-
-        // scheduledAt: undefined = not touched, null = clear, Date = set
-        if (command.scheduledAt !== undefined) {
-            post.scheduledAt = command.scheduledAt;
+        // Transition to PUBLISHED: set publishedAt + clear any pending schedule
+        if (!wasPublished && post.status === 'PUBLISHED') {
+            if (!post.publishedAt) post.publishedAt = new Date();
+            post.scheduledAt = null; // auto-clear schedule on publish
+        } else {
+            // scheduledAt: undefined = not touched, null = clear, Date = set
+            if (command.scheduledAt !== undefined) {
+                post.scheduledAt = command.scheduledAt;
+            }
         }
         const updatedPost = await this.postRepository.updatePost(post.id, post);
         updatedPost.imagePath = await this.storageProvider.getPublicUrl(

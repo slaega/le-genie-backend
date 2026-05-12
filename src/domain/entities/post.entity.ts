@@ -4,6 +4,7 @@ import { Contributor } from './contributor.entity';
 import { PostTag } from './post-tag.entity';
 
 export class Post extends Entity {
+    public slug: string | null;
     public title: string;
     public content: string;
     public status: PostStatus;
@@ -19,6 +20,7 @@ export class Post extends Entity {
     }
 
     createEmptyPost(userId: string) {
+        this.slug = null;
         this.title = '';
         this.content = '';
         this.imagePath = '';

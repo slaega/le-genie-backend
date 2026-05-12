@@ -1,5 +1,6 @@
 import { PostStatus } from '#shared/enums/post-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { IsDateString, IsEnum, IsOptional, IsString } from 'class-validator';
 import {
     HasMimeType,
@@ -28,6 +29,7 @@ export class UpdatePostDto {
         required: false,
         description: 'ISO8601 date-time — auto-publishes the post at this date',
     })
+    @Transform(({ value }) => (value === '' ? undefined : value))
     @IsDateString()
     @IsOptional()
     scheduledAt?: string;

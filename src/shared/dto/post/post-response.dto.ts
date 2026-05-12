@@ -6,6 +6,9 @@ export class PostResponseDto {
     id: string;
 
     @ApiResponseProperty()
+    slug: string | null;
+
+    @ApiResponseProperty()
     title: string;
 
     @ApiResponseProperty()
