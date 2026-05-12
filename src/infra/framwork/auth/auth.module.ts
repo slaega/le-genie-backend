@@ -5,6 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
 import { AuthController } from './auth.controller';
+import { SocialAuthController } from './social-auth.controller';
 import { TokenService } from '../../dependencies/token.service';
 
 // Passport strategies (register them as providers);
@@ -46,7 +47,9 @@ import { MicrosoftExchangeProvider } from './auth-providers/microsoft-exchange.p
         }),
         StorageModule,
     ],
-    controllers: [AuthController],
+    // AuthController must come first so GET /auth/me is registered before
+    // SocialAuthController's GET /auth/:provider wildcard.
+    controllers: [AuthController, SocialAuthController],
     providers: [
         AuthenticateWithProviderHandler,
         RefreshTokenHandler,

@@ -2,8 +2,11 @@ import { UnauthorizedException } from '@nestjs/common';
 import { ExchangeType } from './exchange-type';
 
 export interface ExchangeProvider<T> {
+    /** Build the OAuth authorization URL to redirect the browser to. */
+    getAuthorizationUrl(callbackURL: string): string;
     exchangeCode(code: string, redirectUri: string): Promise<T>;
 }
+
 export class ExchangeProviderRegistry {
     private providers: Map<
         ExchangeType['provider'],

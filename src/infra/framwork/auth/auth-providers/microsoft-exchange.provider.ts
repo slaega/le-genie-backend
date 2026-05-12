@@ -23,10 +23,23 @@ export interface MicrosoftUser {
     [key: string]: unknown;
 }
 
-export class MicrosoftExchangeProvider
-    implements ExchangeProvider<MicrosoftUser>
-{
+export class MicrosoftExchangeProvider implements ExchangeProvider<MicrosoftUser> {
     constructor(private readonly configService: ConfigService<AllConfigType>) {}
+
+    getAuthorizationUrl(callbackURL: string): string {
+        const clientId = this.configService.getOrThrow(
+            'auth.microsoft.clientID',
+            { infer: true }
+        );
+        return (
+            `https://login.microsoftonline.com/common/oauth2/v2.0/authorize` +
+            `?client_id=${clientId}` +
+            `&redirect_uri=${encodeURIComponent(callbackURL)}` +
+            `&response_type=code` +
+            `&scope=${encodeURIComponent('openid email profile')}` +
+            `&response_mode=query`
+        );
+    }
 
     decodeUser(idToken: string): MicrosoftUser {
         const payload = jwt.decode(idToken);

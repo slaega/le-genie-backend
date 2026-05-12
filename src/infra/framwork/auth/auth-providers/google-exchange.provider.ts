@@ -25,6 +25,19 @@ export interface GoogleUser {
 export class GoogleExchangeProvider implements ExchangeProvider<GoogleUser> {
     constructor(private readonly configService: ConfigService<AllConfigType>) {}
 
+    getAuthorizationUrl(callbackURL: string): string {
+        const clientId = this.configService.getOrThrow('auth.google.clientID', {
+            infer: true,
+        });
+        return (
+            `https://accounts.google.com/o/oauth2/v2/auth` +
+            `?client_id=${clientId}` +
+            `&redirect_uri=${encodeURIComponent(callbackURL)}` +
+            `&response_type=code` +
+            `&scope=${encodeURIComponent('openid email profile')}`
+        );
+    }
+
     decodeUser(accessToken: string) {
         const payload = jwt.decode(accessToken);
         if (!payload || typeof payload === 'string') {

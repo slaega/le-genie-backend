@@ -22,6 +22,19 @@ interface GithubEmail {
 }
 export class GithubExchangeProvider implements ExchangeProvider<GithubUser> {
     constructor(private readonly configService: ConfigService<AllConfigType>) {}
+
+    getAuthorizationUrl(callbackURL: string): string {
+        const clientId = this.configService.getOrThrow('auth.github.clientID', {
+            infer: true,
+        });
+        return (
+            `https://github.com/login/oauth/authorize` +
+            `?client_id=${clientId}` +
+            `&redirect_uri=${encodeURIComponent(callbackURL)}` +
+            `&scope=user%3Aemail`
+        );
+    }
+
     async getUser(accessToken: string) {
         const response = await fetch('https://api.github.com/user', {
             headers: {
